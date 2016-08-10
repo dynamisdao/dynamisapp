@@ -1,0 +1,42 @@
+{
+  "rules": {
+    "indent": [2, 2],
+    "quotes": [2, "single"],
+    "linebreak-style": [2, "unix"],
+    "semi": [2, "always"],
+    "comma-dangle": [2, "only-multiline"],
+    "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+    "react/prop-types": 0,
+    "react/display-name": 2,
+    "no-multiple-empty-lines": [2, {"max": 1}],
+    "react/jsx-indent": [2, 2]
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "plugins": [
+    "react",
+    "json"
+  ],
+  "globals": {
+    "describe": true,
+    "it": true,
+    "$": true,
+    "module": true,
+    "require": true,
+    "global": true,
+    "TestUtils": true,
+    "TestMocks": true,
+    "Materialize": true,
+    "beforeEach": true
+  }
+}

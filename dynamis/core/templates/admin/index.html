@@ -1,0 +1,43 @@
+{% extends "admin/layout.html" %}
+{% load staticfiles %}
+
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/clippy/clippy.css' %}">
+{% endblock %}
+
+{% block bread %}
+  <a href="{% url 'admin:site-index' %}" class="breadcrumb">Admin</a>
+{% endblock %}
+
+{% block crumbs %}
+  <span class="breadcrumb">Home</span>
+{% endblock %}
+
+{% block content %}
+  <h1>Admin Home</h1>
+  <p>Welcome to the Dynamis Admin</p>
+
+  <ul class="collection">
+    <li class="collection-item"><a href="{% url 'admin:user-index' %}">Users</a></li>
+  </ul>
+            
+{% endblock content %}
+
+{% block body %}
+  {{ block.super }}
+  <script src="{% static 'vendor/clippy/clippy.js' %}"></script>
+  <script type="text/javascript">
+clippy.load('Clippy', function(agent) {
+  // disable sounds
+  agent._animator._sounds = {};
+  agent.show();
+  function reAnimate() {
+    var r = Math.floor(Math.random() * 10) + 1;
+    agent.animate();
+    setTimeout(reAnimate, Math.floor(Math.random() * 15000) + 15000);
+  }
+  setTimeout(reAnimate, 20000);
+});
+  </script>
+{% endblock body %}

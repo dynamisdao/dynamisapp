@@ -1,0 +1,51 @@
+{% extends 'admin/layout.html' %}
+{% load humanize %}
+
+{% block bread %}
+  <a href="{% url 'admin:site-index' %}" class="breadcrumb">Admin</a>
+  <a href="{% url 'admin:user-index' %}" class="breadcrumb">Users</a>
+{% endblock %}
+
+{% block crumbs %}
+  <span class="breadcrumb">User #{{ dynamis_user.pk }}: {{ dynamis_user.email }}</span>
+{% endblock %}
+
+{% block content %}
+    <h1>User #{{ dynamis_user.pk }}: {{ dynamis_user.email }}</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col s6">
+                    <h2>Details</h2>
+                    <dl>
+                        <dt>Id:</dt>
+                        <dd>{{ dynamis_user.pk }}</dd>
+                        <dt>Email:</dt>
+                        <dd>{{ dynamis_user.email|urlize }} ({% if record.verified_at %}verified{% else %}not verified{% endif %})</dd>
+                        <dt>Active</dt>
+                        <dd>{{ dynamis_user.is_active|yesno:"Yes,No" }}</dd>
+                        <dt>Risk Assessor</dt>
+                        <dd>{{ dynamis_user.is_superuser|yesno:"Yes,No" }}</dd>
+                        <dt>Superuser</dt>
+                        <dd>{{ dynamis_user.is_superuser|yesno:"Yes,No" }}</dd>
+                        <dt>Staff</dt>
+                        <dd>{{ dynamis_user.is_staff|yesno:"Yes,No" }}</dd>
+                        <dt>Date Joined:</dt>
+                        <dd>{{ dynamis_user.date_joined|naturaltime }}</dd>
+                        <dt>Last Login:</dt>
+                        <dd>{{ dynamis_user.last_login|naturaltime }}</dd>
+                    </dl>
+                </div>
+                <div class="col s6">
+                  <form action="{% url 'admin:user-detail' pk=dynamis_user.pk %}" method="post">
+                    <div class="card">
+                        <span class="card-title">Edit</span>
+                        {% include 'partials/form_as_fieldsets.html' %}
+                        <button class="btn btn-primary" type="submit">Save</button>
+                    </div>
+                  </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

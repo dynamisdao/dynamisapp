@@ -1,0 +1,51 @@
+{
+  "dependencies": {
+    "assetsmanager-brunch": "^1.8.1",
+    "babel-brunch": "^6.0.2",
+    "babel-plugin-transform-object-rest-spread": "^6.6.5",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-es2015-without-strict": "0.0.2",
+    "babel-preset-react": "^6.5.0",
+    "brunch": "^2.7.4",
+    "css-brunch": "^2.6.1",
+    "downloadjs": "^1.4.2",
+    "es6-promise": "^3.1.2",
+    "eth-lightwallet": "git+https://github.com/pipermerriam/eth-lightwallet#ce8fe18717090dcd281fd30f8454c7fede5953a3",
+    "javascript-brunch": "^2.0.0",
+    "jquery": "^2.2.2",
+    "json-stable-stringify": "^1.0.1",
+    "lodash": "^4.6.1",
+    "materialize-css": "^0.97.6",
+    "murmurhash": "0.0.2",
+    "react": "^0.14.8",
+    "react-addons-css-transition-group": "^0.14.8",
+    "react-addons-linked-state-mixin": "^0.14.8",
+    "react-dom": "^0.14.8",
+    "react-redux": "^4.4.1",
+    "redux": "^3.3.1",
+    "redux-thunk": "^2.0.1",
+    "sass-brunch": "^2.6.2",
+    "uuid": "^2.0.1",
+    "web3": "^0.15.3"
+  },
+  "scripts": {
+    "lint": "eslint 'dynamis/static/**/*.js*' && npm run lint-success -s",
+    "lint-success": "echo '\n\u001b[32m✓ 0 problems (0 errors, 0 warnings)\u001b[30m\n'",
+    "postinstall": "brunch build --production",
+    "watch": "brunch watch",
+    "build": "brunch build",
+    "test": "mocha 'dynamis/static/**/*.test.js*'"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.4",
+    "canvas": "^1.3.12",
+    "eslint": "^2.4.0",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-react": "^4.2.3",
+    "expect": "^1.15.2",
+    "jsdom": "^8.3.0",
+    "mocha": "^2.4.5",
+    "react-addons-test-utils": "^0.14.8",
+    "redux-mock-store": "^1.0.2"
+  }
+}

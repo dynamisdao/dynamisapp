@@ -1,2 +1,10 @@
-.meteor/local
-.meteor/meteorite
+bower_components/
+public/
+node_modules/
+*.sqlite3
+.cache/
+
+.env
+npm-debug.log*
+
+build/

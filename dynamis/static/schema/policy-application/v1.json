@@ -1,0 +1,49 @@
+{
+    "title": "Policy Application",
+    "type": "object",
+    "required": ["identity", "employmentHistory"],
+    "properties": {
+        "identity": {
+            "type": "object",
+            "required": ["verification_method", "verification_data"],
+            "properties": {
+                "verification_method": {
+                    "type": "string",
+                    "enum": ["keybase"]
+                },
+                "verification_data": {
+                    "anyOf": [{"ref": "#/definitions/keybaseVerificationData"}]
+                }
+            }
+        },
+        "employmentHistory": {
+            "type": "object",
+            "required": ["jobs"],
+            "properties": {
+                "jobs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "keybaseVerificationData": {
+            "type": "object",
+            "required": ["username", "proofs"],
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "proofs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                }
+            }
+        }
+    }
+}

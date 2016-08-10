@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+{% load staticfiles argonauts cache %}
+<html>
+  <head>
+    <meta charset="UTF-8">
+
+    {% block extra_css %}
+    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+    {# TODO: don't link to external assets #}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>{% block title %}Dynamis{% endblock %}</title>
+  </head>
+
+  <body>
+    {% block body %}
+      {% block contentwrapper %}
+      {% endblock contentwrapper %}
+
+      {% block extra_javascript %}
+        <script type="text/javascript">
+        {% if user.is_authenticated %}
+          window.DjangoInfo = {
+            user: {
+              email: '{{user.email}}'
+            }
+          };
+        {% else %}
+        window.DjangoInfo = { user: {} };
+        {% endif %}
+        </script>
+        {% cache 600 api_urls %}
+          <script type="text/javascript">
+          // this provides `DjangoUrls` with all the django url lookups that the javascript
+          // app needs to lookup
+          window.DjangoUrls = {{ api_urls|json }};
+          </script>
+        {% endcache %}
+      {% endblock %}
+
+      <script src="{% static 'js/app.js' %}"></script>
+      <script src="{% static 'js/materialize.js' %}"></script>
+    {% endblock body %}
+  </body>
+</html>

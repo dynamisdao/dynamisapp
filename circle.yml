@@ -1,0 +1,24 @@
+machine:
+  node:
+    version: 5.0
+  environment:
+    DATABASE_URL: 'sqlite://memory:'
+    DJANGO_SECRET_KEY: 'not-a-real-secret-key'
+    DJANGO_EMAIL_BACKEND: 'django.core.mail.backends.console.EmailBackend'
+    SITE_DOMAIN: 'test-domain'
+dependencies:
+  post:
+    - env
+    - pip install -r requirements-dev.txt
+    - ls node_modules
+    - npm run build
+    - python manage.py collectstatic  --noinput
+  cache_directories:
+    - "public"
+
+test:
+  override:
+    - npm run lint -s
+    - flake8 dynamis && echo "No python linting errors"
+    - py.test tests/python -v -n 3
+    - npm test

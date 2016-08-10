@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+<h1><span>Login</span></h1>
+<section>
+
+  <form action="." method="post">
+    {% include 'partials/form_as_fieldsets.html' %}
+    <button class="btn btn-primary" type="submit">Login</button>
+    <a href="{% url 'password-reset' %}" class="btn btn-default">Forgot Password?</a>
+  </form>
+
+</section>
+{% endblock content %}

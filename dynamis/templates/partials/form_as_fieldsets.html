@@ -1,0 +1,9 @@
+{% load materializecss %}
+{% csrf_token %}
+
+{{ form.non_field_errors }}
+{% for field in form %}
+  <div class="input-field {{ field.css_classes }}">
+    {{ field|materializecss }}
+  </div>
+{% endfor %}

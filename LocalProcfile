@@ -1,0 +1,2 @@
+assets: npm run watch
+web: python manage.py runserver

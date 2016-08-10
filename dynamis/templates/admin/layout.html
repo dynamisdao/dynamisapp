@@ -1,0 +1,89 @@
+{% extends 'admin/base.html' %}
+
+
+{% block contentwrapper %}
+  {% if user.is_authenticated %}
+    {% block header %}
+    <nav>
+      <div class="nav-wrapper">
+        <a href="{% url 'admin:site-index' %}" class="brand-logo">Dynamis: Admin</a>
+        <ul id="nav-mobile" class="right">
+          <li><a href="{% url 'logout' %}">Logout</a></li>
+          <li><a href="{% url 'site-index' %}">Back to Main Site</a></li>
+        </ul>
+      </div>
+    </nav>
+    {% endblock header %}
+
+    {% block messages %}
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li>
+          <div class="chip {{ message.tags }}"> {{ message }}
+            <i class="material-icons">close</i>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% endblock messages %}
+
+    {% block breadcrumbs_outer %}
+      <nav>
+        <div class="nav-wrapper">
+          <div class="col s12">
+            {% block breadcrumbs %}
+              {% block bread %}
+              {% endblock bread %}
+              {% block crumbs %}
+              {% endblock %}
+            {% endblock breadcrumbs %}
+          </div>
+        </div>
+      </nav>
+    {% endblock breadcrumbs_outer %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block footer %}
+    <footer class="page-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">Footer Content</h5>
+            <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+          </div>
+          <div class="col l4 offset-l2 s12">
+            <h5 class="white-text">Links</h5>
+            <ul>
+              <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+              <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+              <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+              <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+          &copy; 2016 Copyright Text
+          <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </div>
+      </div>
+    </footer>
+    {% endblock footer %}
+  {% else %}
+    <h1>You must be logged in to visit this page</h1>
+  {% endif %}
+{% endblock contentwrapper %}
+
+{% block body %}
+  {{ block.super }}
+  <script type="text/javascript">
+$(document).ready(function() {
+  $('select').material_select();
+});
+  </script>
+{% endblock body %}

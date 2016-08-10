@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% load react_renderer %}
+
+
+{% block content %}
+<h1>User Profile</h1>
+<section>
+  <h3>User Details</h3>
+  <ul class="collection">
+    <li class="collection-item">
+      Username: {{ user.get_username }}
+      {% if user.verified_at %}
+        <span class="badge green">verified</span>
+      {% else %}
+        <span class="badge yellow">not verified</span>
+      {% endif %}
+    </li>
+    <li class="collection-item">
+      Password: ******** <a href="{% url 'password-change' %}">Change Password</a>
+    </li>
+    <li class="collection-item">
+      Keybase Username:
+      {% if user.keybase_username %}
+        {{ user.keybase_username }}
+      {% else %}
+        <a href="{% url 'verify-keybase' %}">Link Keybase Account</a>
+      {% endif %}
+    </li>
+  </ul>
+  <h3>Policy Info</h3>
+  <ul class="collection">
+    <li class="collection-item"><button type="button" class="btn">Policy Details</button></li>
+    <li class="collection-item">Address: {% react_component "Dynamis.components.EthAddress" address="0x12345" %}</li>
+    <li class="collection-item">Status: <span class="badge green">Active</span></li>
+    <li class="collection-item"><button type="button" class="btn">Open a Claim</button></li>
+    <li class="collection-item"><button type="button" class="btn">Accept Policy</button></li>
+    <li class="collection-item"><button type="button" class="btn">Pay Premium</button></li>
+  </ul>
+
+  <h3>Things that wont be in the final product</h3>
+  <p>Things down here are just here to provide an easy link to them during development and will be removed as the features related to them mature.</p>
+  <h4>Policy Applications</h4>
+  <a href="{% url 'peer-review-items' %}" class="btn">Review your peers</a>
+  <ul class="collection">
+  {% for policy in user.policies.all %}
+  <li class="collection-item">
+    Policy Application #{{ policy.pk }}
+    {% if policy.is_final %}
+      <span class="badge green">Pending Review</span>
+    {% else %}
+      <a href="{% url 'policy-edit' pk=policy.pk %}">Resume Application</a>
+      <span class="badge green">Incomplete</span>
+    {% endif %}
+  </li>
+  {% empty %}
+    <li class="collection-item">No Applications.  (<a href="{% url 'policy-create' %}">start one?</a>)</li>
+  {% endfor %}
+  </ul>
+
+</section>
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends 'admin/layout.html' %}
+{% load render_table from django_tables2 %}
+{% load materializecss %}
+
+{% block bread %}
+  <a href="{% url 'admin:site-index' %}" class="breadcrumb">Admin</a>
+{% endblock %}
+
+{% block crumbs %}
+  <span class="breadcrumb">Users</span>
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'admin:user-index' %}" method="get">
+  <div class="container">
+    <div class="row">
+      <div class="input-field col s2">
+        {{ filter.form.is_superuser }}
+        <label for="{{ filter.form.is_superuser.auto_id }}">Superuser</label>
+      </div>
+      <div class="input-field col s2">
+        {{ filter.form.is_staff }}
+        <label for="{{ filter.form.is_staff.auto_id }}">Staff</label>
+      </div>
+      <div class="input-field col s2">
+        {{ filter.form.is_active }}
+        <label for="{{ filter.form.is_active.auto_id }}">Active</label>
+      </div>
+      <div class="input-field col s2">
+        {{ filter.form.is_risk_assessor }}
+        <label for="{{ filter.form.is_risk_assessor.auto_id }}">Active</label>
+      </div>
+      <div class="input-field col s4">
+        {{ filter.form.email }}
+        <label for="{{ filter.form.email.auto_id }}">Search Email</label>
+      </div>
+      <button class="btn btn-primary" type="submit">Filter</button>
+    </div>
+  </div>
+</form>
+
+{% render_table table %}
+{% endblock %}

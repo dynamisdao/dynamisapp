@@ -1,0 +1,10 @@
+to: {{ to_email }}
+from: {{ from }}
+subject: Please verify your email address.
+content-type: html
+---
+
+Please verify your email address by clicking this link: <a href="{{ protocol }}://{{ site.domain }}{% url 'verify-email' activation_key %}">{{ protocol }}://{{ site.domain }}{% url 'verify-email' activation_key %}"</a>
+
+
+You can safely disregard this email if you did not sign up for an account with this site.

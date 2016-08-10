@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% load react_renderer %}
+
+{% block content %}
+  {% if user.keybase_username %}
+    {% react_component "Dynamis.PeerReviewRoot" %}
+  {% else %}
+    <p>You must <a href="{% url 'verify-keybase' %}">link your Keybase account</a> prior to peer reviewing policy applications.</p>
+  {% endif %}
+{% endblock content %}

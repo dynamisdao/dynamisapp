@@ -1,0 +1,62 @@
+.terminal {
+  background: #002728;
+  margin: 20px;
+  margin-left: 0;
+  padding: 10px;
+  font-family: Menlo, Courier New;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  display: inline;
+}
+
+.animation-fade-enter {
+  opacity: 0.01;
+}
+.animation-fade-enter.animation-fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.animation-fade-leave {
+  opacity: 1;
+}
+.animation-fade-leave.animation-fade-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.eth-address {
+}
+
+.eth-address-hex {
+}
+
+.eth-address-icon {
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  box-shadow: inset rgba(255, 255, 255, 0.5) 0 2px 2px, inset rgba(0, 0, 0, 0.6) 0 -1px 8px;
+}
+
+.eth-address-icon-large {
+  width: 64px;
+  height: 64px;
+}
+
+.eth-address-icon-small {
+  width: 18px;
+  height: 18px;
+}
+
+.hidden-file-input {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -9999;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
