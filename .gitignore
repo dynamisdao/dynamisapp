@@ -8,3 +8,9 @@ node_modules/
 npm-debug.log*
 
 build/
+
+*.pyc
+*.swp
+*.swo
+venv
+

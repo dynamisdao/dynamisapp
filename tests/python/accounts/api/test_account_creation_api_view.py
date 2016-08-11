@@ -8,6 +8,8 @@ def test_user_creation_api_view(User, api_client):
     account_create_url = reverse('v1:account-create')
     test_email = 'test-1@example.com'
 
+    #print("Account creation URL is: {}".format(account_create_url))
+
     mail.outbox = []
 
     assert not User.objects.filter(email='test-1@example.com').exists()
