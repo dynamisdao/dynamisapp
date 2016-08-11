@@ -10,5 +10,7 @@ npm-debug.log*
 build/
 
 *.pyc
+*.swp
+*.swo
 venv
 
