@@ -1,5 +1,7 @@
 # Dynamis
 
+Please read [INSTALL file](INSTALL.md) for installation details.
+
 ## Javascripts
 
 * Tests run with `npm test`
