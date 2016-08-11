@@ -6,24 +6,6 @@
 * libpq-dev sqlite3 libsqlite3-dev postgresql postgresql-contrib rng-tools
 * python-pip python-dev python-pytest
 
-### Install all reqs
-
-```bash
-# Install/create virtualenv
-sudo pip install virtualenv
-cd dynamis-folder
-virtualenv venv
-
-# Start working in virtualenv
-source venv/bin/active
-pip install -r requirements.txt
-
-python manage.py runserver 0.0.0.0:8000
-
-# Exit virtualenv
-deactivate
-```
-
 ### Install postgress
 
 ```bash
@@ -49,3 +31,22 @@ python manage.py migrate
 cd tests/python
 py.test -s 
 ```
+
+### Start server 
+
+```bash
+# Install/create virtualenv (one-time only)
+sudo pip install virtualenv
+cd dynamis-folder
+virtualenv venv
+
+# Start working in virtualenv
+source venv/bin/active
+pip install -r requirements.txt
+
+python manage.py runserver 0.0.0.0:8000
+
+# Exit virtualenv
+deactivate
+```
+
