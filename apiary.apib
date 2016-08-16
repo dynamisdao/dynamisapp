@@ -1,0 +1,84 @@
+FORMAT: 1A
+HOST: http://http://52.208.209.130:8000
+
+# Dynamis Backend API
+
+This is a Dynamis API description. 
+
+## Accounts [/api/v1/accounts/account-create]
+
+### Create new Account [POST]
+
+You may create new account by calling this method. As a side-effect will send use a verification e-mail.
+
++ Request (application/json)
+
+        {
+            "email": "sample@email.com",
+            "password1": "123456",
+            "password2": "123456"
+        }
+        
++ Response 200 (application/json)
+
+        {
+        
+        }
+
+## Accounts Keybase [/api/v1/accounts/verify-keybase]
+
+### Verify Keybase [POST]
+
+You may validate the user's keybase account.
++ Request
+    + Headers
+    
+            Authorization: Digest
+        
++ Request (application/json)
+
+        {
+            "signed_message": "123123123123cxxfsq24390dXFasdfj234",
+            "keybase_username": "tonykent"
+        }
+        
++ Response 200 (application/json)
+
+        {
+        
+        }
+        
+## Account [/api/v1/account/{accountid}]
+
+### Get Account [GET]
+
++ Parameters
+    + accountid (number) - ID of an account
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /questions/2
+
+    + Body
+
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 0
+                    }, {
+                        "choice": "Python",
+                        "votes": 0
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 0
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 0
+                    }
+                ]
+            }
