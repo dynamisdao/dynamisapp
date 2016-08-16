@@ -1,11 +1,11 @@
-FORMAT: 1A
+AFORMAT: 1A
 HOST: http://http://52.208.209.130:8000
 
 # Dynamis Backend API
 
 This is a Dynamis API description. 
 
-## Accounts [/api/v1/accounts/account-create]
+## Create new Account [/api/v1/accounts/account-create]
 
 ### Create new Account [POST]
 
@@ -19,17 +19,15 @@ You may create new account by calling this method. As a side-effect will send us
             "password2": "123456"
         }
         
-+ Response 200 (application/json)
++ Response 200
 
-        {
-        
-        }
-
-## Accounts Keybase [/api/v1/accounts/verify-keybase]
+## Verify Keybase Account [/api/v1/accounts/verify-keybase]
 
 ### Verify Keybase [POST]
 
 You may validate the user's keybase account.
+TODO
+
 + Request
     + Headers
     
@@ -42,43 +40,197 @@ You may validate the user's keybase account.
             "keybase_username": "tonykent"
         }
         
-+ Response 200 (application/json)
++ Response 200
 
-        {
-        
-        }
         
 ## Account [/api/v1/account/{accountid}]
 
 ### Get Account [GET]
 
+TODO
+
 + Parameters
     + accountid (number) - ID of an account
 
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
++ Response 200 (application/json)
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
             }
+            
+
+## Policies [/api/v1/application/policies/{policyid}/]
+
+### Get Policy [GET]
+
+Get the policy.
+
++ Parameters
+    + policyid (number) - ID of a policy (global for all users)
+
++ Response 200 (application/json)
+    
+        {
+            "id": 1,
+            "data":
+            {
+                "public_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: KEY BLOCK-----",
+                "signed_message": "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA512\n\n{\"identity\":{\"verification_method\":\"keybase\",\"verificati`-----END PGP SIGNATURE-----",
+                "public_key_identity": {
+                    "username": "tonykent"
+                },
+                "public_key_provider": "keybase",
+                "policy_data": {
+                    "requestedPremiumAmount": "46",
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {
+                            "username": "tonykent",
+                            "proofs": [
+                                {
+                                    "proof_id": "6bd6da447e3d1b0b4a17c210",
+                                    "proof_url": "https://twitter.com/anthonyakentiev/status/763656278963085312",
+                                    "presentation_tag": "tweet",
+                                    "nametag": "anthonyakentiev",
+                                    "human_url": "https://twitter.com/anthonyakentiev/status/763656278963085312",
+                                    "state": 1,
+                                    "proof_type": "twitter",
+                                    "service_url": "https://twitter.com/anthonyakentiev",
+                                    "sig_id": "476015a934a9b5878b7572ad49853e77e331c36eec76dd836bb78cd45ff3e8d90f",
+                                    "presentation_group": "twitter"
+                                },
+                                {
+                                    "proof_id": "e26f23f128e6f92ed7955910",
+                                    "proof_url": "https://gist.github.com/49e0adf02231361735edd4937d43dc56",
+                                    "presentation_tag": "gist",
+                                    "nametag": "anthonyakentiev",
+                                    "human_url": "https://gist.github.com/49e0adf02231361735edd4937d43dc56",
+                                    "state": 1,
+                                    "proof_type": "github",
+                                    "service_url": "https://github.com/anthonyakentiev",
+                                    "sig_id": "5e82869934b8693128f8f4f3023467a9ba7529fc509ae35b364d297ff9982c0c0f",
+                                    "presentation_group": "github"
+                                }
+                            ]
+                        }
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "startYear": "2012",
+                                "company": "Sample",
+                                "startMonth": "6",
+                                "currentJob": true,
+                                "endMonth": 7,
+                                "state": "READ_ONLY",
+                                "endYear": 2016,
+                                "notes": "* Job Title:\n* Reason for leaving:\nProgrammer."
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        
+ 
+### Update Policy [PUT]
+
+Update the policy.
+
++ Request (application/json)
+    + Body
+
+            {
+                "data": 
+                {
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {}
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "state": "READ_ONLY",
+                                "notes": "* Job Title:\n* ....",
+                                "currentJob": true,
+                                "startMonth": "3",
+                                "endMonth": 7,
+                                "endYear": 2016,
+                                "startYear": "2015"
+                            }
+                        ]
+                    },
+                    "requestedPremiumAmount": 250
+                }
+            }
+        
++ Response 200 (application/json)
+    + Body
+    
+            {
+                "id": 1, 
+                "data": {
+                    "requestedPremiumAmount": 250,
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {}
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "startYear": "2015",
+                                "notes": "* Job Title:\n* ....",
+                                "startMonth": "3",
+                                "currentJob": true,
+                                "endMonth": 7,
+                                "state": "READ_ONLY",
+                                "endYear": 2016
+                            }
+                        ]
+                    }
+                }
+            }
+
+
+
+## Application [/api/v1/application/policies/{policyid}/submit]
+
+### Submit a Policy Application [POST]
+
+After all data is entered - user can submit a policy application. The peers will then review it. 
+
++ Request (application/json)
+    + Body
+
+            {
+                "keybase_username": "tonykent",
+                "signed_message": "fjdskajflakjdfkweu2434"
+            }
+        
++ Response 200
+
+
+## Upload File [/api/v1/application/policies/{policyid}/upload-file]
+
+### Upload File to Policy [POST]
+
+TODO 
+
++ Request (application/json)
+    + Body
+
+            {
+                "filename": "xxx.pdf",
+                "data_url": "",
+                "ipfs_hash": "",
+                "meta": {
+                    "mimetype": "",
+                    "name": ""
+                }
+            }
+        
++ Response 200
