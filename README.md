@@ -1,6 +1,7 @@
 # Dynamis
 
 Please read [INSTALL file](INSTALL.md) for installation details.
+
 Backend API documentation is [here](http://docs.dynamis1.apiary.io).
 
 ## Javascripts
