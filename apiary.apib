@@ -9,7 +9,7 @@ This is a Dynamis API description.
 
 ### Create new Account [POST]
 
-You may create new account by calling this method. As a side-effect will send use a verification e-mail.
+Create new account by calling this method. As a side-effect will send user a verification e-mail.
 
 + Request (application/json)
 
@@ -25,8 +25,8 @@ You may create new account by calling this method. As a side-effect will send us
 
 ### Verify Keybase [POST]
 
-You may validate the user's keybase account.
-TODO
+Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
+That is to make sure that valid keybase account is connected with current Dynamis user. 
 
 + Request
     + Headers
@@ -47,7 +47,7 @@ TODO
 
 ### Get Account [GET]
 
-TODO
+TODO: this method is not implemented yet
 
 + Parameters
     + accountid (number) - ID of an account
@@ -64,7 +64,11 @@ TODO
 
 ### Get Policy [GET]
 
-Get the policy.
+Get the policy data.
+
+In insurance, the insurance policy is a contract (generally a standard form contract) between the insurer and the insured, known as the policyholder, which determines the claims which the insurer is legally required to pay. In exchange for an initial payment, known as the premium, the insurer promises to pay for loss caused by perils covered under the policy language.
+
+Insurance contracts are designed to meet specific needs and thus have many features not found in many other types of contracts. Since insurance policies are standard forms, they feature boilerplate language which is similar across a wide variety of different types of insurance policies.
 
 + Parameters
     + policyid (number) - ID of a policy (global for all users)
@@ -218,7 +222,7 @@ After all data is entered - user can submit a policy application. The peers will
 
 ### Upload File to Policy [POST]
 
-TODO 
+Attach the file to the application. Will uplad it to IPFS.
 
 + Request (application/json)
     + Body
@@ -235,7 +239,7 @@ TODO
 
 ### Get all Application Items [GET]
 
-TODO 
+Get list of what items still need the review (by you).
 
 + Response 200
     + Body
@@ -314,7 +318,7 @@ TODO
 
 ### Get Peer Review History [GET]
 
-TODO 
+Get the list of what peers have reviewed already (identity, employment-claim, etc). 
 
 + Response 200
     + Body
@@ -353,7 +357,14 @@ TODO
 
 ### Submit Peer Review [POST]
 
-TODO 
+After the Peer has reviewed some parts of an application - he can set **Verify/Falsify/Can't Tell**. 
+
+Please see [screenshot here](https://s4.postimg.org/47engihul/Screen_Shot_2016_08_17_at_19_05_14.png).
+
+Please see [another screenshot here](https://s3.postimg.org/a501ucv83/Screen_Shot_2016_08_17_at_19_07_10.png).
+
+That creates the message ```{"task_hash":"things","result":"no"}``` (for example) that he needs then to sign.
+
 
 + Parameters
     + applicationid (number) - ID of an an application
