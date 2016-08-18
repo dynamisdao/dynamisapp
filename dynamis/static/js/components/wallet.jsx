@@ -20,8 +20,8 @@ export default connectRedux(React.createClass({
       <div className="container">
         Our nodes:
         <ul>
-          <li>http://52.36.158.26:8545/</li>
-          <li>https://54.187.11.29/</li>
+          <li>TestNet (legacy server) - http://52.36.158.26:8545/</li>
+          <li>TestNet - http://52.16.72.86:8545/</li>
         </ul>
         <br />
         Current rpc node host: <code className="grey lighten-2" style={{padding: '2px'}}>{wallet.web3url}</code>

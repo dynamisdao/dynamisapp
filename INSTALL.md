@@ -50,6 +50,20 @@ python manage.py runserver 0.0.0.0:8000
 deactivate
 ```
 
+### Install and start IPFS daemon
+```bash
+wget https://dist.ipfs.io/go-ipfs/v0.4.2/go-ipfs_v0.4.2_linux-amd64.tar.gz
+tar xvfz go-ipfs.tar.gz
+sudo mv go-ipfs/ipfs /usr/local/bin/ipfs
+
+ipfs init
+
+# Start daemon on 5001 port
+ipfs daemon
+
+# Do not forget to add IPFS_HOST and IPFS_PORT to .env file
+```
+
 ### Start Ethereum server
 
 Dynamis requires running Ethereum node: see [User's Wallet screenshot here](https://s4.postimg.org/njujdb3x9/wallet.png)
