@@ -50,3 +50,25 @@ python manage.py runserver 0.0.0.0:8000
 deactivate
 ```
 
+### Start Ethereum server
+
+Dynamis requires running Ethereum node: see [User's Wallet screenshot here](https://s4.postimg.org/njujdb3x9/wallet.png)
+
+Please start DEDICATED server. Do not run **geth** on the same machine that backend uses.
+
+```bash
+# Install geth on Ubuntu
+# Please see https://github.com/ethereum/go-ethereum/wiki/Installation-Instructions-for-Ubuntu
+
+sudo apt-get install software-properties-common
+sudo add-apt-repository -y ppa:ethereum/ethereum
+sudo add-apt-repository -y ppa:ethereum/ethereum-dev
+sudo apt-get update
+sudo apt-get install ethereum
+
+# Start geth (MainNet)
+geth --rpc --rpcport "8545" --rpcaddr "0.0.0.0" --rpccorsdomain "*"
+
+# Start geth (TestNet)
+geth --testnet --rpc --rpcport "8545" --rpcaddr "0.0.0.0" --rpccorsdomain "*"
+```
