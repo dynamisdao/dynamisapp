@@ -4,6 +4,9 @@ Please read [INSTALL file](INSTALL.md) for installation details.
 
 Backend API documentation is [here](http://docs.dynamis1.apiary.io).
 
+## Deployment scheme
+![deployment scheme](https://s4.postimg.org/gdghow8rh/dynamis_deployment_scheme.png)
+
 ## Javascripts
 
 * Tests run with `npm test`
