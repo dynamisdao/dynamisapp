@@ -9,7 +9,7 @@
 ### Install postgress
 
 ```bash
-# Change all to TRUST (no password)
+# TODO: Change all to TRUST (no password) in this file
 sudo vim /etc/postgresql/9.3/main/pg_hba.conf
 
 # Create new DB
@@ -26,29 +26,6 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Run tests (under virtual env)
-```bash
-cd tests/python
-py.test -s 
-```
-
-### Start server 
-
-```bash
-# Install/create virtualenv (one-time only)
-sudo pip install virtualenv
-cd dynamis-folder
-virtualenv venv
-
-# Start working in virtualenv
-source venv/bin/active
-pip install -r requirements.txt
-
-python manage.py runserver 0.0.0.0:8000
-
-# Exit virtualenv
-deactivate
-```
 
 ### Install and start IPFS daemon
 ```bash
