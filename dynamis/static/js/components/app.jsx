@@ -6,7 +6,7 @@ export default connectRedux(React.createClass({
     return (
       <div>
         <h1>
-          Hello Josh
+          Hello! 
         </h1>
       </div>
     );
