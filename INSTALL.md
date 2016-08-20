@@ -7,8 +7,10 @@
 * python-pip python-dev python-pytest
 
 ### Install Node
+```bash
 curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
 sudo npm install -g brunch mocha
+```
 
 ### Install postgress
 
