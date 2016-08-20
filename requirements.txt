@@ -8,7 +8,6 @@ python-gnupg==0.3.8
 PyJWT==1.4.0
 env-excavator==1.5.0
 python-dotenv==0.1.0
-dj-database-url==0.4.0
 psycopg2==2.6.1
 gunicorn==19.4.5
 django-storages==1.4.1
@@ -19,3 +18,4 @@ ipfs-api==0.2.3
 django-tables2==1.2.0
 django-materializecss-form==1.0.1
 djangorestframework-filters==0.8.0
+django-webtest==1.7.9
