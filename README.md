@@ -1,4 +1,5 @@
 # Dynamis
+https://codeship.com/projects/3abe4270-4901-0134-1120-52b63a9a4ec4/status?branch=master
 
 [Installation details is here](INSTALL.md).
 
