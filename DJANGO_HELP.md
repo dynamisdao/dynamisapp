@@ -42,14 +42,36 @@ environments.
 Which email backend django should use to send emails.
 
 
-## `DATABASE_URL`
+## `DJANGO_DATABASE_ENGINE`
 
 * required: **true**
+* default: **django.db.backends.sqlite3**
+
+A Database Engine.
+
+## `DJANGO_DATABASE_NAME` 
+* required: **true**
+* default: **dynamisappdb**
+
+A Database name.
+
+## `DJANGO_DATABASE_USER` 
+* required: **true**
 * default: **N/A**
-* https://github.com/kennethreitz/dj-database-url
 
-A Database URL for configuring the database connection.
+A Database user account.
 
+## `DJANGO_DATABASE_HOST` 
+* required: **true**
+* default: **localhost**
+
+A Database host.
+
+## `DJANGO_DATABASE_PORT` 
+* required: **true**
+* default: **N/A**
+
+A Database port.
 
 ## `DJANGO_ATOMIC_REQUESTS`
 
@@ -70,7 +92,7 @@ identity verification.  See the `dynamis.apps.identity` application for more
 detail.
 
 
-## `SITE_DOMAIN`
+## `DJANGO_SITE_DOMAIN`
 
 * required: **true**
 * default: **N/A**

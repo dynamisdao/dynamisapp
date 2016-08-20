@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': os.environ.get('DJANGO_DATABASE_NAME', 'dynamisappdb'),
         'USER': os.environ.get('DJANGO_DATABASE_USER', ''),
         'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DJANGO_DATABASE_HOST', ''),
+        'HOST': os.environ.get('DJANGO_DATABASE_HOST', 'localhost'),
         'PORT': os.environ.get('DJANGO_DATABASE_PORT', ''),
     }
 }
