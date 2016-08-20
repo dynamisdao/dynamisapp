@@ -6,6 +6,10 @@
 * libpq-dev sqlite3 libsqlite3-dev postgresql postgresql-contrib rng-tools
 * python-pip python-dev python-pytest
 
+### Install Node
+curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
+sudo npm install -g brunch mocha
+
 ### Install postgress
 
 ```bash
