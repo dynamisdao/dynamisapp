@@ -37,9 +37,11 @@ class UserDashboardView(LoginRequired, TemplateView):
     template_name = "accounts/user_dashboard.html"
 
 
+class MyPolicyView(LoginRequired, TemplateView):
+    template_name = "accounts/my_policy.html"
+
 class WalletView(TemplateView):
     template_name = "accounts/wallet.html"
-
 
 class NotifyingPasswordChangeView(PasswordChangeView):
     """

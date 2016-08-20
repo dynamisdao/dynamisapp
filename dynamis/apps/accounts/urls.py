@@ -10,6 +10,7 @@ from authtools.views import (
 from .views import (
     KeybaseVerificationView,
     UserDashboardView,
+    MyPolicyView,
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView,
@@ -40,6 +41,7 @@ urlpatterns = [
         name='password-reset-confirm-and-login',
     ),
     url(r'^profile/$', UserDashboardView.as_view(), name='user-profile'),
+    url(r'^my-policy/$', MyPolicyView.as_view(), name='my-policy'),
     url(r'^wallet/$', WalletView.as_view(), name='wallet'),
     url(
         r'^change-password/$', NotifyingPasswordChangeView.as_view(
