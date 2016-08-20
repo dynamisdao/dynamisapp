@@ -10,6 +10,9 @@
 ```bash
 curl -sL https://deb.nodesource.com/setup_6.x | sudo bash -
 sudo npm install -g brunch mocha
+
+# Build web site 
+npm run build
 ```
 
 ### Install postgress
@@ -24,6 +27,17 @@ createdb dynamis
 # Access it
 sudo -i -u postgres
 psql -d dynamis
+```
+
+### Install Python/dependencies
+
+```bash
+# Install/create virtualenv (one-time only)
+sudo pip install virtualenv
+virtualenv venv
+
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ### Create migrations
