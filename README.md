@@ -1,6 +1,8 @@
 # Dynamis
 [ ![Codeship Status for dynamisdao/dynamisapp](https://codeship.com/projects/3abe4270-4901-0134-1120-52b63a9a4ec4/status?branch=master)](https://codeship.com/projects/169478)
 
+[![Stories in Ready](https://badge.waffle.io/dynamisdao/dynamisapp.svg?label=ready&title=Ready)](http://waffle.io/dynamisdao/dynamisapp)
+
 [Installation details is here](INSTALL.md).
 
 [Backend API documentation is here](http://docs.dynamis1.apiary.io).
