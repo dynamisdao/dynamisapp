@@ -3,7 +3,6 @@ FROM ubuntu:14.04
 ENV PROJECT_DIR=/var/www/Dynamisapp \
     GUNICORN_BIND=0.0.0.0:8000 \
     DJANGO_SECRET_KEY='this-is-not-a-real-secret-key-do-not-use-me' \
-#    DJANGO_EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend' \
     DJANGO_DEBUG='True' \
     DJANGO_DEBUG_TOOLBAR_ENABLED='True' \
     DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend \
