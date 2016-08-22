@@ -1,7 +1,11 @@
 import os
 import excavator as env
+import dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))  # Local overrides (not tracked)
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env_defaults'))  # Development defaults (tracked)
 
 SECRET_KEY = env.get('DJANGO_SECRET_KEY', required=True)
 
