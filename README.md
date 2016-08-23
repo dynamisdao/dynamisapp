@@ -9,7 +9,7 @@
 
 [Django configuration help is here](DJANGO_HELP.md).
 
-[WIKI is here](https://github.com/dynamisdao/dynamisapp/wiki)
+[WIKI is here](https://github.com/dynamisdao/dynamisapp/wiki/Dynamis-WIKI).
 
 ## Deployment scheme
 ![deployment scheme](https://s4.postimg.org/gdghow8rh/dynamis_deployment_scheme.png)
