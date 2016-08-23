@@ -13,7 +13,7 @@ def factories(transactional_db):
     import factory
 
     from factories.accounts import (  # NOQA
-        UserFactory,
+        UserFactory, AccountConfigFactory
     )
     from factories.policy import (  # NOQA
         PolicyApplicationFactory,

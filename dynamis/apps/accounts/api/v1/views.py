@@ -7,11 +7,16 @@ from rest_framework import (
     generics,
     permissions,
 )
+from rest_framework import mixins
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import GenericViewSet
 
+from dynamis.apps.accounts.api.v1.filters import UserFilterBackend
+from dynamis.apps.accounts.models import AccountConfig
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
-)
+    AccountConfigSerializer)
 
 
 class AccountCreationAPIView(generics.CreateAPIView):
@@ -32,3 +37,17 @@ class ManualKeybaseVerificationView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class AccountConfigViewSet(mixins.RetrieveModelMixin,
+                           mixins.UpdateModelMixin,
+                           GenericViewSet):
+
+    queryset = AccountConfig.objects.all()
+    filter_backends = (UserFilterBackend,)
+    permission_classes = [IsAuthenticated]
+    serializer_class = AccountConfigSerializer
+    lookup_field = 'user__keybase_username'
+
+    class Meta:
+        model = AccountConfig

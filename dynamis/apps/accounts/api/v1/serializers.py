@@ -5,6 +5,7 @@ from django.core import signing
 
 from rest_framework import serializers
 
+from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.identity import get_provider
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
@@ -39,6 +40,7 @@ class AccountCreationSerializer(serializers.Serializer):
             email=validated_data['email'],
             password=validated_data['password1'],
         )
+        AccountConfig.objects.create(user=user)
         user.send_verification_email()
         return user
 
@@ -85,3 +87,9 @@ class VerifyKeybaseSerializer(serializers.Serializer):
         instance.keybase_username = validated_data['keybase_username']
         instance.save()
         return instance
+
+
+class AccountConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountConfig
+        fields = ('rpc_node_host',)

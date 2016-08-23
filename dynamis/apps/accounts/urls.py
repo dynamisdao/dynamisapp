@@ -7,6 +7,9 @@ from authtools.views import (
     PasswordResetDoneView,
     PasswordResetConfirmAndLoginView,
 )
+from rest_framework.routers import DefaultRouter
+
+from dynamis.apps.accounts.api.v1.views import AccountConfigViewSet
 from .views import (
     KeybaseVerificationView,
     UserDashboardView,
@@ -54,3 +57,7 @@ urlpatterns = [
         name='verify-email'),
     url(r'^verify-keybase/', KeybaseVerificationView.as_view(), name='verify-keybase')
 ]
+
+router = DefaultRouter()
+router.register(r'config', AccountConfigViewSet, base_name='account-config')
+urlpatterns += router.urls
