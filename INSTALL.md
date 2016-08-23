@@ -43,6 +43,8 @@ pip install -r requirements-dev.txt
 ### Create migrations
 ```bash
 python manage.py makemigrations
+
+# Will populate your DB (see DB settings in your .env file)
 python manage.py migrate
 ```
 
