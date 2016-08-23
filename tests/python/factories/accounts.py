@@ -1,6 +1,6 @@
 import factory
 
-from dynamis.apps.accounts.models import User
+from dynamis.apps.accounts.models import User, AccountConfig
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -10,3 +10,11 @@ class UserFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+class AccountConfigFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory('factories.accounts.UserFactory')
+
+    class Meta:
+        model = AccountConfig
+
