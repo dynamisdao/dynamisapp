@@ -3,11 +3,13 @@
 
 [![Stories in Ready](https://badge.waffle.io/dynamisdao/dynamisapp.svg?label=ready&title=Ready)](http://waffle.io/dynamisdao/dynamisapp)
 
-[Installation details is here](INSTALL.md).
+[Installation details are here](INSTALL.md).
 
 [Backend API documentation is here](http://docs.dynamis1.apiary.io).
 
 [Django configuration help is here](DJANGO_HELP.md).
+
+[WIKI is here](https://github.com/dynamisdao/dynamisapp/wiki)
 
 ## Deployment scheme
 ![deployment scheme](https://s4.postimg.org/gdghow8rh/dynamis_deployment_scheme.png)
