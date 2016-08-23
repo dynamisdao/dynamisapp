@@ -36,8 +36,10 @@ psql -d dynamis
 sudo pip install virtualenv
 virtualenv venv
 
+source venv/bin/active
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
+deactivate
 ```
 
 ### Create migrations
