@@ -1,15 +1,22 @@
 {% extends "layout.html" %}
 {% load react_renderer %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
 <h1>Assessor Dashboard</h1>
 <section>
   <h3>Previous Assessments</h3>
+
   List of previous Assessments is here...
+  {# TODO: #}
+  {# render_table previous-assessments-table #}
 
   <h3>Policies</h3>
   Interface for Assessing Policies is here. 
+
   List of policies must go here...
+  {# TODO: #}
+  {# render_table under-review-policies #}
 
   Filling out the form.
   Betting tokens.
