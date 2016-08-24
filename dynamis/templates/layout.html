@@ -11,14 +11,17 @@
           {% if user.is_admin %}
             <li><a href="{% url 'admin:site-index' %}">Admin</a></li>
           {% endif %}
+
           <li><a href="{% url 'my-policy' %}">My policy</a></li>
           <li><a href="">Make a Payment</a></li>
           <li><a href="">Open a Claim</a></li>
-          <li><a href="">Assessor Dashboard</a></li>
+
+          {% if user.is_risk_assessor %}
+            <li><a href="{% url 'assessor-dashboard' %}">Assessor Dashboard</a></li>
+          {% endif %}
 
           <li><a href="{% url 'user-profile' %}">Account</a></li>
           <li><a href="{% url 'wallet' %}"><i class="material-icons left">account_balance</i>Wallet</a></li>
-
           <li><a href="{% url 'logout' %}">Logout</a></li>
         {% else %}
           <li><a href="{% url 'login' %}">Login</a></li>

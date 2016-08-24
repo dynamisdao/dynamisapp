@@ -36,6 +36,8 @@ class KeybaseVerificationView(LoginRequired, TemplateView):
 class UserDashboardView(LoginRequired, TemplateView):
     template_name = "accounts/user_dashboard.html"
 
+class AssessorDashboardView(LoginRequired, TemplateView):
+    template_name = "accounts/assessor_dashboard.html"
 
 class MyPolicyView(LoginRequired, TemplateView):
     template_name = "accounts/my_policy.html"

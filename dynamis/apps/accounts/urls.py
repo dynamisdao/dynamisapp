@@ -14,6 +14,7 @@ from .views import (
     KeybaseVerificationView,
     UserDashboardView,
     MyPolicyView,
+    AssessorDashboardView,
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView,
@@ -55,7 +56,9 @@ urlpatterns = [
     url(
         r'^verify-email/(?P<activation_key>[-:\w]+)/$', VerifyEmailView.as_view(),
         name='verify-email'),
-    url(r'^verify-keybase/', KeybaseVerificationView.as_view(), name='verify-keybase')
+    url(r'^verify-keybase/', KeybaseVerificationView.as_view(), name='verify-keybase'),
+
+    url(r'^assessor-dashboard/$', AssessorDashboardView.as_view(), name='assessor-dashboard')
 ]
 
 router = DefaultRouter()
