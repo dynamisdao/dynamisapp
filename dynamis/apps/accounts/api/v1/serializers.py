@@ -10,7 +10,6 @@ from dynamis.apps.identity import get_provider
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
 
-
 User = get_user_model()
 
 
@@ -93,3 +92,60 @@ class AccountConfigSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountConfig
         fields = ('rpc_node_host',)
+
+
+class AccountShortSerializer(serializers.ModelSerializer):
+    """
+    used for user actions
+    """
+    class Meta:
+        model = User
+        fields = ('keybase_username',
+                  'email')
+
+    def validate(self, attrs):
+        if 'email' in attrs:
+            self.instance.verified_at = None
+        return super(AccountShortSerializer, self).validate(attrs)
+
+
+class AccountDetailSerializer(serializers.ModelSerializer):
+    """
+    used for admin actions
+    """
+    staff = serializers.BooleanField(source='is_staff')
+    superuser = serializers.BooleanField(source='is_superuser')
+    active = serializers.BooleanField(source='is_active')
+    risk_assessor = serializers.BooleanField(source='is_risk_assessor')
+    email_verified = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('keybase_username',
+                  'email',
+                  'date_joined',
+                  'last_login',
+                  'verified_at',
+                  'superuser',
+                  'staff',
+                  'active',
+                  'risk_assessor',
+                  'email_verified',
+                  'id'
+                  )
+        read_only_fields = ('id',
+                            'date_joined',
+                            'last_login')
+
+    def get_email_verified(self, instance):
+        if instance.verified_at:
+            return True
+        return False
+
+
+class AccountListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('keybase_username',
+                  'email',
+                  'id')

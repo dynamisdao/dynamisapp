@@ -5,9 +5,11 @@ HOST: http://http://52.208.209.130:8000
 
 This is a Dynamis API description. 
 
-## Create new Account [/api/v1/accounts/account-create]
+## Accounts [/api/v1/accounts]
 
 ### Create new Account [POST]
+
+TODO: this method is not implemented yet
 
 Create new account by calling this method. As a side-effect will send user a verification e-mail.
 
@@ -21,9 +23,169 @@ Create new account by calling this method. As a side-effect will send user a ver
         
 + Response 200
 
-## Verify Keybase Account [/api/v1/accounts/verify-keybase]
+### Get all Account list [GET]
+
+TODO: this method is not implemented yet
+
+Get list of all account IDs. 
+
++ Response 200
+    + Body
+
+            {
+                "accounts": 
+                [
+                    "231313231",
+                    "231421843",
+                    "894898989"
+                ]
+            }
+
+## Account [/api/v1/account/{accountid}]
+
+### Update Account [PUT]
+
+TODO: this method is not implemented yet.
+
+Change account parameters (email, keybase_username)
+
++ Parameters
+    + accountid (number) - ID of an account
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "email": "xxx@mail.com",
+                "keybase_username": "something",
+                
+                // only if admin is asking:
+                "email_verified": true,
+                "keybase_username": "",
+                "active": true,
+                "superuser": true,
+                "staff": true,
+                "risk_assessor": true,
+                
+                // these can't be set
+                // "date_joined": "",
+                // "last_login": ""
+            }
+
+### Get Account [GET]
+
+TODO: this method is not implemented yet
+
++ Parameters
+    + accountid (number) - ID of an account
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "email": "xxx@mail.com",
+                "keybase_username": "something",
+
+                // only if admin is asking:
+                "email_verified": true,
+                "keybase_username": "",
+                "active": true,
+                "superuser": true,
+                "staff": true,
+                "risk_assessor": true,
+                "date_joined": "",
+                "last_login": ""
+            }
+            
+### Update Settings [PUT /api/v1/account/{accountid}/settings]
+
+TODO: this method is not implemented yet.
+
+The settings is some params that user has set. For example: view color or list sort type. 
+
++ Request
+    + Headers
+    
+            Authorization: Digest
+        
++ Request (application/json)
+
+        {
+            "eth_node_host": "http://52.16.72.86:8545",
+        }
+        
++ Response 200
+
+### Get Settings [GET /api/v1/account/{accountid}/settings]
+
+TODO: this method is not implemented yet.
+
+The settings is some params that user has set. For example: view color or list sort type. 
+
++ Response 200
+
+            {
+                "eth_node_host": "http://52.16.72.86:8545"
+            }         
+
+### Verify Keybase [PUT /api/v1/account/{accountid}/keybase]
+
+TODO: this method is not implemented yet.
+
+Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
+That is to make sure that valid keybase account is connected with current Dynamis user. 
+
++ Request
+    + Headers
+    
+            Authorization: Digest
+        
++ Request (application/json)
+
+        {
+            "signed_message": "123123123123cxxfsq24390dXFasdfj234",
+            "keybase_username": "tonykent"
+        }
+        
++ Response 200
+
+### Is Keybase Verified [GET /api/v1/account/{accountid}/keybase]
+
+TODO: this method is not implemented yet.
+
+Is keybase account linked and OK?
+        
++ Response 200
+
+            {
+                "keybase_verified": true
+            }
+
+## DEPRECATED: Create new Account [/api/v1/accounts/account-create]
+
+### Create new Account [POST]
+
+WARNING: this is DEPRECETATED method and will be removed soon!
+
+Create new account by calling this method. As a side-effect will send user a verification e-mail.
+
++ Request (application/json)
+
+        {
+            "email": "sample@email.com",
+            "password1": "123456",
+            "password2": "123456"
+        }
+        
++ Response 200
+
+## DEPRECATED: Verify Keybase Account [/api/v1/accounts/verify-keybase]
 
 ### Verify Keybase [POST]
+
+WARNING: this is DEPRECETATED method and will be removed soon!
 
 Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
 That is to make sure that valid keybase account is connected with current Dynamis user. 
@@ -43,30 +205,13 @@ That is to make sure that valid keybase account is connected with current Dynami
 + Response 200
 
         
-## Account [/api/v1/account/{accountid}]
-
-### Get Account [GET]
-
-TODO: this method is not implemented yet
-
-+ Parameters
-    + accountid (number) - ID of an account
-
-+ Response 200 (application/json)
-
-    + Body
-
-            {
-            }
-            
-
-## Policies [/api/v1/application/policies/{policyid}/]
+## DEPRECATED: Policies [/api/v1/application/policies/{policyid}/]
 
 ### Get Policy [GET]
 
 Get the policy data.
 
-In insurance, the insurance policy is a contract (generally a standard form contract) between the insurer and the insured, known as the policyholder, which determines the claims which the insurer is legally required to pay. In exchange for an initial payment, known as the premium, the insurer promises to pay for loss caused by perils covered under the policy language.
+In insurance, the insurance **policy** is a contract (generally a standard form contract) between the insurer and the insured, known as the policyholder, which determines the claims which the insurer is legally required to pay. In exchange for an initial payment, known as the premium, the insurer promises to pay for loss caused by perils covered under the policy language.
 
 Insurance contracts are designed to meet specific needs and thus have many features not found in many other types of contracts. Since insurance policies are standard forms, they feature boilerplate language which is similar across a wide variety of different types of insurance policies.
 
@@ -201,7 +346,7 @@ Update the policy.
 
 
 
-## Application [/api/v1/application/policies/{policyid}/submit]
+## DEPRECATED: Application [/api/v1/application/policies/{policyid}/submit]
 
 ### Submit a Policy Application [POST]
 
@@ -218,7 +363,7 @@ After all data is entered - user can submit a policy application. The peers will
 + Response 200
 
 
-## Upload File [/api/v1/application/policies/{policyid}/upload-file]
+## DEPRECATED: Upload File [/api/v1/application/policies/{policyid}/upload-file]
 
 ### Upload File to Policy [POST]
 
@@ -235,11 +380,11 @@ Attach the file to the application. Will uplad it to IPFS.
         
 + Response 200
 
-## Application Items [/api/v1/application/application-items]
+## DEPRECATED: Application Items [/api/v1/application/application-items]
 
 ### Get all Application Items [GET]
 
-Get list of what items still need the review (by you).
+Get list of items that need to be reviewed (by you).
 
 + Response 200
     + Body
@@ -314,7 +459,7 @@ Get list of what items still need the review (by you).
                 ]
             }
 
-## Peer Review History [/api/v1/application/peer-review-history]
+## DEPRECATED: Peer Review History [/api/v1/application/peer-review-history]
 
 ### Get Peer Review History [GET]
 
@@ -353,7 +498,7 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
             }
 
 
-## Submit Peer Review [/api/v1/application/application-items/{applicationid}/submit-peer-review]
+## DEPRECATED: Submit Peer Review [/api/v1/application/application-items/{applicationid}/submit-peer-review]
 
 ### Submit Peer Review [POST]
 
