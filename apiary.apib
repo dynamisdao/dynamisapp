@@ -254,6 +254,29 @@ Get list of items that need to be reviewed (by me).
                 ]
             }
 
+### Submit Peer Review [POST /api/v1/accounts/review-items/{accountid}]
+
+After the Peer has reviewed some parts of an application - he can set **Verify/Falsify/Can't Tell**. 
+
+Please see [screenshot here](https://s4.postimg.org/47engihul/Screen_Shot_2016_08_17_at_19_05_14.png).
+
+Please see [another screenshot here](https://s3.postimg.org/a501ucv83/Screen_Shot_2016_08_17_at_19_07_10.png).
+
+That creates the message ```{"task_hash":"things","result":"no"}``` (for example) that he needs then to sign.
+
++ Parameters
+    + accountid (number) - ID of an account
+
++ Request (application/json)
+    + Body
+
+            {
+                "task_id": "4",
+                "signed_message": "4234234jkfjsdlkfaj"
+            }
+        
++ Response 200
+
 ### Get Review History [GET /api/v1/accounts/review-history/{accountid}]
 
 TODO: this method is not implemented yet.
