@@ -23,7 +23,7 @@ Create new account by calling this method. As a side-effect will send user a ver
         
 + Response 200
 
-### Get all Account list [GET]
+### Get all Accounts [GET]
 
 TODO: this method is not implemented yet
 
@@ -105,6 +105,9 @@ TODO: this method is not implemented yet.
 
 The settings is some params that user has set. For example: view color or list sort type. 
 
++ Parameters
+    + accountid (number) - ID of an account
+    
 + Request
     + Headers
     
@@ -124,6 +127,9 @@ TODO: this method is not implemented yet.
 
 The settings is some params that user has set. For example: view color or list sort type. 
 
++ Parameters
+    + accountid (number) - ID of an account
+    
 + Response 200
 
             {
@@ -137,6 +143,9 @@ TODO: this method is not implemented yet.
 Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
 That is to make sure that valid keybase account is connected with current Dynamis user. 
 
++ Parameters
+    + accountid (number) - ID of an account
+    
 + Request
     + Headers
     
@@ -157,6 +166,9 @@ TODO: this method is not implemented yet.
 
 Is keybase account linked and OK?
         
++ Parameters
+    + accountid (number) - ID of an account
+
 + Response 200
 
             {
@@ -204,8 +216,43 @@ That is to make sure that valid keybase account is connected with current Dynami
         
 + Response 200
 
-        
-## DEPRECATED: Policies [/api/v1/application/policies/{policyid}/]
+## Policies [/api/v1/policies]
+
+### Create new Policy [POST]
+
+TODO: this method is not implemented yet. 
+Create empty policy for **userid**.
+
++ Request
+    + Body
+    
+            {
+            }
+            
++ Response 200
+
+### Get all Policies list [GET]
+TODO: this method is not implemented yet. 
+
+Get list of all policy IDs. 
+
+If **admin** - get all policies for all users.
+In **not admin** - get all policies for current user (me) only.
+
++ Response 200
+    + Body
+
+            {
+                "policies": 
+                [
+                    "1",
+                    "3",
+                    "4"
+                ]
+            }
+
+
+## Policy [/api/v1/policies/{policyid}]
 
 ### Get Policy [GET]
 
@@ -346,6 +393,175 @@ Update the policy.
 
 
 
+
+## DEPRECATED: Policies [/api/v1/application/policies/{policyid}/]
+
+### Get Policy [GET]
+
+Get the policy data.
+
+In insurance, the insurance **policy** is a contract (generally a standard form contract) between the insurer and the insured, known as the policyholder, which determines the claims which the insurer is legally required to pay. In exchange for an initial payment, known as the premium, the insurer promises to pay for loss caused by perils covered under the policy language.
+
+Insurance contracts are designed to meet specific needs and thus have many features not found in many other types of contracts. Since insurance policies are standard forms, they feature boilerplate language which is similar across a wide variety of different types of insurance policies.
+
++ Parameters
+    + policyid (number) - ID of a policy (global for all users)
+
++ Response 200 (application/json)
+    
+        {
+            "id": 1,
+            "data":
+            {
+                "public_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: KEY BLOCK-----",
+                "signed_message": "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA512\n\n{\"identity\":{\"verification_method\":\"keybase\",\"verificati`-----END PGP SIGNATURE-----",
+                "public_key_identity": {
+                    "username": "tonykent"
+                },
+                "public_key_provider": "keybase",
+                "policy_data": {
+                    "requestedPremiumAmount": "46",
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {
+                            "username": "tonykent",
+                            "proofs": [
+                                {
+                                    "proof_id": "6bd6da447e3d1b0b4a17c210",
+                                    "proof_url": "https://twitter.com/anthonyakentiev/status/763656278963085312",
+                                    "presentation_tag": "tweet",
+                                    "nametag": "anthonyakentiev",
+                                    "human_url": "https://twitter.com/anthonyakentiev/status/763656278963085312",
+                                    "state": 1,
+                                    "proof_type": "twitter",
+                                    "service_url": "https://twitter.com/anthonyakentiev",
+                                    "sig_id": "476015a934a9b5878b7572ad49853e77e331c36eec76dd836bb78cd45ff3e8d90f",
+                                    "presentation_group": "twitter"
+                                },
+                                {
+                                    "proof_id": "e26f23f128e6f92ed7955910",
+                                    "proof_url": "https://gist.github.com/49e0adf02231361735edd4937d43dc56",
+                                    "presentation_tag": "gist",
+                                    "nametag": "anthonyakentiev",
+                                    "human_url": "https://gist.github.com/49e0adf02231361735edd4937d43dc56",
+                                    "state": 1,
+                                    "proof_type": "github",
+                                    "service_url": "https://github.com/anthonyakentiev",
+                                    "sig_id": "5e82869934b8693128f8f4f3023467a9ba7529fc509ae35b364d297ff9982c0c0f",
+                                    "presentation_group": "github"
+                                }
+                            ]
+                        }
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "startYear": "2012",
+                                "company": "Sample",
+                                "startMonth": "6",
+                                "currentJob": true,
+                                "endMonth": 7,
+                                "state": "READ_ONLY",
+                                "endYear": 2016,
+                                "notes": "* Job Title:\n* Reason for leaving:\nProgrammer."
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+        
+ 
+### Update Policy [PUT]
+
+Update the policy.
+
++ Request (application/json)
+    + Body
+
+            {
+                "data": 
+                {
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {}
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "state": "READ_ONLY",
+                                "notes": "* Job Title:\n* ....",
+                                "currentJob": true,
+                                "startMonth": "3",
+                                "endMonth": 7,
+                                "endYear": 2016,
+                                "startYear": "2015"
+                            }
+                        ]
+                    },
+                    "requestedPremiumAmount": 250
+                }
+            }
+        
++ Response 200 (application/json)
+    + Body
+    
+            {
+                "id": 1, 
+                "data": {
+                    "requestedPremiumAmount": 250,
+                    "identity": {
+                        "verification_method": "keybase",
+                        "verification_data": {}
+                    },
+                    "employmentHistory": {
+                        "jobs": [
+                            {
+                                "files": [],
+                                "startYear": "2015",
+                                "notes": "* Job Title:\n* ....",
+                                "startMonth": "3",
+                                "currentJob": true,
+                                "endMonth": 7,
+                                "state": "READ_ONLY",
+                                "endYear": 2016
+                            }
+                        ]
+                    }
+                }
+            }
+
+## Application [/api/v1/policies/signature/{policyid}]
+
+### Sign a Policy Application [POST]
+
+After all data is entered - user can submit a policy application. The peers will then review it. 
+
++ Request (application/json)
+    + Body
+
+            {
+                "keybase_username": "tonykent",
+                "signed_message": "fjdskajflakjdfkweu2434"
+            }
+        
++ Response 200
+
+### Get a Policy Application Signature [GET]
+
+Get signature.
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "keybase_username": "tonykent",
+                "signed_message": "fjdskajflakjdfkweu2434"
+            }
+        
+        
 ## DEPRECATED: Application [/api/v1/application/policies/{policyid}/submit]
 
 ### Submit a Policy Application [POST]
