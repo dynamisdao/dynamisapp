@@ -318,47 +318,6 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
             }
 
 
-## DEPRECATED: Create new Account [/api/v1/accounts/account-create]
-
-### Create new Account [POST]
-
-WARNING: this is DEPRECETATED method and will be removed soon!
-
-Create new account by calling this method. As a side-effect will send user a verification e-mail.
-
-+ Request (application/json)
-
-        {
-            "email": "sample@email.com",
-            "password1": "123456",
-            "password2": "123456"
-        }
-        
-+ Response 200
-
-## DEPRECATED: Verify Keybase Account [/api/v1/accounts/verify-keybase]
-
-### Verify Keybase [POST]
-
-WARNING: this is DEPRECETATED method and will be removed soon!
-
-Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
-That is to make sure that valid keybase account is connected with current Dynamis user. 
-
-+ Request
-    + Headers
-    
-            Authorization: Digest
-        
-+ Request (application/json)
-
-        {
-            "signed_message": "123123123123cxxfsq24390dXFasdfj234",
-            "keybase_username": "tonykent"
-        }
-        
-+ Response 200
-
 ## Policies [/api/v1/policies]
 
 ### Create new Policy [POST]
@@ -586,6 +545,51 @@ Attach the file to the application. Will uplad it to IPFS.
 + Response 200
 
 
+
+
+
+
+
+## DEPRECATED: Create new Account [/api/v1/accounts/account-create]
+
+### Create new Account [POST]
+
+WARNING: this is DEPRECETATED method and will be removed soon!
+
+Create new account by calling this method. As a side-effect will send user a verification e-mail.
+
++ Request (application/json)
+
+        {
+            "email": "sample@email.com",
+            "password1": "123456",
+            "password2": "123456"
+        }
+        
++ Response 200
+
+## DEPRECATED: Verify Keybase Account [/api/v1/accounts/verify-keybase]
+
+### Verify Keybase [POST]
+
+WARNING: this is DEPRECETATED method and will be removed soon!
+
+Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
+That is to make sure that valid keybase account is connected with current Dynamis user. 
+
++ Request
+    + Headers
+    
+            Authorization: Digest
+        
++ Request (application/json)
+
+        {
+            "signed_message": "123123123123cxxfsq24390dXFasdfj234",
+            "keybase_username": "tonykent"
+        }
+        
++ Response 200
 
 
 
