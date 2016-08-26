@@ -1,13 +1,13 @@
-AFORMAT: 1A
+FORMAT: 1A
 HOST: http://http://52.208.209.130:8000
 
 # Dynamis Backend API
 
 This is a Dynamis API description. 
 
-## Accounts [/api/v1/accounts]
+## Accounts [/api/v1/accounts/{accountid}]
 
-### Create new Account [POST]
+### Create new Account [POST /api/v1/accounts]
 
 TODO: this method is not implemented yet
 
@@ -23,7 +23,7 @@ Create new account by calling this method. As a side-effect will send user a ver
         
 + Response 200
 
-### Get all Accounts [GET]
+### Get all Accounts [GET /api/v1/accounts]
 
 TODO: this method is not implemented yet
 
@@ -41,9 +41,7 @@ Get list of all account IDs.
                 ]
             }
 
-## Account [/api/v1/accounts/{accountid}]
-
-### Update Account [PUT]
+### Update Account [PUT /api/v1/accounts/{accountid}]
 
 TODO: this method is not implemented yet.
 
@@ -72,7 +70,7 @@ Change account parameters (email, keybase_username)
                 // "last_login": ""
             }
 
-### Get Account [GET]
+### Get Account [GET /api/v1/accounts/{accountid}]
 
 TODO: this method is not implemented yet
 
@@ -316,9 +314,9 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
             }
 
 
-## Policies [/api/v1/policies]
+## Policies [/api/v1/policies/{policyid}]
 
-### Create new Policy [POST]
+### Create new Policy [POST /api/v1/policies]
 
 TODO: this method is not implemented yet. 
 Create empty policy for **userid**.
@@ -331,7 +329,7 @@ Create empty policy for **userid**.
             
 + Response 200
 
-### Get all Policies list [GET]
+### Get all Policies list [GET /api/v1/policies]
 TODO: this method is not implemented yet. 
 
 Get list of all policy IDs. 
@@ -351,10 +349,7 @@ In **not admin** - get all policies for current user (me) only.
                 ]
             }
 
-
-## Policy [/api/v1/policies/{policyid}]
-
-### Get Policy [GET]
+### Get Policy [GET /api/v1/policies/{policyid}]
 
 TODO: this method is not implemented yet.
 
@@ -433,7 +428,7 @@ Insurance contracts are designed to meet specific needs and thus have many featu
         }
         
  
-### Update Policy [PUT]
+### Update Policy [PUT /api/v1/policies/{policyid}]
 
 TODO: this method is not implemented yet.
 
