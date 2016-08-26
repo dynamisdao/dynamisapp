@@ -62,7 +62,6 @@ Change account parameters (email, keybase_username)
                 
                 // only if admin is asking:
                 "email_verified": true,
-                "keybase_username": "",
                 "active": true,
                 "superuser": true,
                 "staff": true,
@@ -143,14 +142,11 @@ TODO: this method is not implemented yet.
 Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
 That is to make sure that valid keybase account is connected with current Dynamis user. 
 
+If signature is bad - return 404.
+
 + Parameters
     + accountid (number) - ID of an account
     
-+ Request
-    + Headers
-    
-            Authorization: Digest
-        
 + Request (application/json)
 
         {
@@ -503,6 +499,8 @@ TODO: this method is not implemented yet.
 
 After all data is entered - user can submit a policy application. The peers will then review it. 
 
+If signature is bad -> return 404.
+
 + Request (application/json)
     + Body
 
@@ -512,6 +510,7 @@ After all data is entered - user can submit a policy application. The peers will
             }
         
 + Response 200
+
 
 ### Get a Policy Application Signature [GET /api/v1/policies/signature/{policyid}]
 
@@ -524,7 +523,10 @@ Get signature.
 
             {
                 "keybase_username": "tonykent",
-                "signed_message": "fjdskajflakjdfkweu2434"
+                "signed_message": "fjdskajflakjdfkweu2434",
+                
+                // TODO: new field
+                "is_signed": true
             }
 
 ### Upload File to Policy [POST /api/v1/policies/upload-file/{policyid}]
