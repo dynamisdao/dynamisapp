@@ -175,6 +175,129 @@ Is keybase account linked and OK?
                 "keybase_verified": true
             }
 
+
+## Get Items for Review [/api/v1/accounts/review-items/{accountid}]
+
+### Get Items for Review [GET]
+
+TODO: this method is not implemented yet.
+
+Get list of items that need to be reviewed (by me).
+
++ Response 200
+    + Body
+    
+            {
+                "count": 4, 
+                "next": null, 
+                "previous": null, 
+                "results": [
+                    {
+                        "id": 4,
+                        "type": "employment-claim",
+                        "data": {
+                            "files": [],
+                            "startYear": "2012",
+                            "company": "Some Company",
+                            "startMonth": "4",
+                            "currentJob": true,
+                            "endMonth": 7,
+                            "state": "READ_ONLY",
+                            "endYear": 2016,
+                            "notes": "* Job Title:\n* ..."
+                        }
+                    },
+                    {
+                        "id": 5,
+                        "type": "identity",
+                        "data": {
+                            "proof_id": "82a65cae07098baf1bbc3010",
+                            "proof_url": "https://twitter.com/joshuad31/status/715338474593714176",
+                            "presentation_tag": "tweet",
+                            "nametag": "joshuad31",
+                            "human_url": "https://twitter.com/joshuad31/status/715338474593714176",
+                            "state": 1,
+                            "proof_type": "twitter",
+                            "service_url": "https://twitter.com/joshuad31",
+                            "sig_id": "4736793cfd5c53dc2991bd3d1e6c03f8228698aa5d83bb694e90cae358981aeb0f",
+                            "presentation_group": "twitter"
+                        }
+                    },
+                    {
+                        "id": 6,
+                        "type": "identity",
+                        "data": {
+                            "proof_id": "89c8fe08f77974ea6c2a4b10",
+                            "proof_url": "https://keybase.io/joshuad31/sigchain#4f1c7845f623eaeecc9c143525b2aead1fe099ded23a1d24d18f58761d61e5660f",
+                            "presentation_tag": "dns",
+                            "nametag": "dynamisapp.com",
+                            "human_url": "dns://dynamisapp.com",
+                            "state": 1,
+                            "proof_type": "dns",
+                            "service_url": "http://dynamisapp.com",
+                            "sig_id": "4f1c7845f623eaeecc9c143525b2aead1fe099ded23a1d24d18f58761d61e5660f",
+                            "presentation_group": "dynamisapp.com"
+                        }
+                    },
+                    {
+                        "id": 7,
+                        "type": "employment-claim",
+                        "data": {
+                            "files": [],
+                            "startYear": "2012",
+                            "company": "International Paper",
+                            "startMonth": "0",
+                            "currentJob": false,
+                            "endMonth": "2",
+                            "state": "READ_ONLY",
+                            "endYear": "2016",
+                            "notes": "* Job Title: Voice Engineer\n* Reason for leaving: Start working on Dynamis\n\nIn order to verify my employment at International paper you can contact Lisa Harmon who was my boss. They can be reached via 817-751-1513. You can verify their position with the company by their linkedin profile located at: https://www.linkedin.com/in/lisa-harmon-2991a53b."
+                        }
+                    }
+                ]
+            }
+
+## Get Review History [/api/v1/accounts/review-history/{accountid}]
+
+### Get Review History [GET]
+
+TODO: this method is not implemented yet.
+
+Get the list of what peers have reviewed already (identity, employment-claim, etc). 
+
++ Response 200
+    + Body
+    
+            {
+                "count": 1, 
+                "next": null, 
+                "previous": null, 
+                "results": [
+                    {
+                        "id": 1,
+                        "application_item": {
+                            "id": 5,
+                            "type": "identity",
+                            "data": {
+                                "proof_id": "82a65cae07098baf1bbc3010",
+                                "proof_url": "https://twitter.com/joshuad31/status/715338474593714176",
+                                "presentation_tag": "tweet",
+                                "nametag": "joshuad31",
+                                "human_url": "https://twitter.com/joshuad31/status/715338474593714176",
+                                "state": 1,
+                                "proof_type": "twitter",
+                                "service_url": "https://twitter.com/joshuad31",
+                                "sig_id": "4736793cfd5c53dc2991bd3d1e6c03f8228698aa5d83bb694e90cae358981aeb0f",
+                                "presentation_group": "twitter"
+                            }
+                        },
+                        "user": 6,
+                        "data": "{\"policy_application\": {\"reason\": \"Good profile\", \"result\": 4, \"task_hash\": \"things\"}, \"public_key\": \"-----BEGIN PGP PUBLIC KEY BLOCK-----}"
+                    }
+                ]
+            }
+
+
 ## DEPRECATED: Create new Account [/api/v1/accounts/account-create]
 
 ### Create new Account [POST]
@@ -256,6 +379,8 @@ In **not admin** - get all policies for current user (me) only.
 
 ### Get Policy [GET]
 
+TODO: this method is not implemented yet.
+
 Get the policy data.
 
 In insurance, the insurance **policy** is a contract (generally a standard form contract) between the insurer and the insured, known as the policyholder, which determines the claims which the insurer is legally required to pay. In exchange for an initial payment, known as the premium, the insurer promises to pay for loss caused by perils covered under the policy language.
@@ -332,6 +457,8 @@ Insurance contracts are designed to meet specific needs and thus have many featu
         
  
 ### Update Policy [PUT]
+
+TODO: this method is not implemented yet.
 
 Update the policy.
 
@@ -533,9 +660,11 @@ Update the policy.
                 }
             }
 
-## Application [/api/v1/policies/signature/{policyid}]
+## Signature [/api/v1/policies/signature/{policyid}]
 
 ### Sign a Policy Application [POST]
+
+TODO: this method is not implemented yet.
 
 After all data is entered - user can submit a policy application. The peers will then review it. 
 
@@ -551,6 +680,8 @@ After all data is entered - user can submit a policy application. The peers will
 
 ### Get a Policy Application Signature [GET]
 
+TODO: this method is not implemented yet.
+
 Get signature.
 
 + Response 200 (application/json)
@@ -560,8 +691,27 @@ Get signature.
                 "keybase_username": "tonykent",
                 "signed_message": "fjdskajflakjdfkweu2434"
             }
+    
+## Upload File [/api/v1/policies/upload-file/{policyid}]
+
+### Upload File to Policy [POST]
+
+TODO: this method is not implemented yet.
+
+Attach the file to the application. Will uplad it to IPFS.
+
++ Request (application/json)
+    + Body
+
+            {
+                "filename": "file1.png",
+                "data_url": "data:image/png;base64,iVBORw0KGgoAAAANS...",
+                "mimetype": "image/png"
+            }
         
-        
++ Response 200
+
+
 ## DEPRECATED: Application [/api/v1/application/policies/{policyid}/submit]
 
 ### Submit a Policy Application [POST]
