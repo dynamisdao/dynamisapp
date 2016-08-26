@@ -171,7 +171,7 @@ Is keybase account linked and OK?
                 "keybase_verified": true
             }
 
-### Get Items for Review [GET /api/v1/accounts/review-items/{accountid}]
+### Get Items for Peer Review [GET /api/v1/accounts/review-items/{accountid}]
 
 TODO: this method is not implemented yet.
 
@@ -269,7 +269,9 @@ That creates the message ```{"task_hash":"things","result":"no"}``` (for example
     + Body
 
             {
+                // Pass Review Item ID here
                 "task_id": "4",
+                
                 "signed_message": "4234234jkfjsdlkfaj"
             }
         
