@@ -175,10 +175,7 @@ Is keybase account linked and OK?
                 "keybase_verified": true
             }
 
-
-## Get Items for Review [/api/v1/accounts/review-items/{accountid}]
-
-### Get Items for Review [GET]
+### Get Items for Review [GET /api/v1/accounts/review-items/{accountid}]
 
 TODO: this method is not implemented yet.
 
@@ -257,9 +254,7 @@ Get list of items that need to be reviewed (by me).
                 ]
             }
 
-## Get Review History [/api/v1/accounts/review-history/{accountid}]
-
-### Get Review History [GET]
+### Get Review History [GET /api/v1/accounts/review-history/{accountid}]
 
 TODO: this method is not implemented yet.
 
@@ -518,6 +513,54 @@ Update the policy.
                 }
             }
 
+### Sign a Policy [POST /api/v1/policies/signature/{policyid}]
+
+TODO: this method is not implemented yet.
+
+After all data is entered - user can submit a policy application. The peers will then review it. 
+
++ Request (application/json)
+    + Body
+
+            {
+                "keybase_username": "tonykent",
+                "signed_message": "fjdskajflakjdfkweu2434"
+            }
+        
++ Response 200
+
+### Get a Policy Application Signature [GET /api/v1/policies/signature/{policyid}]
+
+TODO: this method is not implemented yet.
+
+Get signature.
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "keybase_username": "tonykent",
+                "signed_message": "fjdskajflakjdfkweu2434"
+            }
+
+### Upload File to Policy [POST /api/v1/policies/upload-file/{policyid}]
+
+TODO: this method is not implemented yet.
+
+Attach the file to the application. Will uplad it to IPFS.
+
++ Request (application/json)
+    + Body
+
+            {
+                "filename": "file1.png",
+                "data_url": "data:image/png;base64,iVBORw0KGgoAAAANS...",
+                "mimetype": "image/png"
+            }
+        
++ Response 200
+
+
 
 
 
@@ -659,54 +702,6 @@ Update the policy.
                     }
                 }
             }
-
-### Sign a Policy [POST /api/v1/policies/signature/{policyid}]
-
-TODO: this method is not implemented yet.
-
-After all data is entered - user can submit a policy application. The peers will then review it. 
-
-+ Request (application/json)
-    + Body
-
-            {
-                "keybase_username": "tonykent",
-                "signed_message": "fjdskajflakjdfkweu2434"
-            }
-        
-+ Response 200
-
-### Get a Policy Application Signature [GET /api/v1/policies/signature/{policyid}]
-
-TODO: this method is not implemented yet.
-
-Get signature.
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "keybase_username": "tonykent",
-                "signed_message": "fjdskajflakjdfkweu2434"
-            }
-
-### Upload File to Policy [POST /api/v1/policies/upload-file/{policyid}]
-
-TODO: this method is not implemented yet.
-
-Attach the file to the application. Will uplad it to IPFS.
-
-+ Request (application/json)
-    + Body
-
-            {
-                "filename": "file1.png",
-                "data_url": "data:image/png;base64,iVBORw0KGgoAAAANS...",
-                "mimetype": "image/png"
-            }
-        
-+ Response 200
-
 
 ## DEPRECATED: Application [/api/v1/application/policies/{policyid}/submit]
 
