@@ -18,7 +18,6 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-
 urlpatterns = [
     url(
         r'^$', TemplateView.as_view(template_name='index.html'),
