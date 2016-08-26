@@ -1,24 +1,30 @@
 from django.contrib.auth import (
     authenticate,
     login,
-)
+    get_user_model)
 
 from rest_framework import (
     generics,
     permissions,
 )
 from rest_framework import mixins
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
 from dynamis.apps.accounts.api.v1.filters import UserFilterBackend
+from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
 from dynamis.apps.accounts.models import AccountConfig
+from dynamis.apps.accounts.permissions import AccountPermission
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
-    AccountConfigSerializer)
+    AccountConfigSerializer, AccountDetailSerializer)
 
 
+User = get_user_model()
+
+
+# TODO - deprecated
 class AccountCreationAPIView(generics.CreateAPIView):
     serializer_class = AccountCreationSerializer
 
@@ -42,7 +48,6 @@ class ManualKeybaseVerificationView(generics.UpdateAPIView):
 class AccountConfigViewSet(mixins.RetrieveModelMixin,
                            mixins.UpdateModelMixin,
                            GenericViewSet):
-
     queryset = AccountConfig.objects.all()
     filter_backends = (UserFilterBackend,)
     permission_classes = [IsAuthenticated]
@@ -51,3 +56,49 @@ class AccountConfigViewSet(mixins.RetrieveModelMixin,
 
     class Meta:
         model = AccountConfig
+
+
+class AccountViewSet(mixins.RetrieveModelMixin,
+                     mixins.ListModelMixin,
+                     mixins.CreateModelMixin,
+                     mixins.UpdateModelMixin,
+                     GenericViewSet):
+
+    permission_classes = [AccountPermission]
+    queryset = User.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        self.permission_classes = [IsAdminUser, IsAuthenticated]
+        self.check_permissions(request)
+        self.serializer_class = AccountListSerializer
+        return super(AccountViewSet, self).list(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        super(AccountViewSet, self).perform_create(serializer)
+        user = authenticate(
+            email=serializer.validated_data['email'],
+            password=serializer.validated_data['password1'],
+        )
+        login(self.request, user)
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = AccountCreationSerializer
+        return super(AccountViewSet, self).create(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.set_serializer_class_by_user(request.user)
+        return super(AccountViewSet, self).retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.set_serializer_class_by_user(request.user)
+        kwargs['partial'] = True
+        return super(AccountViewSet, self).update(request, *args, **kwargs)
+
+    def set_serializer_class_by_user(self, user):
+        if user.is_admin:
+            self.serializer_class = AccountDetailSerializer
+        else:
+            self.serializer_class = AccountShortSerializer
+
+    class Meta:
+        model = User
