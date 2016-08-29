@@ -1,6 +1,8 @@
 # Dynamis
 [ ![Codeship Status for dynamisdao/dynamisapp](https://codeship.com/projects/3abe4270-4901-0134-1120-52b63a9a4ec4/status?branch=master)](https://codeship.com/projects/169478)
 
+[![Heroku Build is here](https://heroku-badge.herokuapp.com/?app=desolate-dawn-77085)]
+
 [![Stories in Ready](https://badge.waffle.io/dynamisdao/dynamisapp.svg?label=ready&title=Ready)](http://waffle.io/dynamisdao/dynamisapp)
 
 [Installation details are here](INSTALL.md).
