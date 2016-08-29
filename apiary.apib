@@ -1,4 +1,4 @@
-FORMAT: 1A
+ingFORMAT: 1A
 HOST: http://http://52.208.209.130:8000
 
 # Dynamis Backend API
@@ -96,7 +96,7 @@ TODO: this method is not implemented yet
                 "last_login": ""
             }
             
-### Update Settings [PUT /api/v1/accounts/settings/{accountid}]
+### Update Settings [PUT /api/v1/accounts/{accountid}/settings]
 
 TODO: this method is not implemented yet.
 
@@ -118,7 +118,7 @@ The settings is some params that user has set. For example: view color or list s
         
 + Response 200
 
-### Get Settings [GET /api/v1/accounts/settings/{accountid}]
+### Get Settings [GET /api/v1/accounts/{accountid}/settings]
 
 TODO: this method is not implemented yet.
 
@@ -154,7 +154,7 @@ If signature is bad - return 404.
         
 + Response 200
 
-### Is Keybase Verified [GET /api/v1/accounts/keybase/{accountid}]
+### Is Keybase Verified [GET /api/v1/accounts/{accountid}/keybase]
 
 TODO: this method is not implemented yet.
 
@@ -169,7 +169,7 @@ Is keybase account linked and OK?
                 "keybase_verified": true
             }
 
-### Get Items for Peer Review [GET /api/v1/accounts/review-items/{accountid}]
+### Get Items for Peer Review [GET /api/v1/accounts/{accountid}/review-items]
 
 TODO: this method is not implemented yet.
 
@@ -248,7 +248,7 @@ Get list of items that need to be reviewed (by me).
                 ]
             }
 
-### Submit Peer Review [POST /api/v1/accounts/review-items/{accountid}]
+### Submit Peer Review [POST /api/v1/accounts/{accountid}/review-items]
 
 TODO: this method is not implemented yet.
 
@@ -275,7 +275,7 @@ That creates the message ```{"task_hash":"things","result":"no"}``` (for example
         
 + Response 200
 
-### Get Review History [GET /api/v1/accounts/review-history/{accountid}]
+### Get Review History [GET /api/v1/accounts/{accountid}/review-history]
 
 TODO: this method is not implemented yet.
 
@@ -490,7 +490,7 @@ Update the policy.
                 }
             }
 
-### Sign a Policy [POST /api/v1/policies/signature/{policyid}]
+### Sign a Policy [POST /api/v1/policies/{policyid}/signature]
 
 TODO: this method is not implemented yet.
 
@@ -509,7 +509,7 @@ If signature is bad -> return 404.
 + Response 200
 
 
-### Get a Policy Application Signature [GET /api/v1/policies/signature/{policyid}]
+### Get a Policy Application Signature [GET /api/v1/policies/{policyid}/signature]
 
 TODO: this method is not implemented yet.
 
@@ -526,7 +526,7 @@ Get signature.
                 "is_signed": true
             }
 
-### Upload File to Policy [POST /api/v1/policies/upload-file/{policyid}]
+### Upload File to Policy [POST /api/v1/policies/{policyid}/upload-file]
 
 TODO: this method is not implemented yet.
 
