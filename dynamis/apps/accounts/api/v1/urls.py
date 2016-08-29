@@ -5,7 +5,9 @@ from django.conf.urls import url
 from .views import (
     AccountCreationAPIView,
     ManualKeybaseVerificationView,
-    )
+    AccountConfigViewSet)
+
+action_get_put = {'get': 'retrieve', 'put': 'update'}
 
 urlpatterns = [
     # TODO - deprecated
@@ -19,4 +21,6 @@ urlpatterns = [
         ManualKeybaseVerificationView.as_view(),
         name="verify-keybase",
     ),
+    url(r'^(?P<user__keybase_username>\w+)/config/$', AccountConfigViewSet.as_view(action_get_put),
+        name='account-config-detail'),
 ]

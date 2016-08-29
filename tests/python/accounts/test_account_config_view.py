@@ -8,7 +8,7 @@ def test_get_account_config(user_webtest_client, api_client, factories):
     User.objects.update(keybase_username='test_keybase_username')
     account_config = factories.AccountConfigFactory(user=user_webtest_client.user,
                                                     rpc_node_host='http://127.0.0.1:1234')
-    url = reverse('account-config-detail', args=[account_config.user.keybase_username])
+    url = reverse('v1:account-config-detail', args=[account_config.user.keybase_username])
 
     page = api_client.get(url)
 
@@ -19,7 +19,7 @@ def test_get_account_config(user_webtest_client, api_client, factories):
 def test_deny_get_other_user_account_config(api_client, factories):
     other_user = factories.UserFactory(keybase_username='test_keybase_username')
     account_config = factories.AccountConfigFactory(user=other_user)
-    url = reverse('account-config-detail', args=[account_config.user.keybase_username])
+    url = reverse('v1:account-config-detail', args=[account_config.user.keybase_username])
 
     page = api_client.get(url)
 
@@ -31,7 +31,7 @@ def test_change_account_config(user_webtest_client, api_client, factories):
     new_rpc_node_host = 'http://52.16.72.86:8549'
 
     account_config = factories.AccountConfigFactory(user=user_webtest_client.user)
-    url = reverse('account-config-detail', args=[account_config.user.keybase_username])
+    url = reverse('v1:account-config-detail', args=[account_config.user.keybase_username])
 
     assert AccountConfig.objects.get().rpc_node_host == 'http://localhost:8545'
 
@@ -46,7 +46,7 @@ def test_deny_change_other_user_account_config(api_client, factories):
     other_user = factories.UserFactory(keybase_username='test_keybase_username')
 
     account_config = factories.AccountConfigFactory(user=other_user)
-    url = reverse('account-config-detail', args=[account_config.user.keybase_username])
+    url = reverse('v1:account-config-detail', args=[account_config.user.keybase_username])
 
     assert AccountConfig.objects.get().rpc_node_host == 'http://localhost:8545'
 
