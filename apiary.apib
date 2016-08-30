@@ -5,6 +5,27 @@ HOST: http://http://52.208.209.130:8000
 
 This is a Dynamis API description. 
 
+## Login [/api/v1/login]
+
+TODO: this method is not implemented yet.
+
+Log in user and get **sessionid** Cookie.
+
+### Login [POST /api/v1/login]
+
++ Request (application/json)
+
+        {
+            "email": "sample@email.com",
+            "password": "123456"
+        }
+        
++ Response 200
+    + Headers
+    
+            Cookies: sessionid
+
+
 ## Accounts [/api/v1/accounts/{accountid}]
 
 ### Create new Account [POST /api/v1/accounts]
@@ -108,11 +129,7 @@ The settings is some params that user has set. For example: view color or list s
 
 + Parameters
     + accountid (number) - ID of an account
-    
-+ Request
-    + Headers
-    
-            Authorization: Digest
+
         
 + Request (application/json)
 
@@ -580,11 +597,6 @@ WARNING: this is DEPRECETATED method and will be removed soon!
 Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
 That is to make sure that valid keybase account is connected with current Dynamis user. 
 
-+ Request
-    + Headers
-    
-            Authorization: Digest
-        
 + Request (application/json)
 
         {
