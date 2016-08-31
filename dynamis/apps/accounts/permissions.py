@@ -11,3 +11,11 @@ class AccountPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'POST' or request.user.is_authenticated():
             return True
+
+
+class IsAdminOrAccountOwnerPermission(permissions.BasePermission):
+    message = 'Access not allowed.'
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated() and (request.user.is_admin or obj.pk == request.user.id):
+            return True
