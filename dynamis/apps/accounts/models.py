@@ -12,6 +12,7 @@ from django.contrib.sites.models import Site
 class User(AbstractEmailUser):
     verified_at = models.DateTimeField(null=True, blank=True)
     keybase_username = models.CharField(max_length=16, blank=True)
+    is_keybase_verified = models.BooleanField(default=False)
 
     is_risk_assessor = models.BooleanField(
         default=False,

@@ -12,7 +12,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
 from dynamis.apps.accounts.api.v1.filters import UserFilterBackend
-from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
+from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer, \
+    IsKeybaseVerifiedSerializer
 from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
 from .serializers import (
@@ -46,11 +47,16 @@ class DEPR_ManualKeybaseVerificationView(generics.UpdateAPIView):
         return self.request.user
 
 
-class ManualKeybaseVerificationViewSet(mixins.UpdateModelMixin,
+class ManualKeybaseVerificationViewSet(mixins.RetrieveModelMixin,
+                                       mixins.UpdateModelMixin,
                                        GenericViewSet):
     queryset = User.objects.all()
     serializer_class = VerifyKeybaseSerializer
     permission_classes = (IsAdminOrAccountOwnerPermission,)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.serializer_class = IsKeybaseVerifiedSerializer
+        return super(ManualKeybaseVerificationViewSet, self).retrieve(request, *args, **kwargs)
 
     class Meta:
         model = User
