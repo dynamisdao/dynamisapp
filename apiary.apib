@@ -59,8 +59,6 @@ Create new account by calling this method. As a side-effect will send user a ver
 
 ### Get all Accounts [GET /api/v1/accounts]
 
-TODO: this method is not implemented yet
-
 Get list of all account IDs. 
 
 + Response 200
@@ -76,8 +74,6 @@ Get list of all account IDs.
             }
 
 ### Update Account [PUT /api/v1/accounts/{accountid}]
-
-TODO: this method is not implemented yet.
 
 Change account parameters (email, keybase_username)
 
@@ -105,8 +101,6 @@ Change account parameters (email, keybase_username)
             }
 
 ### Get Account [GET /api/v1/accounts/{accountid}]
-
-TODO: this method is not implemented yet
 
 + Parameters
     + accountid (number) - ID of an account
@@ -136,8 +130,6 @@ TODO: this method is not implemented yet
             
 ### Update Settings [PUT /api/v1/accounts/{accountid}/settings]
 
-TODO: this method is not implemented yet.
-
 The settings is some params that user has set. For example: view color or list sort type. 
 
 + Parameters
@@ -154,8 +146,6 @@ The settings is some params that user has set. For example: view color or list s
 
 ### Get Settings [GET /api/v1/accounts/{accountid}/settings]
 
-TODO: this method is not implemented yet.
-
 The settings is some params that user has set. For example: view color or list sort type. 
 
 + Parameters
@@ -168,8 +158,6 @@ The settings is some params that user has set. For example: view color or list s
             }         
 
 ### Verify Keybase [PUT /api/v1/accounts/{accountid}/keybase]
-
-TODO: this method is not implemented yet.
 
 Validate the user's keybase account. signed_message must be signed by user. We will check that it is signed with account's keybase key. 
 That is to make sure that valid keybase account is connected with current Dynamis user. 
