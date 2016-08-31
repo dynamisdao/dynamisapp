@@ -23,7 +23,7 @@ urlpatterns = [
         name="verify-keybase",
     ),
     url(
-        r'^(?P<pk>\d+)/verify-keybase/$',
+        r'^(?P<pk>\d+)/keybase/$',
         ManualKeybaseVerificationViewSet.as_view({'put': 'update'}),
         name="verify-keybase-detail",
     ),

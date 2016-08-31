@@ -30,6 +30,7 @@ def test_manual_keybase_verification_ok(api_client, user, gpg_key, gpg, factorie
     token = signing.dumps(user.pk)
 
     assert user.keybase_username == ''
+    assert user.is_keybase_verified is False
 
     data = {
         'keybase_username': 'test',
@@ -41,6 +42,7 @@ def test_manual_keybase_verification_ok(api_client, user, gpg_key, gpg, factorie
 
     user.refresh_from_db()
     assert user.keybase_username == 'test'
+    assert user.is_keybase_verified is True
 
 
 def test_manual_keybase_verification_deny(api_client, user, gpg_key, gpg, factories):
@@ -50,6 +52,7 @@ def test_manual_keybase_verification_deny(api_client, user, gpg_key, gpg, factor
     token = signing.dumps(new_user.pk)
 
     assert new_user.keybase_username == ''
+    assert user.is_keybase_verified is False
 
     data = {
         'keybase_username': 'test',
@@ -60,8 +63,8 @@ def test_manual_keybase_verification_deny(api_client, user, gpg_key, gpg, factor
     assert response.status_code == status.HTTP_403_FORBIDDEN, response.data
 
     new_user.refresh_from_db()
-    assert new_user.keybase_username != 'test'
     assert new_user.keybase_username == ''
+    assert user.is_keybase_verified is False
 
 
 def test_manual_keybase_verification_ok_admin(api_client, user, gpg_key, gpg, factories):
@@ -72,6 +75,7 @@ def test_manual_keybase_verification_ok_admin(api_client, user, gpg_key, gpg, fa
     token = signing.dumps(user.pk)
 
     assert user.keybase_username == ''
+    assert user.is_keybase_verified is False
 
     data = {
         'keybase_username': 'test',
@@ -83,3 +87,4 @@ def test_manual_keybase_verification_ok_admin(api_client, user, gpg_key, gpg, fa
 
     user.refresh_from_db()
     assert user.keybase_username == 'test'
+    assert user.is_keybase_verified is True
