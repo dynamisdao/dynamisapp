@@ -84,6 +84,7 @@ class VerifyKeybaseSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         instance.keybase_username = validated_data['keybase_username']
+        instance.is_keybase_verified = True
         instance.save()
         return instance
 
@@ -149,3 +150,11 @@ class AccountListSerializer(serializers.ModelSerializer):
         fields = ('keybase_username',
                   'email',
                   'id')
+
+
+class IsKeybaseVerifiedSerializer(serializers.ModelSerializer):
+    keybase_verified = serializers.BooleanField(source='is_keybase_verified')
+
+    class Meta:
+        model = User
+        fields = ('keybase_verified',)
