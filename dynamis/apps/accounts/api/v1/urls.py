@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     url(
         r'^(?P<pk>\d+)/keybase/$',
-        ManualKeybaseVerificationViewSet.as_view(action_get_put),
+        ManualKeybaseVerificationViewSet.as_view({'put': 'update'}),
         name="verify-keybase-detail",
     ),
     url(r'^(?P<pk>\d+)/settings/$', AccountSettingsViewSet.as_view(action_get_put),

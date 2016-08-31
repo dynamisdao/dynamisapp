@@ -99,10 +99,14 @@ class AccountShortSerializer(serializers.ModelSerializer):
     """
     used for user actions
     """
+    keybase_verified = serializers.BooleanField(source='is_keybase_verified')
+
     class Meta:
         model = User
         fields = ('keybase_username',
+                  'keybase_verified',
                   'email')
+        read_only_fields = ('keybase_verified',)
 
     def validate(self, attrs):
         if 'email' in attrs:
@@ -119,6 +123,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     active = serializers.BooleanField(source='is_active')
     risk_assessor = serializers.BooleanField(source='is_risk_assessor')
     email_verified = serializers.SerializerMethodField()
+    keybase_verified = serializers.BooleanField(source='is_keybase_verified')
 
     class Meta:
         model = User
@@ -132,7 +137,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
                   'active',
                   'risk_assessor',
                   'email_verified',
-                  'id'
+                  'id',
+                  'keybase_verified'
                   )
         read_only_fields = ('id',
                             'date_joined',
@@ -150,11 +156,3 @@ class AccountListSerializer(serializers.ModelSerializer):
         fields = ('keybase_username',
                   'email',
                   'id')
-
-
-class IsKeybaseVerifiedSerializer(serializers.ModelSerializer):
-    keybase_verified = serializers.BooleanField(source='is_keybase_verified')
-
-    class Meta:
-        model = User
-        fields = ('keybase_verified',)
