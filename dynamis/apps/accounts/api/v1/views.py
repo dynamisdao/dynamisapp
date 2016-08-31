@@ -14,7 +14,7 @@ from rest_framework.viewsets import GenericViewSet
 from dynamis.apps.accounts.api.v1.filters import UserFilterBackend
 from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
 from dynamis.apps.accounts.models import AccountConfig
-from dynamis.apps.accounts.permissions import AccountPermission
+from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
@@ -37,7 +37,8 @@ class AccountCreationAPIView(generics.CreateAPIView):
         login(self.request, user)
 
 
-class ManualKeybaseVerificationView(generics.UpdateAPIView):
+# TODO - deprecated
+class DEPR_ManualKeybaseVerificationView(generics.UpdateAPIView):
     serializer_class = VerifyKeybaseSerializer
     permissions_classes = (permissions.IsAuthenticated,)
 
@@ -45,14 +46,23 @@ class ManualKeybaseVerificationView(generics.UpdateAPIView):
         return self.request.user
 
 
-class AccountConfigViewSet(mixins.RetrieveModelMixin,
-                           mixins.UpdateModelMixin,
-                           GenericViewSet):
+class ManualKeybaseVerificationViewSet(mixins.UpdateModelMixin,
+                                       GenericViewSet):
+    queryset = User.objects.all()
+    serializer_class = VerifyKeybaseSerializer
+    permission_classes = (IsAdminOrAccountOwnerPermission,)
+
+    class Meta:
+        model = User
+
+
+class AccountSettingsViewSet(mixins.RetrieveModelMixin,
+                             mixins.UpdateModelMixin,
+                             GenericViewSet):
     queryset = AccountConfig.objects.all()
     filter_backends = (UserFilterBackend,)
     permission_classes = [IsAuthenticated]
     serializer_class = AccountConfigSerializer
-    lookup_field = 'user__keybase_username'
 
     class Meta:
         model = AccountConfig
