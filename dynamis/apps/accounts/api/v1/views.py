@@ -45,14 +45,13 @@ class ManualKeybaseVerificationView(generics.UpdateAPIView):
         return self.request.user
 
 
-class AccountConfigViewSet(mixins.RetrieveModelMixin,
-                           mixins.UpdateModelMixin,
-                           GenericViewSet):
+class AccountSettingsViewSet(mixins.RetrieveModelMixin,
+                             mixins.UpdateModelMixin,
+                             GenericViewSet):
     queryset = AccountConfig.objects.all()
     filter_backends = (UserFilterBackend,)
     permission_classes = [IsAuthenticated]
     serializer_class = AccountConfigSerializer
-    lookup_field = 'user__keybase_username'
 
     class Meta:
         model = AccountConfig
