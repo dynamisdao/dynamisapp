@@ -393,6 +393,10 @@ Insurance contracts are designed to meet specific needs and thus have many featu
     
         {
             "id": 1,
+            
+            // TODO: field is still not implemented
+            "is_signed": true,
+                
             "data":
             {
                 "public_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: KEY BLOCK-----",
@@ -535,23 +539,6 @@ If signature is bad -> return 404.
         
 + Response 200
 
-
-### Get a Policy Application Signature [GET /api/v1/policies/{policyid}/signature]
-
-TODO: this method is not implemented yet.
-
-Get signature.
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "keybase_username": "tonykent",
-                "signed_message": "fjdskajflakjdfkweu2434",
-                
-                // TODO: new field
-                "is_signed": true
-            }
 
 ### Upload File to Policy [POST /api/v1/policies/{policyid}/file]
 
