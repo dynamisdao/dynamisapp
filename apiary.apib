@@ -113,9 +113,11 @@ TODO: this method is not implemented yet
             {
                 "email": "xxx@mail.com",
                 "keybase_username": "something",
-
                 "eth_address": "0xCf14744B3B4Ac720026569249CA4eb19Fc86A708",
-
+                
+                // TODO: still not implemented
+                "is_keybase_verified": true,
+                
                 // only if admin is asking:
                 "email_verified": true,
                 "keybase_username": "",
@@ -181,20 +183,8 @@ If signature is bad - return 404.
         
 + Response 200
 
-### Is Keybase Verified [GET /api/v1/accounts/{accountid}/keybase]
++ Response 400
 
-TODO: this method is not implemented yet.
-
-Is keybase account linked and OK?
-        
-+ Parameters
-    + accountid (number) - ID of an account
-
-+ Response 200
-
-            {
-                "keybase_verified": true
-            }
 
 ### Get Items for Peer Review [GET /api/v1/accounts/{accountid}/review-items]
 
