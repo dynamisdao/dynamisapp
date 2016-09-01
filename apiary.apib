@@ -7,8 +7,6 @@ This is a Dynamis API description.
 
 ## Login [/api/v1/login]
 
-TODO: this method is not implemented yet.
-
 Log in user and get **sessionid** Cookie.
 
 ### Login [POST /api/v1/login]
@@ -30,6 +28,22 @@ Log in user and get **sessionid** Cookie.
                     // current user account ID
                     "accountid": "123456"
                 }
+
+## Logout [/api/v1/logout]
+
+Log the user out
+
+### Logout [POST /api/v1/logout]
+
++ Request
+    
+    + Body
+    
+            {
+            }
+    
++ Response 200
+
 
 ## Accounts [/api/v1/accounts/{accountid}]
 
