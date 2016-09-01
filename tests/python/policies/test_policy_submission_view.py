@@ -59,7 +59,6 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     assert not policy_application.is_final
 
     submit_url = reverse('v1:policy-signature', kwargs={'pk': policy_application.pk})
-    print submit_url
 
     data = {
         'keybase_username': 'test',
