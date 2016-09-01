@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^policies/', include('dynamis.apps.policy.urls')),
 
     # API
-    url(r'^api/v1/', include('dynamis.core.api.urls_v1', namespace="v1")),
+    url(r'^api/v1/', include('dynamis.core.api.v1.urls', namespace="v1")),
 
     # Admin
     url(r'^admin/', include('dynamis.core.admin.urls', namespace="admin")),
