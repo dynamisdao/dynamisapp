@@ -22,6 +22,7 @@ class AccountCreationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+    keybase_username = serializers.CharField(max_length=16, required=False)
 
     def validate_email(self, email_address):
         normalized_email_address = User.objects.normalize_email(email_address)
@@ -35,10 +36,13 @@ class AccountCreationSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password1'],
-        )
+        create_kwargs = {
+            'email': validated_data['email'],
+            'password': validated_data['password1']
+        }
+        if 'keybase_username' in validated_data:
+            create_kwargs['keybase_username'] = validated_data['keybase_username']
+        user = User.objects.create_user(**create_kwargs)
         AccountConfig.objects.create(user=user)
         user.send_verification_email()
         return user
