@@ -133,11 +133,13 @@ def test_create_account(api_client, factories):
     email = 'test@email.com'
     password = 'test_pass'
     keybase_username = 'test_keybase'
+    eth_address = 'http://example.com/123'
     data = {
         'email': email,
         'password1': password,
         'password2': password,
-        'keybase_username': keybase_username
+        'keybase_username': keybase_username,
+        'eth_address': eth_address
     }
     url = reverse('v1:accounts-list')
     response = api_client.post(url, data=data)
@@ -145,7 +147,8 @@ def test_create_account(api_client, factories):
     assert response.status_code == status.HTTP_201_CREATED
     user = User.objects.get(email=email, keybase_username=keybase_username)
     assert user.is_keybase_verified is False
-    assert AccountConfig.objects.filter(user=user).exists()
+    account_config = AccountConfig.objects.get(user=user)
+    assert account_config.rpc_node_host == eth_address
 
 
 def test_user_creation_api_view(User, api_client):
