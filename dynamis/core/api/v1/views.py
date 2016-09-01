@@ -8,6 +8,9 @@ from dynamis.core.api.v1.serializers import LoginSerializer
 
 
 class LoginView(GenericAPIView):
+    """
+    A view for login user
+    """
     serializer_class = LoginSerializer
     permission_classes = [AllowAny]
 
@@ -22,11 +25,11 @@ class LoginView(GenericAPIView):
 
 
 class LogoutView(GenericAPIView):
+    """
+    A view for logout user
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """
-        A view for logout user
-        """
         logout(request)
         return Response(data={}, status=status.HTTP_200_OK)
