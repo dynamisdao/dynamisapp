@@ -14,6 +14,7 @@ from dynamis.apps.policy.models import (
     ApplicationItem,
     PeerReview,
 )
+from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
 
 from .serializers import (
     PolicyApplicationSerializer,
@@ -30,7 +31,7 @@ class PolicyApplicationViewSet(mixins.CreateModelMixin,
                                mixins.UpdateModelMixin,
                                viewsets.GenericViewSet):
     serializer_class = PolicyApplicationSerializer
-    permissions_classes = (permissions.IsAuthenticated,)
+    permissions_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
     queryset = PolicyApplication.objects.all()
 
     def perform_create(self, serializer):
