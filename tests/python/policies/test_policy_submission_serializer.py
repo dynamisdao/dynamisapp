@@ -25,6 +25,7 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, policy_data)
 
     assert saved_policy_application.pk == policy_application.pk
     assert saved_policy_application.is_final is True
+    assert saved_policy_application.is_signed is True
 
 
 def test_policy_submission_with_invalid_signature(gpg_key, generate_gpg_key,
