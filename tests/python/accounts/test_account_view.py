@@ -1,6 +1,6 @@
 import datetime
 
-import pytz
+from dateutil.tz import tzlocal
 from django.core import mail
 from django.core.urlresolvers import reverse
 from rest_framework import status
@@ -55,7 +55,7 @@ def test_get_other_account_if_not_admin(api_client, factories):
 
 def test_update_my_account(user_webtest_client, api_client):
     new_email = 'test@testemail.com'
-    verified_time = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+    verified_time = datetime.datetime.now(tzlocal())
     User.objects.filter(id=user_webtest_client.user.pk).update(verified_at=verified_time)
 
     url = reverse('v1:accounts-detail', args=[user_webtest_client.user.pk])
