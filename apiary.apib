@@ -342,7 +342,6 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
 
 ### Create new Policy [POST /api/v1/policies]
 
-TODO: this method is not implemented yet. 
 Create empty policy for **userid**.
 
 + Request
@@ -354,7 +353,6 @@ Create empty policy for **userid**.
 + Response 200
 
 ### Get all Policies list [GET /api/v1/policies]
-TODO: this method is not implemented yet. 
 
 Get list of all policy IDs. 
 
@@ -374,8 +372,6 @@ In **not admin** - get all policies for current user (me) only.
             }
 
 ### Get Policy [GET /api/v1/policies/{policyid}]
-
-TODO: this method is not implemented yet.
 
 Get the policy data.
 
@@ -458,8 +454,6 @@ Insurance contracts are designed to meet specific needs and thus have many featu
  
 ### Update Policy [PUT /api/v1/policies/{policyid}]
 
-TODO: this method is not implemented yet.
-
 Update the policy.
 
 + Request (application/json)
@@ -520,8 +514,6 @@ Update the policy.
 
 ### Sign a Policy [POST /api/v1/policies/{policyid}/signature]
 
-TODO: this method is not implemented yet.
-
 After all data is entered - user can submit a policy application. The peers will then review it. 
 
 If signature is bad -> return 404.
@@ -538,8 +530,6 @@ If signature is bad -> return 404.
 
 
 ### Upload File to Policy [POST /api/v1/policies/{policyid}/file]
-
-TODO: this method is not implemented yet.
 
 Attach the file to the application. Will uplad it to IPFS.
 
