@@ -22,6 +22,8 @@ class AccountCreationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+    keybase_username = serializers.CharField(max_length=16, required=False)
+    eth_address = serializers.CharField(required=False)
 
     def validate_email(self, email_address):
         normalized_email_address = User.objects.normalize_email(email_address)
@@ -35,11 +37,21 @@ class AccountCreationSerializer(serializers.Serializer):
         return data
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password1'],
-        )
-        AccountConfig.objects.create(user=user)
+        create_account_kwargs = {
+            'email': validated_data['email'],
+            'password': validated_data['password1']
+        }
+        if 'keybase_username' in validated_data:
+            create_account_kwargs['keybase_username'] = validated_data['keybase_username']
+        user = User.objects.create_user(**create_account_kwargs)
+
+        create_settings_kwargs = {
+            'user': user
+        }
+        if 'eth_address' in validated_data:
+            create_settings_kwargs['rpc_node_host'] = validated_data['eth_address']
+        AccountConfig.objects.create(**create_settings_kwargs)
+
         user.send_verification_email()
         return user
 

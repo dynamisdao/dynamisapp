@@ -55,7 +55,8 @@ def validate_signature(verification,
             SIGNATURE_ERROR_MESSAGES['signature_invalid']
         )
 
-    time_now = datetime.datetime.utcnow()
+    # timezone in production server should be utc
+    time_now = datetime.datetime.now()
     time_signed = datetime.datetime.fromtimestamp(float(verification.sig_timestamp))
     time_since_signed = time_now - time_signed
 

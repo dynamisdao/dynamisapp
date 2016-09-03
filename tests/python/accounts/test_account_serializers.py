@@ -30,7 +30,7 @@ def test_account_short_serializer(factories):
 
 
 def test_account_detail_serializer(factories):
-    date_now = datetime.datetime.utcnow()
+    date_now = datetime.datetime.now()
     account = factories.UserFactory(date_joined=date_now)
 
     data = {

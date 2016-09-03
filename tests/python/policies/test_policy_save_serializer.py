@@ -16,6 +16,7 @@ def test_policy_application_serializer_create(user):
 
     assert policy_application.user == user
     assert policy_application.is_final is False
+    assert policy_application.is_signed is False
     assert json.loads(policy_application.data) == data['data']
 
 
@@ -24,6 +25,7 @@ def test_policy_application_serializer_update(factories):
         'data': {
             'field-b': 'This is field B',
         },
+        'is_signed': True
     }
     policy_application = factories.PolicyApplicationFactory()
     serializer = PolicyApplicationSerializer(policy_application, data=data)
@@ -33,6 +35,7 @@ def test_policy_application_serializer_update(factories):
     saved_policy_application = serializer.save()
 
     assert json.loads(saved_policy_application.data) == data['data']
+    assert saved_policy_application.is_signed == False
 
 
 def test_policy_application_serializer_output(factories):

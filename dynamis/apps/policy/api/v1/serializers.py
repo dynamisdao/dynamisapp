@@ -36,7 +36,8 @@ class PolicyApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PolicyApplication
-        fields = ('id', 'data')
+        fields = ('id', 'data', 'is_signed')
+        read_only_fields = ('is_signed',)
 
 
 class PolicySubmissionSerializer(serializers.ModelSerializer):
@@ -94,6 +95,7 @@ class PolicySubmissionSerializer(serializers.ModelSerializer):
                     'username': keybase_username,
                 }
             }, sort_keys=True),
+            'is_signed': True
         }
 
         return validated_data
