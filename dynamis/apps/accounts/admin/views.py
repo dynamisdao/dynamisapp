@@ -24,17 +24,7 @@ from .filters import UserFilter, PolicyFilter
 User = get_user_model()
 
 
-class BaseIndexViewMixin(object):
-    def get_context_data(self, **kwargs):
-        filterset = self.get_filterset(self.get_filterset_class())
-        kwargs['filter'] = filterset
-        kwargs['object_list'] = filterset.qs
-        self.object_list = filterset.qs
-        context = super(BaseIndexViewMixin, self).get_context_data(**kwargs)
-        return context
-
-
-class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView, BaseIndexViewMixin):
+class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView):
     queryset = User.objects.all()
     template_name = 'accounts/admin/user_index.html'
     table_class = UserTable
@@ -43,8 +33,16 @@ class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView, Base
     }
     filterset_class = UserFilter
 
+    def get_context_data(self, **kwargs):
+        filterset = self.get_filterset(self.get_filterset_class())
+        kwargs['filter'] = filterset
+        kwargs['object_list'] = filterset.qs
+        self.object_list = filterset.qs
+        context = super(UserIndexView, self).get_context_data(**kwargs)
+        return context
 
-class PolicyIndexViewMixin(AdminRequired, SingleTableMixin, FilterMixin, ListView, BaseIndexViewMixin):
+
+class PolicyIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView):
     queryset = PolicyApplication.objects.all()
     template_name = 'accounts/admin/policy_index.html'
     table_class = PolicyTable
@@ -52,6 +50,14 @@ class PolicyIndexViewMixin(AdminRequired, SingleTableMixin, FilterMixin, ListVie
         'per_page': 20,
     }
     filterset_class = PolicyFilter
+
+    def get_context_data(self, **kwargs):
+        filterset = self.get_filterset(self.get_filterset_class())
+        kwargs['filter'] = filterset
+        kwargs['object_list'] = filterset.qs
+        self.object_list = filterset.qs
+        context = super(PolicyIndexView, self).get_context_data(**kwargs)
+        return context
 
 
 class UserUpdateView(AdminRequired, UpdateView):
