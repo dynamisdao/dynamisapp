@@ -11,19 +11,29 @@ from django.views.generic import (
     UpdateView,
 )
 
+from dynamis.apps.policy.models import PolicyApplication
 from dynamis.utils.mixins import (
     AdminRequired
 )
 
-from .tables import UserTable
+from .tables import UserTable, PolicyTable
 from .forms import UserUpdateForm
-from .filters import UserFilter
-
+from .filters import UserFilter, PolicyFilter
 
 User = get_user_model()
 
 
-class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView):
+class BaseIndexViewMixin(object):
+    def get_context_data(self, **kwargs):
+        filterset = self.get_filterset(self.get_filterset_class())
+        kwargs['filter'] = filterset
+        kwargs['object_list'] = filterset.qs
+        self.object_list = filterset.qs
+        context = super(BaseIndexViewMixin, self).get_context_data(**kwargs)
+        return context
+
+
+class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView, BaseIndexViewMixin):
     queryset = User.objects.all()
     template_name = 'accounts/admin/user_index.html'
     table_class = UserTable
@@ -32,13 +42,15 @@ class UserIndexView(AdminRequired, SingleTableMixin, FilterMixin, ListView):
     }
     filterset_class = UserFilter
 
-    def get_context_data(self, **kwargs):
-        filterset = self.get_filterset(self.get_filterset_class())
-        kwargs['filter'] = filterset
-        kwargs['object_list'] = filterset.qs
-        self.object_list = filterset.qs
-        context = super(UserIndexView, self).get_context_data(**kwargs)
-        return context
+
+class PolicyIndexViewMixin(AdminRequired, SingleTableMixin, FilterMixin, ListView, BaseIndexViewMixin):
+    queryset = PolicyApplication.objects.all()
+    template_name = 'accounts/admin/policy_index.html'
+    table_class = PolicyTable
+    table_pagination = {
+        'per_page': 20,
+    }
+    filterset_class = PolicyFilter
 
 
 class UserUpdateView(AdminRequired, UpdateView):

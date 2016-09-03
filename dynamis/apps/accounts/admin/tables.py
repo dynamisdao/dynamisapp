@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 import django_tables2 as tables
 from django_tables2.utils import A
 
+from dynamis.apps.policy.models import PolicyApplication
 from dynamis.utils.tables import MaterializedTable
 
 
@@ -30,4 +31,17 @@ class UserTable(MaterializedTable):
             'is_superuser',
             'is_staff',
             'last_login',
+        )
+
+
+class PolicyTable(MaterializedTable):
+    class Meta(MaterializedTable.Meta):
+        model = PolicyApplication
+        order_by = ('pk',)
+        fields = (
+            'pk',
+            'is_final',
+            'is_signed',
+            'user.pk',
+            'user.email',
         )
