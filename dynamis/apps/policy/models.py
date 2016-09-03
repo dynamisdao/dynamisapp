@@ -19,8 +19,8 @@ class TimestampModel(models.Model):
 
 class PolicyApplication(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='policies')
-
     is_final = models.BooleanField(default=False)
+    is_signed = models.BooleanField(default=False)
     data = models.TextField()
 
     def generate_application_items(self):
