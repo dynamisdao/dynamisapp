@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.views.generic import DetailView
 
 from django_tables2 import SingleTableMixin
 
@@ -65,3 +66,12 @@ class UserUpdateView(AdminRequired, UpdateView):
 
     def get_success_url(self):
         return reverse('admin:user-detail', kwargs=self.kwargs)
+
+
+class PolicyInfoView(AdminRequired, DetailView):
+    queryset = PolicyApplication.objects.all()
+    context_object_name = 'policy'
+    template_name = 'accounts/admin/policy_detail.html'
+
+    def get_success_url(self):
+        return reverse('admin:policy-detail', kwargs=self.kwargs)

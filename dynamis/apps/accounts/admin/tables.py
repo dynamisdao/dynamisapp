@@ -35,11 +35,13 @@ class UserTable(MaterializedTable):
 
 
 class PolicyTable(MaterializedTable):
+    id = tables.LinkColumn('admin:policy-detail', kwargs={'pk': A('id')})
+
     class Meta(MaterializedTable.Meta):
         model = PolicyApplication
-        order_by = ('pk',)
+        order_by = ('id',)
         fields = (
-            'pk',
+            'id',
             'is_final',
             'is_signed',
             'user.pk',
