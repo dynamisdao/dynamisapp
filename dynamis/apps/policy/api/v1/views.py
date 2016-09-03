@@ -29,10 +29,16 @@ from .serializers import (
 class PolicyApplicationViewSet(mixins.CreateModelMixin,
                                mixins.RetrieveModelMixin,
                                mixins.UpdateModelMixin,
+                               mixins.ListModelMixin,
                                viewsets.GenericViewSet):
     serializer_class = PolicyApplicationSerializer
     permissions_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
     queryset = PolicyApplication.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        self.permission_classes = [permissions.IsAdminUser]
+        self.check_permissions(request)
+        return super(PolicyApplicationViewSet, self).list(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         return serializer.save(user=self.request.user)
