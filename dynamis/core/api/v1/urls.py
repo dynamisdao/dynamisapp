@@ -34,6 +34,11 @@ urlpatterns = [
         PolicyApplicationViewSet.as_view({'post': 'create'}),
         name="policy-list",
     ),
+    url(
+        r'admin/policies/$',
+        PolicyApplicationViewSet.as_view({'get': 'list'}),
+        name="policy-admin-list",
+    ),
 ]
 
 router = DefaultRouter()
