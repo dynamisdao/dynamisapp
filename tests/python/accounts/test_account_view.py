@@ -115,7 +115,6 @@ def test_deny_list_accounts_if_not_admin(user_webtest_client, api_client, factor
     url = reverse('v1:accounts-list')
     response = api_client.get(url)
 
-    print response.data
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
