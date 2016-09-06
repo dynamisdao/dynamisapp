@@ -1,7 +1,7 @@
 import datetime
 
 from dynamis.apps.accounts.api.v1.serializers import AccountConfigSerializer, AccountShortSerializer, \
-    AccountDetailSerializer, AccountListSerializer
+    AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer
 
 
 def test_account_settings_serializer(factories):
@@ -62,4 +62,15 @@ def test_account_list_serializer(factories):
     }
 
     serializer = AccountListSerializer(account)
+    assert serializer.data == data
+
+
+def test_account_login_response_serializer(factories):
+    account = factories.UserFactory()
+
+    data = {
+        'accountid': account.id,
+    }
+
+    serializer = AccountLoginResponseSerializer(account)
     assert serializer.data == data

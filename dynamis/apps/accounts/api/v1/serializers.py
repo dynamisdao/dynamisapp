@@ -171,6 +171,8 @@ class AccountListSerializer(serializers.ModelSerializer):
 
 
 class AccountLoginResponseSerializer(serializers.ModelSerializer):
+    accountid = serializers.IntegerField(source='id')
+
     class Meta:
         model = User
-        fields = ('id',)
+        fields = ('accountid',)
