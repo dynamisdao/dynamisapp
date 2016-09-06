@@ -24,6 +24,7 @@ class AccountCreationSerializer(serializers.Serializer):
     password2 = serializers.CharField(write_only=True)
     keybase_username = serializers.CharField(max_length=16, required=False)
     eth_address = serializers.CharField(required=False)
+    linkedin_account = serializers.CharField(required=False)
 
     def validate_email(self, email_address):
         normalized_email_address = User.objects.normalize_email(email_address)
@@ -117,7 +118,8 @@ class AccountShortSerializer(serializers.ModelSerializer):
         model = User
         fields = ('keybase_username',
                   'keybase_verified',
-                  'email')
+                  'email',
+                  'linkedin_account')
         read_only_fields = ('keybase_verified',)
 
     def validate(self, attrs):
@@ -136,6 +138,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     risk_assessor = serializers.BooleanField(source='is_risk_assessor')
     email_verified = serializers.SerializerMethodField()
     keybase_verified = serializers.BooleanField(source='is_keybase_verified')
+    linkedin_account = serializers.CharField()
 
     class Meta:
         model = User
@@ -150,7 +153,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
                   'risk_assessor',
                   'email_verified',
                   'id',
-                  'keybase_verified'
+                  'keybase_verified',
+                  'linkedin_account'
                   )
         read_only_fields = ('id',
                             'date_joined',
