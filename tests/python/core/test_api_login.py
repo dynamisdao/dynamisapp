@@ -2,6 +2,8 @@ from django.contrib.sessions.models import Session
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
+from dynamis.apps.accounts.api.v1.serializers import AccountLoginResponseSerializer
+
 
 def test_login(api_client, factories):
     email = 'test@email.com'
@@ -13,6 +15,7 @@ def test_login(api_client, factories):
     response = api_client.post(login_url, data={'email': email, 'password': password})
 
     assert response.status_code == status.HTTP_200_OK
+    assert response.data == AccountLoginResponseSerializer(user).data
     Session.objects.all().count() == 1
 
 
