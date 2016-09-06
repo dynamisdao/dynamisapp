@@ -168,3 +168,9 @@ class AccountListSerializer(serializers.ModelSerializer):
         fields = ('keybase_username',
                   'email',
                   'id')
+
+
+class AccountLoginResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id',)
