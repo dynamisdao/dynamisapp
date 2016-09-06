@@ -1,7 +1,9 @@
 # Dynamis
 [ ![Codeship Status for dynamisdao/dynamisapp](https://codeship.com/projects/3abe4270-4901-0134-1120-52b63a9a4ec4/status?branch=master)](https://codeship.com/projects/169478)
 
-[![Heroku Build is here](https://heroku-badge.herokuapp.com/?app=dynamisapp)](https://dynamisapp.herokuapp.com)
+[![Heroku Master branch Build is here](https://heroku-badge.herokuapp.com/?app=dynamisapp)](https://dynamisapp.herokuapp.com)
+[![Heroku Develop branch Build is here](https://heroku-badge.herokuapp.com/?app=dynamisapp-develop)](https://dynamisapp-develop.herokuapp.com)
+
 
 [![Stories in Ready](https://badge.waffle.io/dynamisdao/dynamisapp.svg?label=ready&title=Ready)](http://waffle.io/dynamisdao/dynamisapp)
 
