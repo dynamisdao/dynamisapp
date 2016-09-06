@@ -13,6 +13,7 @@ from .views import (
     UserDashboardView,
     MyPolicyView,
     AssessorDashboardView,
+    RiskAssessmentView,
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView,
@@ -56,5 +57,7 @@ urlpatterns = [
         name='verify-email'),
     url(r'^verify-keybase/', KeybaseVerificationView.as_view(), name='verify-keybase'),
 
-    url(r'^assessor-dashboard/$', AssessorDashboardView.as_view(), name='assessor-dashboard')
+    url(r'^assessor-dashboard/$', AssessorDashboardView.as_view(), name='assessor-dashboard'),
+
+    url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment')
 ]

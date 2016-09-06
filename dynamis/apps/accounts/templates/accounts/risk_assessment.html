@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% load react_renderer %}
+{% load render_table from django_tables2 %}
+
+{% block content %}
+<h1>New Risk Assessment Task #1</h1>
+<section>
+
+<h2>Information</h2>
+<p>User ID: TODO</p>
+<p>User Name: TODO</p>
+<p>LinkedIn: TODO<p>
+
+<p>Social Media 1: twitter.com/some</p>
+<p>Social Media 2: facebook.com/some</p>
+<p>Social Media 3: github.com/some</p>
+
+<hr>
+<p><strong>Job 1</strong></p>
+<p>Programmer - 1 year 3 months  - Verified</p>
+<p>Full info about Job1 here...</p>
+
+<hr>
+<p><strong>Job 2</strong></p>
+<p>Software Architect - 2 years 3 months  - <strong>Unverified</strong></p>
+<p>Full info about Job2</p>
+<hr>
+
+<div>
+     <p><strong>“How long do you see yourself staying with your present employer?”</strong></p>
+     <p>“Before the end of next year (18 months)”</p>
+     <p>Paid smart deposit of 1.8 Eth</p>
+</div>
+<hr>
+
+<div>
+     <p><strong>“How long do you expect you will need coverage?”</strong></p>
+     <p>“Perhaps 1 to 2 months”</p>
+     <p>Paid smart deposit of 2.6 Eth</p>
+</div>
+
+
+
+<h2>As a Risk Assessor - Please Answer</h2>
+<p>How many months will this policyholder pay in premiums before opening a claim?    ____ months</p>
+<p>How many weeks will this policyholder recieve in payments before closing a claim?  ____ weeks</p>
+
+<button type="button" class="btn">Make a Bet</button>
+
+</section>
+
+{% endblock content %}
