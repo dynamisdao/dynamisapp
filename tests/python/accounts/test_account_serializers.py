@@ -21,6 +21,7 @@ def test_account_short_serializer(factories):
     data = {
         'keybase_username': account.keybase_username,
         'keybase_verified': account.is_keybase_verified,
+        'linkedin_account': account.linkedin_account,
         'email': account.email
 
     }
@@ -45,6 +46,7 @@ def test_account_detail_serializer(factories):
         'active': account.is_active,
         'risk_assessor': account.is_risk_assessor,
         'email_verified': False,
+        'linkedin_account': account.linkedin_account,
         'id': account.id,
     }
 
