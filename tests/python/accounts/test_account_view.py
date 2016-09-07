@@ -180,3 +180,35 @@ def test_user_creation_api_view(User, api_client):
 
     # see that we were logged in.
     assert '_auth_user_id' in api_client.session.keys()
+
+
+def test_user_creation_debug_no_verify_api_view(User, api_client):
+    account_create_url = reverse('v1:accounts-list')
+    test_email = 'test-1@example.com'
+
+    mail.outbox = []
+
+    assert not User.objects.filter(email='test-1@example.com').exists()
+
+    assert len(mail.outbox) == 0
+
+    data = {
+        'email': test_email,
+        'password1': 'test-password',
+        'password2': 'test-password',
+        'debug_no_verify': True
+    }
+
+    # ensure we aren't already authenticated
+    assert '_auth_user_id' not in api_client.session.keys()
+
+    response = api_client.post(account_create_url, data)
+    assert response.status_code == status.HTTP_201_CREATED, response.data
+
+    # Make sure verification email was sent.
+    assert len(mail.outbox) == 0
+
+    assert User.objects.filter(email=test_email, verified_at__isnull=False).exists()
+
+    # see that we were logged in.
+    assert '_auth_user_id' in api_client.session.keys()

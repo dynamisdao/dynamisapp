@@ -2,11 +2,13 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.core import signing
+from django.utils import timezone
 
 from rest_framework import serializers
 
 from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.identity import get_provider
+from dynamis.settings import DEBUG
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
 
@@ -25,6 +27,9 @@ class AccountCreationSerializer(serializers.Serializer):
     keybase_username = serializers.CharField(max_length=16, required=False)
     eth_address = serializers.CharField(required=False)
     linkedin_account = serializers.CharField(required=False)
+
+    # TODO FIXME - we have to find more elegant way to separate test/prod behavior
+    debug_no_verify = serializers.BooleanField(required=False)
 
     def validate_email(self, email_address):
         normalized_email_address = User.objects.normalize_email(email_address)
@@ -53,7 +58,13 @@ class AccountCreationSerializer(serializers.Serializer):
             create_settings_kwargs['rpc_node_host'] = validated_data['eth_address']
         AccountConfig.objects.create(**create_settings_kwargs)
 
-        user.send_verification_email()
+        # TODO FIXME - we have to find more elegant way to separate test/prod behavior
+        if DEBUG and validated_data.get('debug_no_verify', None) is True:
+            user.verified_at = timezone.now()
+            user.save()
+        else:
+            user.send_verification_email()
+
         return user
 
 
