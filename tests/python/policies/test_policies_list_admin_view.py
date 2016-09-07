@@ -10,7 +10,7 @@ def test_list_accounts_if_admin(api_client, factories):
     user_admin = factories.UserFactory(is_staff=True)
     api_client.force_authenticate(user_admin)
 
-    url = reverse('v1:policy-admin-list')
+    url = reverse('v1:policy-admin-list-new')
     response = api_client.get(url)
 
     assert response.data['count'] == 2
@@ -25,7 +25,7 @@ def test_deny_list_accounts_if_not_admin(user_webtest_client, api_client, factor
     user_admin = factories.UserFactory()
     api_client.force_authenticate(user_admin)
 
-    url = reverse('v1:policy-admin-list')
+    url = reverse('v1:policy-admin-list-new')
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
