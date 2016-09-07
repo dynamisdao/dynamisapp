@@ -6,55 +6,23 @@
 <h1>Assessor Dashboard</h1>
 <section>
   <h3>Previous Assessments</h3>
-
-  List of previous Assessments is here...
+  <p>List of previous Assessments is here (still TODO)...</p>
   {# TODO: #}
-  {# render_table previous-assessments-table #}
 
-  <h3>Policies</h3>
-  Interface for Assessing Policies is here. 
+  <h3>New Assessments</h3>
+  <p>List of assessments must go here (still TODO)...</p>
 
-  List of policies must go here...
   {# TODO: #}
-  {# render_table under-review-policies #}
-
-  Filling out the form.
-  Betting tokens.
-  Sending transaction # to BE (Backend only does verification)
-
-  Once a policy has been peer reviewed the Risk Assessor uses their tokens to make 2 bets
-  Duration of time a claim will not be opened (how long a person will not open a claim (aka stay employed)).
-  Duration of time that a claim will stay opened once it has been opened.
-  Note: Under the 2nd possibility - It may never resolve if someone works at his/her company forever -OR- that they never open a claim.
+  <ul>
+     <li>
+          {# Just an example #}
+          <a href="{% url 'risk-assessment' assessment_pk=1 %}">Assessment 1</a></span>
+     </li>
+  </ul>
 
   <h3>Token Management</h3>
   Token Management Interface will be here. 
   Status of "invested" tokens will be here too.
-
-  <!--
-  <ul class="collection">
-    <li class="collection-item">
-      Username: {{ user.get_username }}
-      {% if user.verified_at %}
-        <span class="badge green">verified</span>
-      {% else %}
-        <span class="badge yellow">not verified</span>
-      {% endif %}
-    </li>
-    <li class="collection-item">
-      Password: ******** <a href="{% url 'password-change' %}">Change Password</a>
-    </li>
-    <li class="collection-item">
-      Keybase Username:
-      {% if user.keybase_username %}
-        {{ user.keybase_username }}
-      {% else %}
-        <a href="{% url 'verify-keybase' %}">Link Keybase Account</a>
-      {% endif %}
-    </li>
-  </ul>
-  -->
-
 </section>
 
 {% endblock content %}

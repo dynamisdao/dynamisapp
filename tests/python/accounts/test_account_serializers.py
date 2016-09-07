@@ -1,7 +1,7 @@
 import datetime
 
 from dynamis.apps.accounts.api.v1.serializers import AccountConfigSerializer, AccountShortSerializer, \
-    AccountDetailSerializer, AccountListSerializer
+    AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer
 
 
 def test_account_settings_serializer(factories):
@@ -21,6 +21,7 @@ def test_account_short_serializer(factories):
     data = {
         'keybase_username': account.keybase_username,
         'keybase_verified': account.is_keybase_verified,
+        'linkedin_account': account.linkedin_account,
         'email': account.email
 
     }
@@ -45,6 +46,7 @@ def test_account_detail_serializer(factories):
         'active': account.is_active,
         'risk_assessor': account.is_risk_assessor,
         'email_verified': False,
+        'linkedin_account': account.linkedin_account,
         'id': account.id,
     }
 
@@ -62,4 +64,15 @@ def test_account_list_serializer(factories):
     }
 
     serializer = AccountListSerializer(account)
+    assert serializer.data == data
+
+
+def test_account_login_response_serializer(factories):
+    account = factories.UserFactory()
+
+    data = {
+        'accountid': account.id,
+    }
+
+    serializer = AccountLoginResponseSerializer(account)
     assert serializer.data == data

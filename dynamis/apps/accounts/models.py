@@ -13,6 +13,7 @@ class User(AbstractEmailUser):
     verified_at = models.DateTimeField(null=True, blank=True)
     keybase_username = models.CharField(max_length=16, blank=True)
     is_keybase_verified = models.BooleanField(default=False)
+    linkedin_account = models.CharField(max_length=255, blank=True, null=True)
 
     is_risk_assessor = models.BooleanField(
         default=False,

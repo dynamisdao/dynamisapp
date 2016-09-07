@@ -39,6 +39,15 @@ class UserDashboardView(LoginRequired, TemplateView):
 class AssessorDashboardView(LoginRequired, TemplateView):
     template_name = "accounts/assessor_dashboard.html"
 
+class RiskAssessmentView(LoginRequired, TemplateView):
+    template_name = "accounts/risk_assessment.html"
+
+    def get_object(self):
+         # TODO
+         assessment_pk = self.kwargs['assessment_pk']
+         # TODO - just for example...
+         return self.request.user.policies.get(pk=1)
+
 class MyPolicyView(LoginRequired, TemplateView):
     template_name = "accounts/my_policy.html"
 

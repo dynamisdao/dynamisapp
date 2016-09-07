@@ -2,11 +2,13 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.core import signing
+from django.utils import timezone
 
 from rest_framework import serializers
 
 from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.identity import get_provider
+from dynamis.settings import DEBUG
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
 
@@ -24,6 +26,10 @@ class AccountCreationSerializer(serializers.Serializer):
     password2 = serializers.CharField(write_only=True)
     keybase_username = serializers.CharField(max_length=16, required=False)
     eth_address = serializers.CharField(required=False)
+    linkedin_account = serializers.CharField(required=False)
+
+    # TODO FIXME - we have to find more elegant way to separate test/prod behavior
+    debug_no_verify = serializers.BooleanField(required=False)
 
     def validate_email(self, email_address):
         normalized_email_address = User.objects.normalize_email(email_address)
@@ -52,7 +58,13 @@ class AccountCreationSerializer(serializers.Serializer):
             create_settings_kwargs['rpc_node_host'] = validated_data['eth_address']
         AccountConfig.objects.create(**create_settings_kwargs)
 
-        user.send_verification_email()
+        # TODO FIXME - we have to find more elegant way to separate test/prod behavior
+        if DEBUG and validated_data.get('debug_no_verify', None) is True:
+            user.verified_at = timezone.now()
+            user.save()
+        else:
+            user.send_verification_email()
+
         return user
 
 
@@ -117,7 +129,8 @@ class AccountShortSerializer(serializers.ModelSerializer):
         model = User
         fields = ('keybase_username',
                   'keybase_verified',
-                  'email')
+                  'email',
+                  'linkedin_account')
         read_only_fields = ('keybase_verified',)
 
     def validate(self, attrs):
@@ -136,6 +149,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     risk_assessor = serializers.BooleanField(source='is_risk_assessor')
     email_verified = serializers.SerializerMethodField()
     keybase_verified = serializers.BooleanField(source='is_keybase_verified')
+    linkedin_account = serializers.CharField()
 
     class Meta:
         model = User
@@ -150,7 +164,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
                   'risk_assessor',
                   'email_verified',
                   'id',
-                  'keybase_verified'
+                  'keybase_verified',
+                  'linkedin_account'
                   )
         read_only_fields = ('id',
                             'date_joined',
@@ -168,3 +183,11 @@ class AccountListSerializer(serializers.ModelSerializer):
         fields = ('keybase_username',
                   'email',
                   'id')
+
+
+class AccountLoginResponseSerializer(serializers.ModelSerializer):
+    accountid = serializers.IntegerField(source='id')
+
+    class Meta:
+        model = User
+        fields = ('accountid',)

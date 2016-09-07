@@ -4,6 +4,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from dynamis.apps.accounts.api.v1.serializers import AccountLoginResponseSerializer
 from dynamis.core.api.v1.serializers import LoginSerializer
 
 
@@ -19,7 +20,7 @@ class LoginView(GenericAPIView):
         if serializer.is_valid():
             user = serializer.user
             login(request, user)
-            return Response(data={}, status=status.HTTP_200_OK)
+            return Response(data=AccountLoginResponseSerializer(user).data, status=status.HTTP_200_OK)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
