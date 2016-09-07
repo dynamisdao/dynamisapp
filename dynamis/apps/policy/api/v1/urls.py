@@ -12,7 +12,7 @@ from .views import (
 router = routers.SimpleRouter()
 
 # TODO DEPRECATED
-router.register(r'policies', PolicyApplicationViewSet, 'policy-depr')
+router.register(r'policies', PolicyApplicationViewSet, 'policy')
 
 router.register(r'application-items', ApplicationItemReviewQueueViewSet, 'application-item')
 router.register(r'peer-review-history', PeerReviewHistoryViewSet, 'peer-review-history')

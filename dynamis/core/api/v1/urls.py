@@ -17,27 +17,27 @@ urlpatterns = [
     url(
         r'^policies/(?P<pk>\d+)/$',
         PolicyApplicationViewSet.as_view(action_get_put),
-        name="policy-detail",
+        name="policy-detail-new",
     ),
     url(
         r'^policies/(?P<pk>\d+)/signature$',
         PolicyApplicationViewSet.as_view({'post': 'submit'}),
-        name="policy-signature",
+        name="policy-signature-new",
     ),
     url(
         r'^policies/(?P<pk>\d+)/file',
         PolicyApplicationViewSet.as_view({'post': 'upload_file'}),
-        name="policy-file",
+        name="policy-file-new",
     ),
     url(
         r'^policies/$',
         PolicyApplicationViewSet.as_view({'post': 'create'}),
-        name="policy-list",
+        name="policy-list-new",
     ),
     url(
         r'admin/policies/$',
         PolicyApplicationViewSet.as_view({'get': 'list'}),
-        name="policy-admin-list",
+        name="policy-admin-list-new",
     ),
 ]
 
