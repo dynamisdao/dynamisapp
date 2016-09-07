@@ -121,6 +121,11 @@ Change account parameters (email, keybase_username)
 
 ### Get Account [GET /api/v1/accounts/{accountid}]
 
+Get account data.
+
+If **admin** - can get any account info. 
+If **not admin** - can get only my account info.
+
 + Parameters
     + accountid (number) - ID of an account
 
