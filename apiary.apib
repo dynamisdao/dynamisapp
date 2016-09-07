@@ -343,6 +343,80 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
                 ]
             }
 
+## Assessments [/api/v1/assessments]
+
+TODO: this method is not implemented yet
+
+### Get List of My Assessments [GET /api/v1/assessments]
+Assessment is a 'task' that is assigned to RiskAssessor. RiskAssessor should review it and make a bet.
+
+RiskAssessor want to get list of assessments that is assigned to him.
+
+If **admin** - get all assessments for all users. 
+If **not admin** - get all assessments for current user (me) only.
+
++ Response 200 (application/json)
+    
+        {
+            assessments: [
+                {
+                    // global assessment ID
+                    id: 1,
+                    
+                    // is RiskAssessor finished to review it?
+                    is_finished: true
+                },
+                ...
+            ]
+        }
+
+ 
+### Get Assessments Info [GET /api/v1/assessment/{assessmentid}]
+
+TODO: this method is not implemented yet
+
+Get assessment full info.
+If **admin** - can get any.
+If **not admin** - can get only my assessments.
+
++ Parameters
+    + assessmentid (number) - Assessment ID (global for all users)
+
++ Response 200 (application/json)
+    
+        {
+            // linked with policies (global ID)
+            policyid: 123,
+            
+            // is RiskAssessor finished to review it?
+            is_finished: true
+                    
+            bet1: 1.2,
+            bet2: 2.2
+        }
+   
+### Update Assessments Info [PUT /api/v1/assessment/{assessmentid}]
+
+TODO: this method is not implemented yet
+Update assessment data.
+If **admin** - can get any.
+If **not admin** - can get only my assessments.
+
++ Parameters
+    + assessmentid (number) - Assessment ID (global for all users)
+
++ Request (application/json)
+    
+        {
+            // is RiskAssessor finished to review it?
+            is_finished: true
+                    
+            bet1: 1.2,
+          
+            bet2: 2.2
+        }
+
++ Response 200
 
 ## Policies [/api/v1/policies/{policyid}]
 
@@ -363,7 +437,7 @@ Create empty policy for **userid**.
 Get list of all policy IDs. 
 
 If **admin** - get all policies for all users.
-In **not admin** - get all policies for current user (me) only.
+If **not admin** - get all policies for current user (me) only.
 
 + Response 200
     + Body
