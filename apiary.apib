@@ -94,6 +94,10 @@ Get list of all account IDs.
 
 Change account parameters (email, keybase_username)
 
+If **admin** - can update any account info. 
+
+If **not admin** - can update only my account info.
+
 + Parameters
     + accountid (number) - ID of an account
 
@@ -124,6 +128,7 @@ Change account parameters (email, keybase_username)
 Get account data.
 
 If **admin** - can get any account info. 
+
 If **not admin** - can get only my account info.
 
 + Parameters
@@ -157,10 +162,13 @@ If **not admin** - can get only my account info.
 
 The settings is some params that user has set. For example: view color or list sort type. 
 
+If **admin** - can update any account settings. 
+
+If **not admin** - can update only my account settings.
+
 + Parameters
     + accountid (number) - ID of an account
 
-        
 + Request (application/json)
 
         {
@@ -172,6 +180,10 @@ The settings is some params that user has set. For example: view color or list s
 ### Get Settings [GET /api/v1/accounts/{accountid}/settings]
 
 The settings is some params that user has set. For example: view color or list sort type. 
+
+If **admin** - can get any account settings. 
+
+If **not admin** - can get only my account settings.
 
 + Parameters
     + accountid (number) - ID of an account
@@ -377,7 +389,7 @@ If **not admin** - get all assessments for current user (me) only.
         }
 
  
-### Get Assessments Info [GET /api/v1/assessment/{assessmentid}]
+### Get Assessments Info [GET /api/v1/assessments/{assessmentid}]
 
 TODO: this method is not implemented yet.
 
@@ -401,7 +413,7 @@ If **not admin** - can get only my assessments.
             bet2: 2.2
         }
    
-### Update Assessments Info [PUT /api/v1/assessment/{assessmentid}]
+### Update Assessments Info [PUT /api/v1/assessments/{assessmentid}]
 
 TODO: this method is not implemented yet.
 
