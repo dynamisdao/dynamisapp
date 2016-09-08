@@ -5,7 +5,7 @@ from dynamis.apps.policy.models import (
     PolicyApplication,
     ApplicationItem,
     PeerReview,
-)
+    RiskAssessmentTask)
 
 
 class PolicyApplicationFactory(factory.DjangoModelFactory):
@@ -51,3 +51,13 @@ class EmploymentClaimPeerReviewFactory(BasePeerReviewFactory):
     application_item = factory.SubFactory('factories.policy.EmploymentClaimApplicationItemFactory')
     data = json.dumps({'result': 'verified'})
     result = 'verified'
+
+
+class RiskAssessmentTaskFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory('factories.accounts.UserFactory')
+    policy = factory.SubFactory('factories.policy.PolicyApplicationFactory')
+    bet1 = 1.5
+    bet2 = 2.5
+
+    class Meta:
+        model = RiskAssessmentTask

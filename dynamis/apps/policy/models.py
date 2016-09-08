@@ -87,3 +87,11 @@ class PeerReview(TimestampModel):
         unique_together = (
             ('application_item', 'user'),
         )
+
+
+class RiskAssessmentTask(TimestampModel):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='risk_assessment_task')
+    policy = models.ForeignKey(PolicyApplication, related_name='risk_assessment_task')
+    is_finished = models.BooleanField(default=False)
+    bet1 = models.FloatField(null=True)
+    bet2 = models.FloatField(null=True)
