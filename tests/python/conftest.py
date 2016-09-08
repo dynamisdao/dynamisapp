@@ -21,6 +21,7 @@ def factories(transactional_db):
         EmploymentClaimApplicationItemFactory,
         IdentityPeerReviewFactory,
         EmploymentClaimPeerReviewFactory,
+        RiskAssessmentTaskFactory,
     )
 
     def is_factory(obj):

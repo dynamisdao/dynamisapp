@@ -13,7 +13,8 @@ from dynamis.apps.policy.models import (
     PolicyApplication,
     ApplicationItem,
     PeerReview,
-)
+    RiskAssessmentTask)
+from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
 
 from .serializers import (
@@ -23,7 +24,7 @@ from .serializers import (
     PeerReviewSubmissionSerializer,
     PeerReviewSerializer,
     IPFSFileSerializer,
-)
+    RiskAssessmentTaskDetailSerializer, RiskAssessmentTaskShortSerializer)
 
 
 class PolicyApplicationViewSet(mixins.CreateModelMixin,
@@ -96,3 +97,17 @@ class PeerReviewHistoryViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         return self.request.user.peer_reviews.all()
+
+
+class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
+                                mixins.UpdateModelMixin,
+                                mixins.ListModelMixin,
+                                viewsets.GenericViewSet):
+    serializer_class = RiskAssessmentTaskDetailSerializer
+    permission_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
+    queryset = RiskAssessmentTask.objects.all()
+    filter_backends = (IsOwnerOrAdminFilterBackend,)
+
+    def list(self, request, *args, **kwargs):
+        self.serializer_class = RiskAssessmentTaskShortSerializer
+        return super(RiskAssessmentTaskViewSet, self).list(request, *args, **kwargs)
