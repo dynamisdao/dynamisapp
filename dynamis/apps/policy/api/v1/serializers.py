@@ -15,7 +15,7 @@ from dynamis.apps.policy.models import (
     PolicyApplication,
     ApplicationItem,
     PeerReview,
-)
+    RiskAssessmentTask)
 from dynamis.apps.policy.validation import (
     validate_policy_application,
     validate_peer_review,
@@ -185,3 +185,17 @@ class IPFSFileSerializer(serializers.Serializer):
                 'mimetype': validated_data['mimetype'],
             },
         }
+
+
+class RiskAssessmentTaskDetailSerializer(serializers.ModelSerializer):
+    policyid = serializers.IntegerField(source='policy.id', required=False, read_only=True)
+
+    class Meta:
+        model = RiskAssessmentTask
+        fields = ('id', 'policyid', 'is_finished', 'bet1', 'bet2')
+
+
+class RiskAssessmentTaskShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RiskAssessmentTask
+        fields = ('id', 'is_finished')

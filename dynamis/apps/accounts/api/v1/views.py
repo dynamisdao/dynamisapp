@@ -2,7 +2,6 @@ from django.contrib.auth import (
     authenticate,
     login,
     get_user_model)
-
 from rest_framework import (
     generics,
     permissions,
@@ -11,10 +10,10 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
-from dynamis.apps.accounts.api.v1.filters import UserFilterBackend
 from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
 from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
+from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
@@ -60,7 +59,7 @@ class AccountSettingsViewSet(mixins.RetrieveModelMixin,
                              mixins.UpdateModelMixin,
                              GenericViewSet):
     queryset = AccountConfig.objects.all()
-    filter_backends = (UserFilterBackend,)
+    filter_backends = (IsOwnerOrAdminFilterBackend,)
     permission_classes = [IsAuthenticated]
     serializer_class = AccountConfigSerializer
 
