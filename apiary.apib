@@ -360,23 +360,23 @@ Get the list of what peers have reviewed already (identity, employment-claim, et
                 ]
             }
 
-## Assessments [/api/v1/assessments]
+## Assessment Tasks [/api/v1/assessment_tasks]
 
-### Get List of My Assessments [GET /api/v1/assessments]
+### Get List of My Assessment Tasks [GET /api/v1/assessment_tasks]
 
 TODO: this method is not implemented yet.
 
-Assessment is a 'task' that is assigned to RiskAssessor. RiskAssessor should review it and make a bet.
+Assessment Task is a 'task' that is assigned to RiskAssessor. RiskAssessor should review it and make a bet.
 
-RiskAssessor want to get list of assessments that is assigned to him.
+RiskAssessor wants to get list of assessments that is assigned to him.
 
-If **admin** - get all assessments for all users. 
-If **not admin** - get all assessments for current user (me) only.
+If **admin** - get all tasks for all users. 
+If **not admin** - get all tasks for current user (me) only.
 
 + Response 200 (application/json)
     
         {
-            assessments: [
+            tasks: [
                 {
                     // global assessment ID
                     id: 1,
@@ -389,7 +389,7 @@ If **not admin** - get all assessments for current user (me) only.
         }
 
  
-### Get Assessments Info [GET /api/v1/assessments/{assessmentid}]
+### Get Assessment Tasks Info [GET /api/v1/assessment_tasks/{taskid}]
 
 TODO: this method is not implemented yet.
 
@@ -398,7 +398,7 @@ If **admin** - can get any.
 If **not admin** - can get only my assessments.
 
 + Parameters
-    + assessmentid (number) - Assessment ID (global for all users)
+    + taskid (number) - Assessment Task ID (global for all users)
 
 + Response 200 (application/json)
     
@@ -413,16 +413,16 @@ If **not admin** - can get only my assessments.
             bet2: 2.2
         }
    
-### Update Assessments Info [PUT /api/v1/assessments/{assessmentid}]
+### Update Assessment Task Info [PUT /api/v1/assessment_tasks/{taskid}]
 
 TODO: this method is not implemented yet.
 
-Update assessment data.
+Update assessment task data.
 If **admin** - can get any.
-If **not admin** - can get only my assessments.
+If **not admin** - can get only my assessment tasks.
 
 + Parameters
-    + assessmentid (number) - Assessment ID (global for all users)
+    + taskid (number) - Assessment Task ID (global for all users)
 
 + Request (application/json)
     
