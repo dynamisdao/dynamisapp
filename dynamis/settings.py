@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'dynamis.core',
     'dynamis.apps.accounts.apps.AccountsConfig',
     'dynamis.apps.policy',
+    'dynamis.apps.payments'
 ]
 
 if env.get('DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True):
@@ -238,3 +239,6 @@ IPFS_SSL_VERIFY = env.get('IPFS_SSL_VERIFY', type=bool, default=True)
 
 IPFS_AUTH_USERNAME = env.get('IPFS_AUTH_USERNAME')
 IPFS_AUTH_PASSWORD = env.get('IPFS_AUTH_PASSWORD', required=IPFS_AUTH_USERNAME)
+
+IDENTITY_RECORDS_RATIO = 3
+PREMIUM_PAYMENT_PERIODICITY = 'monthly'

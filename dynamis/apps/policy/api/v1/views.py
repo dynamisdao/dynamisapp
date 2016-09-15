@@ -9,6 +9,7 @@ from rest_framework import (
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
+from dynamis.apps.policy.buisnes_logic import generate_application_items
 from dynamis.apps.policy.models import (
     PolicyApplication,
     ApplicationItem,
@@ -50,7 +51,7 @@ class PolicyApplicationViewSet(mixins.CreateModelMixin,
         serializer = PolicySubmissionSerializer(instance, data=self.request.data)
         serializer.is_valid(raise_exception=True)
         policy_application = serializer.save()
-        policy_application.generate_application_items()
+        generate_application_items(policy_application)
         self.request.user.keybase_username = self.request.data["keybase_username"]
         self.request.user.save()
         messages.success(
