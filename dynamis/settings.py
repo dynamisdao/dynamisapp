@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     # 3rd party
+    'corsheaders',
     'authtools',
     'rest_framework',
     'argonauts',
@@ -50,6 +51,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -239,6 +241,10 @@ IPFS_SSL_VERIFY = env.get('IPFS_SSL_VERIFY', type=bool, default=True)
 
 IPFS_AUTH_USERNAME = env.get('IPFS_AUTH_USERNAME')
 IPFS_AUTH_PASSWORD = env.get('IPFS_AUTH_PASSWORD', required=IPFS_AUTH_USERNAME)
+
+if DEBUG:
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
 
 IDENTITY_RECORDS_RATIO = 3
 PREMIUM_PAYMENT_PERIODICITY = 'monthly'
