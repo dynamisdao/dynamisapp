@@ -2,7 +2,7 @@ import React from 'react';
 import {connectRedux} from '../utils';
 import IdentityFormSection from './identity-form-section';
 import {AnimateFade} from './animator';
-import EmploymentHistoryFormSectionAdmin from './employment-history-form-section';
+import EmploymentHistoryFormSectionAdmin from './employment-history-form-section-admin';
 import PolicyFormControls from './policy-form-controls';
 
 export default connectRedux(React.createClass({
