@@ -15,7 +15,6 @@ export default connectRedux(React.createClass({
             return <EmploymentHistoryCompletedAdmin key={index} jobId={index} jobData={cardData.current} />;
           }
         })}
-        {this.renderControls()}
       </div>
     );
   },
