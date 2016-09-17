@@ -77,7 +77,7 @@ class UserUpdateView(AdminRequired, UpdateView):
 class PolicyInfoView(AdminRequired, DetailView):
     queryset = PolicyApplication.objects.all()
     context_object_name = 'policy'
-    template_name = 'accounts/admin/policy_detail.html'
+    template_name = "policies/policy_detail_admin.html"
 
     def get_success_url(self):
         return reverse('admin:policy-detail', kwargs=self.kwargs)

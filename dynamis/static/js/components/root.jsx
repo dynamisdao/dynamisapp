@@ -8,6 +8,7 @@ import actions from '../actions/actions';
 import App from './app';
 import Wallet from './wallet';
 import PolicyForm from './policy-form';
+import PolicyFormAdmin from './policy-form-admin';
 import PeerReview from './peer-review';
 import VerifyKeybase from './verify-keybase';
 
@@ -45,6 +46,16 @@ export var PolicyFormRoot = React.createClass({
     return (
       <Provider store={createReduxStore()}>
         <PolicyForm />
+      </Provider>
+    );
+  },
+});
+
+export var PolicyFormAdminRoot = React.createClass({
+  render() {
+    return (
+      <Provider store={createReduxStore()}>
+        <PolicyFormAdmin />
       </Provider>
     );
   },
