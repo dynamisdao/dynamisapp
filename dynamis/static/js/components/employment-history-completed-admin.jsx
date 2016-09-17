@@ -11,7 +11,6 @@ export default connectRedux(React.createClass({
           <li className="collection-item">Notes: {this.props.jobData.notes}</li>
           <li className="collection-item">Company: {this.props.jobData.company}</li>
         </ul>
-        {this.renderControls()}
       </div>
     );
   },
