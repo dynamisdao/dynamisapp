@@ -9,13 +9,13 @@ export default connectRedux(React.createClass({
             <div style={{marginRight: '50px', marginLeft: '50px'}}>
                 <h1>Policy Application: {this.props.store.policy.id}</h1>
                 <div>
-                    <h1>Identity:</h1>
+                    <h2>Identity:</h2>
                     <AnimateFade>
-                        <h3>{this.props.store.keybase.username}</h3>
+                        <h3>{this.props.store.policy.keybaseUsername}</h3>
                     </AnimateFade>
                 </div>
                 <div>
-                    <h1>Policy Status:</h1>
+                    <h3>Policy Status:</h3>
                     <AnimateFade>
                         {this.renderPolicyStatusAdmin()}
                     </AnimateFade>
