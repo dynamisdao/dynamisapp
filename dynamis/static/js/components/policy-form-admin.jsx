@@ -15,7 +15,7 @@ export default connectRedux(React.createClass({
                     </AnimateFade>
                 </div>
                 <AnimateFade>
-                    Status: {this.renderPolicyStatusAdmin()}
+                    {this.renderPolicyStatusAdmin()}
                 </AnimateFade>
                 <AnimateFade>
                     {this.renderEmploymentHistorySectionAdmin()}
