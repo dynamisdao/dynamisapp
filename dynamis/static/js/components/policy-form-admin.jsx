@@ -9,9 +9,9 @@ export default connectRedux(React.createClass({
             <div style={{marginRight: '50px', marginLeft: '50px'}}>
                 <h1>Policy Application: {this.props.store.policy.id}</h1>
                 <div>
-                    <h1>Identity: {this.props.store.policy.user.email}</h1>
+                    <h1>Identity:</h1>
                     <AnimateFade>
-                        <h3>{this.props.store.policy.user.email}</h3>
+                        <h3>{this.props.store.keybase.username}</h3>
                     </AnimateFade>
                 </div>
                 <AnimateFade>
@@ -36,13 +36,13 @@ export default connectRedux(React.createClass({
     },
 
     renderPolicyStatusAdmin() {
-        if (this.props.store.policy.is_final) {
+        if (this.props.store.policy.done) {
             return (
-                <span class="badge green">Under Review</span>
+                <span class="badge green">Incomplete</span>
             );
         }
         else {
-            return <span class="badge green">Incomplete</span>
+            return <span class="badge green">Under Review</span>
         }
     },
 }));
