@@ -10,9 +10,9 @@ export default connectRedux(React.createClass({
                 <h1>Policy Application: {this.props.store.policy.id}</h1>
                 <div>
                     <h3>Identity:</h3>
-                    <AnimateFade>
+                    {/*<AnimateFade>*/}
                         <h3>{this.props.store.policy.keybaseUsername}</h3>
-                    </AnimateFade>
+                    {/*</AnimateFade>*/}
                 </div>
                 <div>
                     <h3>Policy Status:</h3>
