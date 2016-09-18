@@ -14,9 +14,12 @@ export default connectRedux(React.createClass({
                         <h3>{this.props.store.keybase.username}</h3>
                     </AnimateFade>
                 </div>
-                <AnimateFade>
-                    {this.renderPolicyStatusAdmin()}
-                </AnimateFade>
+                <div>
+                    <h1>Policy Status:</h1>
+                    <AnimateFade>
+                        {this.renderPolicyStatusAdmin()}
+                    </AnimateFade>
+                </div>
                 <AnimateFade>
                     {this.renderEmploymentHistorySectionAdmin()}
                 </AnimateFade>
