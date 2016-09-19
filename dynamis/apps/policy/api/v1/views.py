@@ -68,8 +68,9 @@ class PolicyApplicationViewSet(mixins.CreateModelMixin,
         return Response(serializer.data)
 
 
-class ApplicationItemReviewQueueViewSet(mixins.ListModelMixin,
-                                        viewsets.GenericViewSet):
+class ReviewTasksViewSet(mixins.ListModelMixin,
+                         mixins.RetrieveModelMixin,
+                         viewsets.GenericViewSet):
     serializer_class = ApplicationItemSerializer
     queryset = ApplicationItem.objects.none()
     permissions_classes = (permissions.IsAuthenticated,)
@@ -77,8 +78,13 @@ class ApplicationItemReviewQueueViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         return ApplicationItem.objects.get_review_queue(self.request.user)
 
+    # TODO Deprecated
     @detail_route(methods=['post'], url_path='submit-peer-review')
     def submit_peer_review(self, *args, **kwargs):
+        return self.verify(*args, **kwargs)
+
+    @detail_route(methods=['post'], url_path='verify')
+    def verify(self, *args, **kwargs):
         application_item = self.get_object()
         serializer = PeerReviewSubmissionSerializer(
             data=self.request.data,

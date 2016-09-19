@@ -106,7 +106,7 @@ class ApplicationItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ApplicationItem
-        fields = ('id', 'type', 'data')
+        fields = ('id', 'type', 'data', 'is_finished')
 
 
 class PeerReviewSubmissionSerializer(serializers.ModelSerializer):
