@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% load react_renderer %}
+
+{% block content %}
+  {% react_component "Dynamis.PolicyFormAdminRoot" %}
+{% endblock content %}
+
+{% block extra_javascript %}
+{{block.super}}
+<script type="text/javascript">
+  {% if policy %}
+    window.DjangoInfo.policyId = {{policy.id}};
+  {% endif %}
+</script>
+{% endblock extra_javascript %}
