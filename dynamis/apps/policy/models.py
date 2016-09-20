@@ -131,6 +131,7 @@ class PolicyApplication(TimestampModel):
 
 class ApplicationItem(TimestampModel):
     policy_application = models.ForeignKey('policy.PolicyApplication', related_name='items')
+    is_finished = models.BooleanField(default=False)
 
     TYPE_IDENTITY = 'identity'
     TYPE_EMPLOYMENT_CLAIM = 'employment-claim'
