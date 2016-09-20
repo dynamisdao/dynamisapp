@@ -53,7 +53,7 @@ class PolicyApplication(TimestampModel):
     def check_p2p_review(self):
         peer_reviews = PeerReview.objects.filter(application_item__policy_application__user=self.user)
 
-        # TODO FIXME REFACTORING - separate different king of rates !!!!
+        # TODO FIXME REFACTORING - separate different kinds of rates !!!!
         # TODO use IDENTITY_RECORDS_RATIO
         if peer_reviews.exists() and not peer_reviews.filter(result__in=('falsified', '1', '2')):
             return True
@@ -157,7 +157,7 @@ class PeerReview(TimestampModel):
     # identity records are rated null or 1-5 (as strings)
     # employment claims are rated null, 'verified', or 'falsified'
 
-    # TODO FIXME REFACTORING - separate different king of rates !!!!
+    # TODO FIXME REFACTORING - separate different kinds of rates !!!!
     result = models.CharField(null=True, max_length=32)
 
     class Meta:
