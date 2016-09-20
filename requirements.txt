@@ -20,4 +20,5 @@ django-materializecss-form==1.0.1
 djangorestframework-filters==0.8.0
 django-webtest==1.7.9
 pytz==2016.6.1
+django-fsm==2.4.0
 django-cors-headers==1.1.0

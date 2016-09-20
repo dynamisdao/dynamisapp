@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'dynamis.core',
     'dynamis.apps.accounts.apps.AccountsConfig',
     'dynamis.apps.policy',
+    'dynamis.apps.payments'
 ]
 
 if env.get('DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True):
@@ -244,3 +245,6 @@ IPFS_AUTH_PASSWORD = env.get('IPFS_AUTH_PASSWORD', required=IPFS_AUTH_USERNAME)
 if DEBUG:
     CORS_ALLOW_CREDENTIALS = True
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
+
+IDENTITY_RECORDS_RATIO = 3
+PREMIUM_PAYMENT_PERIODICITY = 'monthly'

@@ -23,6 +23,10 @@ def factories(transactional_db):
         EmploymentClaimPeerReviewFactory,
         RiskAssessmentTaskFactory,
     )
+    from factories.payments import (
+        SmartDepositFactory,
+        PremiumPaymentFactory,
+    )
 
     def is_factory(obj):
         if not isinstance(obj, type):

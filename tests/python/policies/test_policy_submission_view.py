@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from rest_framework import status
 
+from dynamis.apps.policy.models import PolicyApplication
 from dynamis.apps.policy.validation import validate_policy_application
 from dynamis.utils import testing
 
@@ -35,7 +36,7 @@ def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_cli
     response = api_client.post(submit_url, data)
     assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
 
-    policy_application.refresh_from_db()
+    policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True
 
     assert policy_application.items.count() == 2
@@ -68,7 +69,7 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     response = api_client.post(submit_url, data)
     assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
 
-    policy_application.refresh_from_db()
+    policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True
 
     assert policy_application.items.count() == 2
