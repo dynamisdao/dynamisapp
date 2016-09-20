@@ -6,7 +6,9 @@ from django.db import models
 from django_fsm import transition, FSMIntegerField
 
 from dynamis.apps.payments.models import SmartDeposit, PremiumPayment
+from dynamis.apps.accounts.models import User
 from dynamis.core.models import TimestampModel
+from dynamis.settings import RISK_ASSESSORS_PER_POLICY_COUNT
 from .querysets import ApplicationItemQueryset
 
 POLICY_STATUS_INIT = 1
@@ -53,7 +55,7 @@ class PolicyApplication(TimestampModel):
     def check_p2p_review(self):
         peer_reviews = PeerReview.objects.filter(application_item__policy_application__user=self.user)
 
-        # TODO FIXME REFACTORING - separate different king of rates !!!!
+        # TODO FIXME REFACTORING - separate different kinds of rates !!!!
         # TODO use IDENTITY_RECORDS_RATIO
         if peer_reviews.exists() and not peer_reviews.filter(result__in=('falsified', '1', '2')):
             return True
@@ -110,7 +112,21 @@ class PolicyApplication(TimestampModel):
     @transition(field=state, source=POLICY_STATUS_ON_P2P_REVIEW,
                 target=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, conditions=[check_p2p_review])
     def p2p_review_to_risk_assessment_review(self):
-        pass
+
+        # TODO I have to ensure about it and compare with business-logic
+        assessment_tasks_count = RiskAssessmentTask.objects.filter(policy=self).count()
+        if assessment_tasks_count >= RISK_ASSESSORS_PER_POLICY_COUNT:
+            return
+
+        assessors_count = User.objects.filter(is_risk_assessor=True).exclude(
+            pk=self.user.pk).count()
+        tasks_to_create_count = RISK_ASSESSORS_PER_POLICY_COUNT if assessors_count >= RISK_ASSESSORS_PER_POLICY_COUNT \
+            else assessors_count
+
+        assessors = User.objects.filter(is_risk_assessor=True).exclude(
+            pk=self.user.pk).order_by('?')[:tasks_to_create_count]
+        for assessor in assessors:
+            RiskAssessmentTask.objects.create(policy=self, user=assessor)
 
     @transition(field=state, source=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                 target=POLICY_STATUS_APPROVED, conditions=[check_risk_assessment_review])
@@ -157,7 +173,7 @@ class PeerReview(TimestampModel):
     # identity records are rated null or 1-5 (as strings)
     # employment claims are rated null, 'verified', or 'falsified'
 
-    # TODO FIXME REFACTORING - separate different king of rates !!!!
+    # TODO FIXME REFACTORING - separate different kinds of rates !!!!
     result = models.CharField(null=True, max_length=32)
 
     class Meta:
