@@ -219,8 +219,6 @@ If signature is bad - return 404.
 
 ### Get Items for Peer Review [GET]
 
-TODO: this method is not implemented yet.
-
 Get list of items that need to be reviewed (by me). This is not a **risk assessment tasks** (that is done only by RiskAssessors)! 
 Before we need to verify user identity and verify employment information. This is done by an ordinary users. 
 
@@ -236,7 +234,6 @@ If **not admin** - get all tasks for current user (me) only.
                         // global review task ID
                         id: 1,
             
-                        // TODO: is reviewed?
                         is_finished: true
                     },
                     ...
@@ -245,8 +242,6 @@ If **not admin** - get all tasks for current user (me) only.
 
 
 ### Get Item for Peer Review [GET /api/v1/review-tasks/{review_task_id}]
-
-TODO: this method is not implemented yet.
 
 Get Peer Review task.
 
@@ -270,8 +265,6 @@ Get Peer Review task.
             }
 
 ### Submit Peer Review [POST /api/v1/review-tasks/{review_task_id}/verify]
-
-TODO: this method is not implemented yet.
 
 After the Peer has reviewed some parts of an application - i want to be able to set **Verify/Falsify/Can't Tell**. 
 
