@@ -113,6 +113,7 @@ class PolicyApplication(TimestampModel):
                 target=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, conditions=[check_p2p_review])
     def p2p_review_to_risk_assessment_review(self):
 
+        # TODO I have to ensure about it and compare with business-logic
         assessment_tasks_count = RiskAssessmentTask.objects.filter(policy=self).count()
         if assessment_tasks_count >= RISK_ASSESSORS_PER_POLICY_COUNT:
             return

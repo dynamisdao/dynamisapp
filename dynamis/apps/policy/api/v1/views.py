@@ -9,7 +9,7 @@ from rest_framework import (
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
-from dynamis.apps.policy.buisnes_logic import generate_application_items
+from dynamis.apps.policy.business_logic import generate_application_items
 from dynamis.apps.policy.models import (
     PolicyApplication,
     ApplicationItem,
