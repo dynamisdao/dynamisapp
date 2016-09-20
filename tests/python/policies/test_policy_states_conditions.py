@@ -36,7 +36,6 @@ def test_to_deposit_refund(factories):
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy.to_deposit_refund()
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
-    assert policy.rejected_count == 1
 
 
 def test_to_deposit_refund_no_deposit(factories):
