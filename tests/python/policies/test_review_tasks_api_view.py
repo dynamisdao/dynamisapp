@@ -27,5 +27,4 @@ def test_review_tasks_list_api_view(user, api_client, factories, gpg_key,
     url = reverse('v1:review-tasks-list')
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
-    print response.data
     assert response.data['results'] == ApplicationItemSerializer(app_item_list, many=True).data
