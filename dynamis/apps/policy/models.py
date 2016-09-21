@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import datetime
 from django.conf import settings
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django_fsm import transition, FSMIntegerField
 
 from dynamis.apps.payments.models import SmartDeposit, PremiumPayment
@@ -41,6 +42,9 @@ class PolicyApplication(TimestampModel):
     data = models.TextField()
     rejected_count = models.PositiveSmallIntegerField(default=0)
     state = FSMIntegerField(default=POLICY_STATUS_INIT, protected=True, choices=POLICY_STATUS)
+
+    def __unicode__(self):
+        return "%s's %s" % (self.user.get_full_name(), 'policy')
 
     def check_smart_deposit_refunded(self):
         if SmartDeposit.objects.filter(user=self.user, refunded=True, is_confirmed=True).exists():
@@ -183,8 +187,8 @@ class PeerReview(TimestampModel):
 
 
 class RiskAssessmentTask(TimestampModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='risk_assessment_task')
-    policy = models.ForeignKey(PolicyApplication, related_name='risk_assessment_task')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='risk_assessment_tasks')
+    policy = models.ForeignKey(PolicyApplication, related_name='risk_assessment_tasks')
     is_finished = models.BooleanField(default=False)
     bet1 = models.FloatField(null=True)
     bet2 = models.FloatField(null=True)
