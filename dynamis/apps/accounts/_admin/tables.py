@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class UserTable(MaterializedTable):
-    email = tables.LinkColumn('admin:user-detail', kwargs={'pk': A('pk')})
+    email = tables.LinkColumn('admin-namespace:user-detail', kwargs={'pk': A('pk')})
     email_verified = tables.TemplateColumn(
         template_name='accounts/admin/partials/user_email_column.html',
     )
@@ -35,7 +35,7 @@ class UserTable(MaterializedTable):
 
 
 class PolicyTable(MaterializedTable):
-    id = tables.LinkColumn('admin:policy-detail', kwargs={'pk': A('id')})
+    id = tables.LinkColumn('admin-namespace:policy-detail', kwargs={'pk': A('id')})
 
     class Meta(MaterializedTable.Meta):
         model = PolicyApplication

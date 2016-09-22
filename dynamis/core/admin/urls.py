@@ -7,5 +7,5 @@ from .views import (
 
 urlpatterns = [
     url(r'^$', AdminIndexView.as_view(), name='site-index'),
-    url(r'^accounts/', include('dynamis.apps.accounts.admin.urls')),
+    url(r'^accounts/', include('dynamis.apps.accounts._admin.urls')),
 ]

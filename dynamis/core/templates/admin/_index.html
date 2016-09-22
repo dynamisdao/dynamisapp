@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block bread %}
-  <a href="{% url 'admin:site-index' %}" class="breadcrumb">Admin</a>
+  <a href="{% url 'admin-namespace:site-index' %}" class="breadcrumb">Admin</a>
 {% endblock %}
 
 {% block crumbs %}
@@ -19,8 +19,8 @@
   <p>Welcome to the Dynamis Admin</p>
 
   <ul class="collection">
-    <li class="collection-item"><a href="{% url 'admin:user-index' %}">Users</a></li>
-    <li class="collection-item"><a href="{% url 'admin:policy-index' %}">Policies</a></li>
+    <li class="collection-item"><a href="{% url 'admin-namespace:user-index' %}">Users</a></li>
+    <li class="collection-item"><a href="{% url 'admin-namespace:policy-index' %}">Policies</a></li>
   </ul>
             
 {% endblock content %}
