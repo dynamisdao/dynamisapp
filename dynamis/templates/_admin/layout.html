@@ -1,4 +1,4 @@
-{% extends 'admin/base.html' %}
+{% extends '_admin/base.html' %}
 
 
 {% block contentwrapper %}
@@ -6,7 +6,7 @@
     {% block header %}
     <nav>
       <div class="nav-wrapper">
-        <a href="{% url 'admin:site-index' %}" class="brand-logo">Dynamis: Admin</a>
+        <a href="{% url 'admin-namespace:site-index' %}" class="brand-logo">Dynamis: Admin</a>
         <ul id="nav-mobile" class="right">
           <li><a href="{% url 'logout' %}">Logout</a></li>
           <li><a href="{% url 'site-index' %}">Back to Main Site</a></li>
