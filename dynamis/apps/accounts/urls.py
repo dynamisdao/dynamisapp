@@ -17,7 +17,7 @@ from .views import (
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView,
-)
+    SmartDepositStubView)
 
 
 urlpatterns = [
@@ -59,5 +59,7 @@ urlpatterns = [
 
     url(r'^assessor-dashboard/$', AssessorDashboardView.as_view(), name='assessor-dashboard'),
 
-    url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment')
+    url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment'),
+
+    url(r'^smart-deposit/$', SmartDepositStubView.as_view(), name='smart-deposit-stub'),
 ]

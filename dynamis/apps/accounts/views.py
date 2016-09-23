@@ -2,6 +2,7 @@ from django.core.urlresolvers import (
     reverse,
 )
 from django.core import signing
+from django.views.generic import FormView
 from django.views.generic import (
     TemplateView,
     RedirectView,
@@ -13,7 +14,13 @@ from django.shortcuts import redirect
 from authtools.views import (
     PasswordChangeView,
 )
+from django.views.generic.list import ListView
+from django_tables2 import SingleTableMixin
 
+from dynamis.apps.accounts.forms import SmartDepositStubForm
+from dynamis.apps.accounts.tables import SmartDepositTable
+from dynamis.apps.payments.models import SmartDeposit
+from dynamis.apps.policy.models import POLICY_STATUS_INIT
 from dynamis.utils.mixins import LoginRequired
 
 from .models import User
@@ -105,3 +112,22 @@ class VerifyEmailView(RedirectView):
         # catch either one.
         except signing.BadSignature:
             return None
+
+
+class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
+    template_name = "accounts/smart-deposit-stub.html"
+    form_class = SmartDepositStubForm
+    table_class = SmartDepositTable
+    success_url = '/accounts/smart-deposit/'
+
+    def get_queryset(self):
+        return SmartDeposit.objects.filter(user=self.request.user)
+
+    def form_valid(self, form):
+        form.save()
+        policy = self.request.user.policies.all()[0]
+        if policy.state == POLICY_STATUS_INIT:
+            policy.submit()
+        policy.submit_to_p2p_review()
+        policy.save()
+        return super(SmartDepositStubView, self).form_valid(form)
