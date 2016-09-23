@@ -1,6 +1,7 @@
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
     POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
-    POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, RiskAssessmentTask
+    POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, RiskAssessmentTask, \
+    POLICY_STATUS_ON_COMPLETENESS_CHECK
 from dynamis.settings import RISK_ASSESSORS_PER_POLICY_COUNT
 
 
@@ -12,7 +13,7 @@ def test_to_deposit_refund(factories):
     assert policy.rejected_count == 1
 
 
-def test_p2p_review_to_risk_assessment_review_lack_of_assessors(factories):
+def test_p2p_review_to_completeness_check_review_lack_of_assessors(factories):
     user = factories.UserFactory()
 
     user_2 = factories.UserFactory(is_risk_assessor=True)
@@ -25,13 +26,13 @@ def test_p2p_review_to_risk_assessment_review_lack_of_assessors(factories):
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
     assert RiskAssessmentTask.objects.all().count() == 3
 
 
-def test_p2p_review_to_risk_assessment_review_user_is_assessor(factories):
+def test_p2p_review_to_completeness_check_review_user_is_assessor(factories):
     user = factories.UserFactory(is_risk_assessor=True)
     user_2 = factories.UserFactory(is_risk_assessor=True)
     user_3 = factories.UserFactory(is_risk_assessor=True)
@@ -41,14 +42,14 @@ def test_p2p_review_to_risk_assessment_review_user_is_assessor(factories):
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
     assert RiskAssessmentTask.objects.all().count() == 2
     assert RiskAssessmentTask.objects.filter(user=user).exists() is False
 
 
-def test_p2p_review_to_risk_assessment_review_enough_assessors(factories):
+def test_p2p_review_to_completeness_check_review_enough_assessors(factories):
     user = factories.UserFactory()
 
     user_2 = factories.UserFactory(is_risk_assessor=True)
@@ -65,13 +66,13 @@ def test_p2p_review_to_risk_assessment_review_enough_assessors(factories):
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
     assert RiskAssessmentTask.objects.all().count() == RISK_ASSESSORS_PER_POLICY_COUNT
 
 
-def test_p2p_review_to_risk_assessment_review_random_assessors(factories):
+def test_p2p_review_to_completeness_check_review_random_assessors(factories):
     user = factories.UserFactory()
     user_0 = factories.UserFactory()
 
@@ -99,11 +100,11 @@ def test_p2p_review_to_risk_assessment_review_random_assessors(factories):
     app_item_2 = factories.IdentityApplicationItemFactory(policy_application=policy_2)
     factories.IdentityPeerReviewFactory(application_item=app_item_2, result='3')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
-    policy_2.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy_2.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
     assert RiskAssessmentTask.objects.all().count() == RISK_ASSESSORS_PER_POLICY_COUNT * 2
 
@@ -113,7 +114,7 @@ def test_p2p_review_to_risk_assessment_review_random_assessors(factories):
     assert sorted(first_assessors) != sorted(second_assessors)
 
 
-def test_p2p_review_to_risk_assessment_already_created(factories):
+def test_p2p_review_to_completeness_check_already_created(factories):
     user = factories.UserFactory()
     user_assessor = factories.UserFactory()
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
@@ -125,7 +126,7 @@ def test_p2p_review_to_risk_assessment_already_created(factories):
     factories.RiskAssessmentTaskFactory.create_batch(5, policy=policy)
     assert RiskAssessmentTask.objects.all().count() == 5
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
     assert RiskAssessmentTask.objects.all().count() == 5
