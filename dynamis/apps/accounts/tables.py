@@ -2,6 +2,7 @@ import django_tables2 as tables
 from django_tables2 import A
 
 from dynamis.apps.payments.models import SmartDeposit
+from dynamis.apps.policy.models import RiskAssessmentTask
 from dynamis.utils.tables import MaterializedTable
 
 

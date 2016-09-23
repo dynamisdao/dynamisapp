@@ -3,7 +3,6 @@ from django.core.urlresolvers import (
 )
 from django.core import signing
 from django.views.generic import FormView
-from django.views.generic import ListView
 from django.views.generic import (
     TemplateView,
     RedirectView,
@@ -16,7 +15,6 @@ from authtools.views import (
     PasswordChangeView,
 )
 from django.views.generic.list import ListView
-from django_tables2 import SingleTableMixin
 from django_tables2 import SingleTableMixin
 
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
@@ -59,20 +57,23 @@ class RiskAssessmentView(LoginRequired, TemplateView):
     template_name = "accounts/risk_assessment.html"
 
     def get_object(self):
-         return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])
+        return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])
 
 
 class MyPolicyView(LoginRequired, TemplateView):
     template_name = "accounts/my_policy.html"
 
+
 class WalletView(TemplateView):
     template_name = "accounts/wallet.html"
+
 
 class NotifyingPasswordChangeView(PasswordChangeView):
     """
     Adds a message using the django messages framework to notify the user of a
     successful password change.
     """
+
     def form_valid(self, *args, **kwargs):
         messages.success(self.request, "Your password has been updated")
         return super(NotifyingPasswordChangeView, self).form_valid(*args, **kwargs)
@@ -83,6 +84,7 @@ class VerifyEmailView(RedirectView):
     Given a valid activation key, activate the user's
     alternate email. Pulled from django-registration.
     """
+
     def get_redirect_url(self, *args, **kwargs):
         if self.activate():
             messages.success(self.request, "Your email address has been verified")
