@@ -1,9 +1,9 @@
-{% extends 'admin/layout.html' %}
+{% extends '_admin/layout.html' %}
 {% load humanize %}
 
 {% block bread %}
-  <a href="{% url 'admin:site-index' %}" class="breadcrumb">Admin</a>
-  <a href="{% url 'admin:user-index' %}" class="breadcrumb">Users</a>
+  <a href="{% url 'admin-namespace:site-index' %}" class="breadcrumb">Admin</a>
+  <a href="{% url 'admin-namespace:user-index' %}" class="breadcrumb">Users</a>
 {% endblock %}
 
 {% block crumbs %}
@@ -37,7 +37,7 @@
                     </dl>
                 </div>
                 <div class="col s6">
-                  <form action="{% url 'admin:user-detail' pk=dynamis_user.pk %}" method="post">
+                  <form action="{% url 'admin-namespace:user-detail' pk=dynamis_user.pk %}" method="post">
                     <div class="card">
                         <span class="card-title">Edit</span>
                         {% include 'partials/form_as_fieldsets.html' %}

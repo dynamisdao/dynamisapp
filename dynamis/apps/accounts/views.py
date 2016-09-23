@@ -3,6 +3,7 @@ from django.core.urlresolvers import (
 )
 from django.core import signing
 from django.views.generic import FormView
+from django.views.generic import ListView
 from django.views.generic import (
     TemplateView,
     RedirectView,
@@ -16,7 +17,9 @@ from authtools.views import (
 )
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
+from django_tables2 import SingleTableMixin
 
+from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
 from dynamis.apps.payments.models import SmartDeposit
@@ -43,17 +46,21 @@ class KeybaseVerificationView(LoginRequired, TemplateView):
 class UserDashboardView(LoginRequired, TemplateView):
     template_name = "accounts/user_dashboard.html"
 
-class AssessorDashboardView(LoginRequired, TemplateView):
+
+class AssessorDashboardView(LoginRequired, SingleTableMixin, ListView):
     template_name = "accounts/assessor_dashboard.html"
+    table_class = RiskAssessmentTaskTable
+
+    def get_queryset(self):
+        return self.request.user.risk_assessment_tasks.all()
+
 
 class RiskAssessmentView(LoginRequired, TemplateView):
     template_name = "accounts/risk_assessment.html"
 
     def get_object(self):
-         # TODO
-         assessment_pk = self.kwargs['assessment_pk']
-         # TODO - just for example...
-         return self.request.user.policies.get(pk=1)
+         return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])
+
 
 class MyPolicyView(LoginRequired, TemplateView):
     template_name = "accounts/my_policy.html"

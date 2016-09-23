@@ -14,13 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.contrib import admin
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
+admin.autodiscover()
+
 urlpatterns = [
     url(
-        r'^$', TemplateView.as_view(template_name='index.html'),
+        r'^$', TemplateView.as_view(template_name='_index.html'),
         name="site-index",
     ),
 
@@ -32,9 +36,14 @@ urlpatterns = [
     url(r'^api/v1/', include('dynamis.core.api.v1.urls', namespace="v1")),
 
     # Admin
-    url(r'^admin/', include('dynamis.core.admin.urls', namespace="admin")),
+    url(r'^admin/', include('dynamis.core.admin.urls', namespace="admin-namespace")),
+
 ]
 
+# Django admin
+urlpatterns += [
+    url(r'^native-admin/', include(admin.site.urls)),
+]
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
