@@ -17,7 +17,7 @@ from .views import (
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView,
-)
+    SmartDepositStubView)
 
 
 urlpatterns = [
@@ -43,6 +43,11 @@ urlpatterns = [
         PasswordResetConfirmAndLoginView.as_view(),
         name='password-reset-confirm-and-login',
     ),
+    url(
+        r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        PasswordResetConfirmAndLoginView.as_view(),
+        name='password_reset_confirm',
+    ),
     url(r'^profile/$', UserDashboardView.as_view(), name='user-profile'),
     url(r'^my-policy/$', MyPolicyView.as_view(), name='my-policy'),
     url(r'^wallet/$', WalletView.as_view(), name='wallet'),
@@ -59,5 +64,7 @@ urlpatterns = [
 
     url(r'^assessor-dashboard/$', AssessorDashboardView.as_view(), name='assessor-dashboard'),
 
-    url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment')
+    url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment'),
+
+    url(r'^smart-deposit/$', SmartDepositStubView.as_view(), name='smart-deposit-stub'),
 ]
