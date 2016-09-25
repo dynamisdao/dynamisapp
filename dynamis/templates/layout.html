@@ -9,7 +9,7 @@
       <ul id="nav-mobile" class="right">
         {% if user.is_authenticated %}
           {% if user.is_admin %}
-            <li><a href="{% url 'admin:site-index' %}">Admin</a></li>
+            <li><a href="{% url 'admin-namespace:site-index' %}">Admin</a></li>
           {% endif %}
 
           <li><a href="{% url 'my-policy' %}">My policy</a></li>

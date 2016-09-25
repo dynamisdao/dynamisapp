@@ -71,7 +71,7 @@ class UserUpdateView(AdminRequired, UpdateView):
         return super(UserUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('admin:user-detail', kwargs=self.kwargs)
+        return reverse('admin-namespace:user-detail', kwargs=self.kwargs)
 
 
 class PolicyInfoView(AdminRequired, DetailView):
@@ -80,4 +80,4 @@ class PolicyInfoView(AdminRequired, DetailView):
     template_name = "policies/policy_detail_admin.html"
 
     def get_success_url(self):
-        return reverse('admin:policy-detail', kwargs=self.kwargs)
+        return reverse('admin-namespace:policy-detail', kwargs=self.kwargs)
