@@ -1,19 +1,19 @@
-
 from dynamis.apps.payments.models import SmartDeposit
+from dynamis.apps.policy.models import RiskAssessmentTask
 from dynamis.utils.tables import MaterializedTable
 import django_tables2 as tables
 from django_tables2 import A
 
 
 class SmartDepositTable(MaterializedTable):
-
     class Meta(MaterializedTable.Meta):
         model = SmartDeposit
         order_by = ('id',)
         fields = (
             'id',
             'amount',
-            'is_confirmed',
+            'is_confirmed'
+        )
 
 
 class RiskAssessmentTaskTable(MaterializedTable):
@@ -25,4 +25,5 @@ class RiskAssessmentTaskTable(MaterializedTable):
         fields = (
             'id',
             'policy',
-            'is_finished',
+            'is_finished'
+        )
