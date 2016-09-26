@@ -21,11 +21,13 @@ POLICY_STATUS_ON_SMART_DEPOSIT_REFUND = 6
 POLICY_STATUS_DELETED = 7
 POLICY_STATUS_ACTIVE = 8
 POLICY_STATUS_WAIT_FOR_PREMIUM = 9
+POLICY_STATUS_ON_COMPLETENESS_CHECK = 10
 
 POLICY_STATUS = {
     (POLICY_STATUS_INIT, 'init'),
     (POLICY_STATUS_SUBMITTED, 'submitted_wait_for_deposit'),
     (POLICY_STATUS_ON_P2P_REVIEW, 'on_p2p_review'),
+    (POLICY_STATUS_ON_COMPLETENESS_CHECK, 'on_completeness_check'),
     (POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, 'on_risk_assessment_review'),
     (POLICY_STATUS_APPROVED, 'approved'),
     (POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, 'on_smart_deposit_refund'),
@@ -39,6 +41,7 @@ class PolicyApplication(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='policies')
     is_final = models.BooleanField(default=False)
     is_signed = models.BooleanField(default=False)
+    is_completeness_checked = models.BooleanField(default=False)
     data = models.TextField()
     rejected_count = models.PositiveSmallIntegerField(default=0)
     state = FSMIntegerField(default=POLICY_STATUS_INIT, protected=True, choices=POLICY_STATUS)
@@ -89,6 +92,9 @@ class PolicyApplication(TimestampModel):
             return True
         return False
 
+    def check_is_completeness_checked(self):
+        return self.is_completeness_checked
+
     @transition(field=state, source=POLICY_STATUS_INIT, target=POLICY_STATUS_SUBMITTED)
     def submit(self):
         pass
@@ -114,8 +120,8 @@ class PolicyApplication(TimestampModel):
         pass
 
     @transition(field=state, source=POLICY_STATUS_ON_P2P_REVIEW,
-                target=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, conditions=[check_p2p_review])
-    def p2p_review_to_risk_assessment_review(self):
+                target=POLICY_STATUS_ON_COMPLETENESS_CHECK, conditions=[check_p2p_review])
+    def p2p_review_to_completeness_check(self):
 
         # TODO I have to ensure about it and compare with business-logic
         assessment_tasks_count = RiskAssessmentTask.objects.filter(policy=self).count()
@@ -131,6 +137,12 @@ class PolicyApplication(TimestampModel):
             pk=self.user.pk).order_by('?')[:tasks_to_create_count]
         for assessor in assessors:
             RiskAssessmentTask.objects.create(policy=self, user=assessor)
+
+    @transition(field=state, source=POLICY_STATUS_ON_COMPLETENESS_CHECK,
+                target=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
+                conditions=[check_is_completeness_checked])
+    def completeness_check_to_risk_assessment_review(self):
+        pass
 
     @transition(field=state, source=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                 target=POLICY_STATUS_APPROVED, conditions=[check_risk_assessment_review])

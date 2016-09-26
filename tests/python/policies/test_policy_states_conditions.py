@@ -4,7 +4,7 @@ from django_fsm import TransitionNotAllowed
 
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
     POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
-    POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM
+    POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, POLICY_STATUS_ON_COMPLETENESS_CHECK
 
 
 def test_deny_change_policy_state_directly(factories):
@@ -84,7 +84,7 @@ def test_submit_to_p2p_review_deposit_refunded(factories):
     assert policy.state == POLICY_STATUS_SUBMITTED
 
 
-def test_p2p_review_to_risk_assessment_review_int_result(factories):
+def test_p2p_review_to_completeness_check_int_result(factories):
     user = factories.UserFactory()
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
@@ -92,11 +92,11 @@ def test_p2p_review_to_risk_assessment_review_int_result(factories):
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
 
-def test_p2p_review_to_risk_assessment_review_str_result(factories):
+def test_p2p_review_to_completeness_check_str_result(factories):
     user = factories.UserFactory()
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
@@ -104,11 +104,11 @@ def test_p2p_review_to_risk_assessment_review_str_result(factories):
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='verified')
 
-    policy.p2p_review_to_risk_assessment_review()
-    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
+    policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
 
-def test_p2p_review_to_risk_assessment_review_falsified_result(factories):
+def test_p2p_review_to_completeness_check_falsified_result(factories):
     user = factories.UserFactory()
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
@@ -117,11 +117,11 @@ def test_p2p_review_to_risk_assessment_review_falsified_result(factories):
     factories.IdentityPeerReviewFactory(application_item=app_item, result='falsified')
 
     with pytest.raises(TransitionNotAllowed):
-        policy.p2p_review_to_risk_assessment_review()
+        policy.p2p_review_to_completeness_check()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
 
-def test_p2p_review_to_risk_assessment_review_low_result(factories):
+def test_p2p_review_to_completeness_check_low_result(factories):
     user = factories.UserFactory()
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
@@ -130,8 +130,25 @@ def test_p2p_review_to_risk_assessment_review_low_result(factories):
     factories.IdentityPeerReviewFactory(application_item=app_item, result='2')
 
     with pytest.raises(TransitionNotAllowed):
-        policy.p2p_review_to_risk_assessment_review()
+        policy.p2p_review_to_completeness_check()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
+
+
+def test_completeness_check_to_assessment_review_false(factories):
+    user = factories.UserFactory()
+    policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_COMPLETENESS_CHECK,
+                                                user=user, is_completeness_checked=False)
+    with pytest.raises(TransitionNotAllowed):
+        policy.completeness_check_to_risk_assessment_review()
+    assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
+
+
+def test_completeness_check_to_assessment_review_true(factories):
+    user = factories.UserFactory()
+    policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_COMPLETENESS_CHECK,
+                                                user=user, is_completeness_checked=True)
+    policy.completeness_check_to_risk_assessment_review()
+    assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
 
 
 def test_risk_assessment_review_to_approved(factories):
