@@ -28,11 +28,12 @@ class JSONSerializerField(serializers.Field):
         return json.dumps(data, sort_keys=True)
 
     def to_representation(self, value):
-        return json.loads(value)
+        if value:
+            return json.loads(value)
 
 
 class PolicyApplicationSerializer(serializers.ModelSerializer):
-    data = JSONSerializerField()
+    data = JSONSerializerField(required=False)
 
     class Meta:
         model = PolicyApplication
