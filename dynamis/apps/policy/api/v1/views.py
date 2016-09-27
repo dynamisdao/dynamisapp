@@ -17,6 +17,7 @@ from dynamis.apps.policy.models import (
     RiskAssessmentTask)
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
+from dynamis.core.view_mixins import DynamisCreateModelMixin
 
 from .serializers import (
     PolicyApplicationSerializer,
@@ -28,7 +29,7 @@ from .serializers import (
     RiskAssessmentTaskDetailSerializer, RiskAssessmentTaskShortSerializer)
 
 
-class PolicyApplicationViewSet(mixins.CreateModelMixin,
+class PolicyApplicationViewSet(DynamisCreateModelMixin,
                                mixins.RetrieveModelMixin,
                                mixins.UpdateModelMixin,
                                mixins.ListModelMixin,
