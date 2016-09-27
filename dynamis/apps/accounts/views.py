@@ -2,6 +2,7 @@ from django.core.urlresolvers import (
     reverse,
 )
 from django.core import signing
+from django.views.generic import ListView
 from django.views.generic import FormView
 from django.views.generic import (
     TemplateView,
@@ -14,15 +15,16 @@ from django.shortcuts import redirect
 from authtools.views import (
     PasswordChangeView,
 )
+from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
-from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
 from dynamis.apps.payments.models import SmartDeposit
 from dynamis.apps.policy.models import POLICY_STATUS_INIT
 from dynamis.utils.mixins import LoginRequired
+from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 
 from .models import User
 
