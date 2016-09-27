@@ -13,7 +13,7 @@ def factories(transactional_db):
     import factory
 
     from factories.accounts import (  # NOQA
-        UserFactory, AccountConfigFactory
+        UserFactory
     )
     from factories.policy import (  # NOQA
         PolicyApplicationFactory,
@@ -26,6 +26,7 @@ def factories(transactional_db):
     from factories.payments import (
         SmartDepositFactory,
         PremiumPaymentFactory,
+        EthAccountFactory
     )
 
     def is_factory(obj):

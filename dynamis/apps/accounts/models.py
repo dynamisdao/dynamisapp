@@ -44,8 +44,3 @@ class User(AbstractEmailUser):
 
     def get_keybase_username(self):
         return self.keybase_username
-
-
-class AccountConfig(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
-    rpc_node_host = models.URLField(default='http://localhost:8545')

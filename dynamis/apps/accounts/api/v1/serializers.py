@@ -6,8 +6,8 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.identity import get_provider
+from dynamis.apps.payments.models import EthAccount
 from dynamis.settings import DEBUG
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
@@ -55,8 +55,8 @@ class AccountCreationSerializer(serializers.Serializer):
             'user': user
         }
         if 'eth_address' in validated_data:
-            create_settings_kwargs['rpc_node_host'] = validated_data['eth_address']
-        AccountConfig.objects.create(**create_settings_kwargs)
+            create_settings_kwargs['eth_address'] = validated_data['eth_address']
+        EthAccount.objects.create(**create_settings_kwargs)
 
         # TODO FIXME - we have to find more elegant way to separate test/prod behavior
         if DEBUG and validated_data.get('debug_no_verify', None) is True:
@@ -113,10 +113,10 @@ class VerifyKeybaseSerializer(serializers.Serializer):
         return instance
 
 
-class AccountConfigSerializer(serializers.ModelSerializer):
+class EthAccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AccountConfig
-        fields = ('rpc_node_host',)
+        model = EthAccount
+        fields = ('eth_address',)
 
 
 class AccountShortSerializer(serializers.ModelSerializer):

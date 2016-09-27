@@ -5,7 +5,7 @@ from django.conf.urls import url
 from .views import (
     AccountCreationAPIView,
     DEPR_ManualKeybaseVerificationView,
-    AccountSettingsViewSet, ManualKeybaseVerificationViewSet)
+    EthAccountViewSet, ManualKeybaseVerificationViewSet)
 
 action_get_put = {'get': 'retrieve', 'put': 'update'}
 
@@ -27,6 +27,6 @@ urlpatterns = [
         ManualKeybaseVerificationViewSet.as_view({'put': 'update'}),
         name="verify-keybase-detail",
     ),
-    url(r'^(?P<pk>\d+)/settings/$', AccountSettingsViewSet.as_view(action_get_put),
+    url(r'^(?P<pk>\d+)/settings/$', EthAccountViewSet.as_view(action_get_put),
         name='account-settings-detail'),
 ]
