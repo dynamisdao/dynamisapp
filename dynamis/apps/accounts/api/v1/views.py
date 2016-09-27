@@ -14,6 +14,7 @@ from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, Acc
 from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
+from dynamis.core.view_mixins import DynamisCreateModelMixin
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
@@ -69,7 +70,7 @@ class AccountSettingsViewSet(mixins.RetrieveModelMixin,
 
 class AccountViewSet(mixins.RetrieveModelMixin,
                      mixins.ListModelMixin,
-                     mixins.CreateModelMixin,
+                     DynamisCreateModelMixin,
                      mixins.UpdateModelMixin,
                      GenericViewSet):
 
