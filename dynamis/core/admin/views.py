@@ -8,4 +8,4 @@ from dynamis.utils.mixins import (
 
 
 class AdminIndexView(AdminRequired, TemplateView):
-    template_name = '_index.html'
+    template_name = 'admin/admin_index.html'
