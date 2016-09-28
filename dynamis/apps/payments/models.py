@@ -25,3 +25,8 @@ class PremiumPayment(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='premium_payments')
     is_confirmed = models.BooleanField(default=False)
     amount = models.FloatField()
+
+
+class FillEthAccountOperation(TimestampModel):
+    eth_account = models.ForeignKey(EthAccount, related_name='fill_account_operation')
+    amount = models.FloatField()
