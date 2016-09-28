@@ -27,7 +27,8 @@
     "redux-thunk": "^2.0.1",
     "sass-brunch": "^2.6.2",
     "uuid": "^2.0.1",
-    "web3": "^0.15.3"
+    "web3": "^0.15.3",
+    "secp256k1": "git+https://github.com/AnthonyAkentiev/secp256k1-node.git"
   },
   "scripts": {
     "lint": "eslint 'dynamis/static/**/*.js*' && npm run lint-success -s",
