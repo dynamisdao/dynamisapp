@@ -212,3 +212,28 @@ def test_user_creation_debug_no_verify_api_view(User, api_client):
 
     # see that we were logged in.
     assert '_auth_user_id' in api_client.session.keys()
+
+
+def test_create_account_exist(api_client, factories):
+    email = 'test@email.com'
+    password = 'test_pass'
+    keybase_username = 'test_keybase'
+
+    user = factories.UserFactory(email=email, password=password, keybase_username=keybase_username)
+
+    data = {
+        'email': email,
+        'password1': password,
+        'password2': password,
+        'keybase_username': keybase_username,
+    }
+
+    users_count = User.objects.all().count()
+    assert users_count == 2
+
+    url = reverse('v1:accounts-list')
+    response = api_client.post(url, data=data)
+
+    assert response.status_code == status.HTTP_409_CONFLICT
+    users_count = User.objects.all().count()
+    assert users_count == 2
