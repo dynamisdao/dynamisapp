@@ -1,8 +1,9 @@
+from constance import config
+
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
     POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
     POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, RiskAssessmentTask, \
     POLICY_STATUS_ON_COMPLETENESS_CHECK
-from dynamis.settings import RISK_ASSESSORS_PER_POLICY_COUNT
 
 
 def test_to_deposit_refund(factories):
@@ -69,7 +70,7 @@ def test_p2p_review_to_completeness_check_review_enough_assessors(factories):
     policy.p2p_review_to_completeness_check()
     assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
-    assert RiskAssessmentTask.objects.all().count() == RISK_ASSESSORS_PER_POLICY_COUNT
+    assert RiskAssessmentTask.objects.all().count() == config.RISK_ASSESSORS_PER_POLICY_COUNT
 
 
 def test_p2p_review_to_completeness_check_review_random_assessors(factories):
@@ -106,7 +107,7 @@ def test_p2p_review_to_completeness_check_review_random_assessors(factories):
     policy_2.p2p_review_to_completeness_check()
     assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
 
-    assert RiskAssessmentTask.objects.all().count() == RISK_ASSESSORS_PER_POLICY_COUNT * 2
+    assert RiskAssessmentTask.objects.all().count() == config.RISK_ASSESSORS_PER_POLICY_COUNT * 2
 
     first_assessors = RiskAssessmentTask.objects.filter(policy=policy).values_list('user__id', flat=True)
     second_assessors = RiskAssessmentTask.objects.filter(policy=policy_2).values_list('user__id', flat=True)
