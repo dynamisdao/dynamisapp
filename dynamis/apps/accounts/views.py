@@ -22,7 +22,8 @@ from django_tables2 import SingleTableMixin
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
 from dynamis.apps.payments.models import SmartDeposit
-from dynamis.apps.policy.models import POLICY_STATUS_INIT
+from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
+    POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_SUBMITTED
 from dynamis.utils.mixins import LoginRequired
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 
@@ -129,7 +130,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
     template_name = "accounts/smart-deposit-stub.html"
     form_class = SmartDepositStubForm
     table_class = SmartDepositTable
-    success_url = '/accounts/smart-deposit/'
+    success_url = '/'
 
     def get_queryset(self):
         return SmartDeposit.objects.filter(user=self.request.user)
@@ -139,6 +140,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
         policy = self.request.user.policies.all()[0]
         if policy.state == POLICY_STATUS_INIT:
             policy.submit()
-        policy.submit_to_p2p_review()
-        policy.save()
+        elif policy.state == POLICY_STATUS_SUBMITTED:
+            policy.submit_to_p2p_review()
+            policy.save()
         return super(SmartDepositStubView, self).form_valid(form)
