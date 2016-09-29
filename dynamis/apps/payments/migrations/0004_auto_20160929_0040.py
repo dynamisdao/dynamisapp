@@ -7,11 +7,6 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def delete_test_old_smart_deposits(apps, schema_editor):
-    SmartDeposit = apps.get_model('payments', 'SmartDeposit')
-    SmartDeposit.objects.all().delete()
-
-
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -20,7 +15,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(delete_test_old_smart_deposits),
         migrations.CreateModel(
             name='BuyTokenOperation',
             fields=[
