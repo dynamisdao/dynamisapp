@@ -245,6 +245,22 @@ IPFS_AUTH_PASSWORD = env.get('IPFS_AUTH_PASSWORD', required=IPFS_AUTH_USERNAME)
 
 if DEBUG:
     CORS_ALLOW_CREDENTIALS = True
+    CORS_ALLOW_HEADERS = [
+
+        # default
+        'x-requested-with',
+        'content-type',
+        'accept',
+        'origin',
+        'authorization',
+        'x-csrftoken',
+        'user-agent',
+        'accept-encoding',
+
+        # custom
+        'x-prototype-version'
+        'allow'
+    ]
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
 
 IDENTITY_RECORDS_RATIO = 3
