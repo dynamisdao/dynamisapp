@@ -14,6 +14,7 @@ class User(AbstractEmailUser):
     keybase_username = models.CharField(max_length=16, blank=True)
     is_keybase_verified = models.BooleanField(default=False)
     linkedin_account = models.CharField(max_length=255, blank=True, null=True)
+    internal_contractor = models.BooleanField(default=False)
 
     is_risk_assessor = models.BooleanField(
         default=False,

@@ -6,7 +6,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django_fsm import transition, FSMIntegerField
 
-from dynamis.apps.payments.models import SmartDeposit, PremiumPayment
+from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, SmartDepositRefund, EthAccount
 from dynamis.apps.accounts.models import User
 from dynamis.core.models import TimestampModel
 from dynamis.settings import RISK_ASSESSORS_PER_POLICY_COUNT
@@ -50,12 +50,14 @@ class PolicyApplication(TimestampModel):
         return "%s's %s" % (self.user.get_full_name(), 'policy')
 
     def check_smart_deposit_refunded(self):
-        if SmartDeposit.objects.filter(user=self.user, refunded=True, is_confirmed=True).exists():
+        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        if smart_deposits.exists() and SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
     def check_smart_deposit(self):
-        if SmartDeposit.objects.filter(user=self.user, refunded=False, is_confirmed=True).exists():
+        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        if smart_deposits.exists() and not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
@@ -78,8 +80,8 @@ class PolicyApplication(TimestampModel):
 
         # TODO use PREMIUM_PAYMENT_PERIODICITY
         time_to_pay = datetime.datetime.now() - datetime.timedelta(weeks=4)
-
-        if PremiumPayment.objects.filter(user=self.user, created_at__gte=time_to_pay):
+        eth_accounts = EthAccount.objects.filter(user=self.user)
+        if PremiumPayment.objects.filter(eth_account__in=eth_accounts, created_at__gte=time_to_pay):
             return True
         return False
 
@@ -88,7 +90,8 @@ class PolicyApplication(TimestampModel):
         # TODO use PREMIUM_PAYMENT_PERIODICITY
         time_to_pay = datetime.datetime.now() - datetime.timedelta(weeks=4)
 
-        if not PremiumPayment.objects.filter(user=self.user, created_at__gte=time_to_pay):
+        eth_accounts = EthAccount.objects.filter(user=self.user)
+        if not PremiumPayment.objects.filter(eth_account__in=eth_accounts, created_at__gte=time_to_pay):
             return True
         return False
 

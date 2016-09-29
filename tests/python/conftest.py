@@ -25,6 +25,7 @@ def factories(transactional_db):
     )
     from factories.payments import (
         SmartDepositFactory,
+        SmartDepositRefundFactory,
         PremiumPaymentFactory,
         EthAccountFactory
     )
@@ -177,10 +178,12 @@ def generate_gpg_key_raw(gpg):
     """
     Function which generates a new key for the gpg keyring
     """
+
     def _generate_gpg_key_raw():
         seed = gpg.gen_key_input(key_type="RSA", key_length=1024)
         key = gpg.gen_key(seed)
         return key
+
     return _generate_gpg_key_raw
 
 
@@ -215,6 +218,7 @@ def generate_gpg_key(dummy_public_key_provider, gpg, monkeypatch,
         monkeypatch.setitem(testing.KEY_DB, (username,), public_key_pem)
         monkeypatch.setitem(testing.PROOF_DB, (username,), [])
         return gpg_key
+
     return _generate_gpg_key
 
 

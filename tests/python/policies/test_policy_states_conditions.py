@@ -32,8 +32,9 @@ def test_policy_cancel_submission(factories):
 
 def test_to_deposit_refund(factories):
     user = factories.UserFactory()
+    eth_account = factories.EthAccountFactory(user=user)
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
+    deposit = factories.SmartDepositFactory(user=user, eth_account=eth_account, is_confirmed=True)
     policy.to_deposit_refund()
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
 
@@ -48,7 +49,8 @@ def test_to_deposit_refund_no_deposit(factories):
 
 def test_deposit_refund_to_init(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True, refunded=True)
+    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
+    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_SMART_DEPOSIT_REFUND,
                                                 user=user)
     policy.deposit_refund_to_init()
@@ -57,7 +59,7 @@ def test_deposit_refund_to_init(factories):
 
 def test_deposit_refund_to_init_not_refunded(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True, refunded=False)
+    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_SMART_DEPOSIT_REFUND,
                                                 user=user)
     with pytest.raises(TransitionNotAllowed):
@@ -76,7 +78,8 @@ def test_submit_to_p2p_review(factories):
 
 def test_submit_to_p2p_review_deposit_refunded(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True, refunded=True)
+    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
+    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user)
     with pytest.raises(TransitionNotAllowed):
@@ -191,7 +194,8 @@ def test_activate_policy(factories):
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
-    factories.PremiumPaymentFactory(user=user, is_confirmed=True)
+    eth_account = factories.EthAccountFactory(user=user)
+    factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     policy.activate()
     assert policy.state == POLICY_STATUS_ACTIVE
 
@@ -218,7 +222,8 @@ def test_activate_too_old_premium(factories):
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
-    premium = factories.PremiumPaymentFactory(user=user, is_confirmed=True)
+    eth_account = factories.EthAccountFactory(user=user)
+    premium = factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     premium.created_at = old_date
     premium.save()
     with pytest.raises(TransitionNotAllowed):
@@ -232,7 +237,8 @@ def test_wait_for_premium(factories):
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ACTIVE,
                                                 user=user)
-    premium = factories.PremiumPaymentFactory(user=user, is_confirmed=True)
+    eth_account = factories.EthAccountFactory(user=user)
+    premium = factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     premium.created_at = new_date
     premium.save()
     policy.wait_for_payment()
@@ -245,7 +251,8 @@ def test_wait_for_premium_too_new_premium(factories):
     deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ACTIVE,
                                                 user=user)
-    premium = factories.PremiumPaymentFactory(user=user, is_confirmed=True)
+    eth_account = factories.EthAccountFactory(user=user)
+    premium = factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     premium.created_at = new_date
     premium.save()
     with pytest.raises(TransitionNotAllowed):
