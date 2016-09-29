@@ -7,7 +7,8 @@ from rest_framework import status
 
 from dynamis.apps.accounts.api.v1.serializers import (AccountShortSerializer, AccountDetailSerializer,
                                                       AccountListSerializer)
-from dynamis.apps.accounts.models import User, AccountConfig
+from dynamis.apps.accounts.models import User
+from dynamis.apps.payments.models import EthAccount
 
 
 def test_get_my_account(user_webtest_client, api_client):
@@ -146,8 +147,8 @@ def test_create_account(api_client, factories):
     assert response.status_code == status.HTTP_201_CREATED
     user = User.objects.get(email=email, keybase_username=keybase_username)
     assert user.is_keybase_verified is False
-    account_config = AccountConfig.objects.get(user=user)
-    assert account_config.rpc_node_host == eth_address
+    account_config = EthAccount.objects.get(user=user)
+    assert account_config.eth_address == eth_address
 
 
 def test_user_creation_api_view(User, api_client):

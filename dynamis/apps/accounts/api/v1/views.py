@@ -11,14 +11,14 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
 from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
-from dynamis.apps.accounts.models import AccountConfig
 from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
+from dynamis.apps.payments.models import EthAccount
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.view_mixins import DynamisCreateModelMixin
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
-    AccountConfigSerializer, AccountDetailSerializer)
+    EthAccountSerializer, AccountDetailSerializer)
 
 
 User = get_user_model()
@@ -56,16 +56,16 @@ class ManualKeybaseVerificationViewSet(mixins.UpdateModelMixin,
         model = User
 
 
-class AccountSettingsViewSet(mixins.RetrieveModelMixin,
-                             mixins.UpdateModelMixin,
-                             GenericViewSet):
-    queryset = AccountConfig.objects.all()
+class EthAccountViewSet(mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
+                        GenericViewSet):
+    queryset = EthAccount.objects.all()
     filter_backends = (IsOwnerOrAdminFilterBackend,)
     permission_classes = [IsAuthenticated]
-    serializer_class = AccountConfigSerializer
+    serializer_class = EthAccountSerializer
 
     class Meta:
-        model = AccountConfig
+        model = EthAccount
 
 
 class AccountViewSet(mixins.RetrieveModelMixin,

@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     's3_folder_storage',
     'django_tables2',
     'materializecssform',
+    'constance',
+    'constance.backends.database',
     # Project
     'dynamis.core',
     'dynamis.apps.accounts.apps.AccountsConfig',
@@ -44,6 +46,7 @@ if env.get('DJANGO_DEBUG_TOOLBAR_ENABLED', type=bool, default=True):
     # production.
     try:
         import debug_toolbar  # NOQA
+
         INSTALLED_APPS.append('debug_toolbar')
     except ImportError:
         pass
@@ -113,7 +116,6 @@ DATABASES['default']['ATOMIC_REQUESTS'] = env.get(
     type=bool,
     default=True,
 )
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -263,6 +265,11 @@ if DEBUG:
     ]
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
 
-IDENTITY_RECORDS_RATIO = 3
-PREMIUM_PAYMENT_PERIODICITY = 'monthly'
-RISK_ASSESSORS_PER_POLICY_COUNT = 5
+CONSTANCE_CONFIG = {
+    'IDENTITY_RECORDS_RATIO': (3, 'Witch rate of peer reviews we need to move policy to active status'),
+    'RISK_ASSESSORS_PER_POLICY_COUNT': (5, 'How many risk assessors we need to move policy to status '
+                                           'on_completeness_check'),
+    'PREMIUM_PAYMENT_PERIODICITY': ('monthly', 'How often users have to pay premium payment'),
+}
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

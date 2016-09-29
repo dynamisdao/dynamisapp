@@ -1,17 +1,17 @@
 import datetime
 
-from dynamis.apps.accounts.api.v1.serializers import AccountConfigSerializer, AccountShortSerializer, \
+from dynamis.apps.accounts.api.v1.serializers import EthAccountSerializer, AccountShortSerializer, \
     AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer
 
 
 def test_account_settings_serializer(factories):
-    account_settings = factories.AccountConfigFactory(rpc_node_host='http://example.com/test_url')
+    account_settings = factories.EthAccountFactory(eth_address='http://example.com/test_url')
 
     data = {
-        'rpc_node_host': account_settings.rpc_node_host,
+        'eth_address': account_settings.eth_address,
     }
 
-    serializer = AccountConfigSerializer(account_settings)
+    serializer = EthAccountSerializer(account_settings)
     assert serializer.data == data
 
 

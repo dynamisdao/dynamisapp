@@ -14,6 +14,7 @@ class User(AbstractEmailUser):
     keybase_username = models.CharField(max_length=16, blank=True)
     is_keybase_verified = models.BooleanField(default=False)
     linkedin_account = models.CharField(max_length=255, blank=True, null=True)
+    internal_contractor = models.BooleanField(default=False)
 
     is_risk_assessor = models.BooleanField(
         default=False,
@@ -44,8 +45,3 @@ class User(AbstractEmailUser):
 
     def get_keybase_username(self):
         return self.keybase_username
-
-
-class AccountConfig(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
-    rpc_node_host = models.URLField(default='http://localhost:8545')

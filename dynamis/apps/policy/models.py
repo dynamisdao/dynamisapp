@@ -6,10 +6,10 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django_fsm import transition, FSMIntegerField
 
-from dynamis.apps.payments.models import SmartDeposit, PremiumPayment
+from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, SmartDepositRefund, EthAccount
 from dynamis.apps.accounts.models import User
 from dynamis.core.models import TimestampModel
-from dynamis.settings import RISK_ASSESSORS_PER_POLICY_COUNT
+from constance import config
 from .querysets import ApplicationItemQueryset
 
 POLICY_STATUS_INIT = 1
@@ -50,12 +50,14 @@ class PolicyApplication(TimestampModel):
         return "%s's %s" % (self.user.get_full_name(), 'policy')
 
     def check_smart_deposit_refunded(self):
-        if SmartDeposit.objects.filter(user=self.user, refunded=True, is_confirmed=True).exists():
+        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        if smart_deposits.exists() and SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
     def check_smart_deposit(self):
-        if SmartDeposit.objects.filter(user=self.user, refunded=False, is_confirmed=True).exists():
+        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        if smart_deposits.exists() and not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
@@ -63,8 +65,9 @@ class PolicyApplication(TimestampModel):
         peer_reviews = PeerReview.objects.filter(application_item__policy_application__user=self.user)
 
         # TODO FIXME REFACTORING - separate different kinds of rates !!!!
-        # TODO use IDENTITY_RECORDS_RATIO
-        if peer_reviews.exists() and not peer_reviews.filter(result__in=('falsified', '1', '2')):
+        not_success_status_list = [str(i) for i in xrange(1, config.IDENTITY_RECORDS_RATIO)]
+        not_success_status_list += ['falsified']
+        if peer_reviews.exists() and not peer_reviews.filter(result__in=not_success_status_list):
             return True
         return False
 
@@ -78,8 +81,8 @@ class PolicyApplication(TimestampModel):
 
         # TODO use PREMIUM_PAYMENT_PERIODICITY
         time_to_pay = datetime.datetime.now() - datetime.timedelta(weeks=4)
-
-        if PremiumPayment.objects.filter(user=self.user, created_at__gte=time_to_pay):
+        eth_accounts = EthAccount.objects.filter(user=self.user)
+        if PremiumPayment.objects.filter(eth_account__in=eth_accounts, created_at__gte=time_to_pay):
             return True
         return False
 
@@ -88,7 +91,8 @@ class PolicyApplication(TimestampModel):
         # TODO use PREMIUM_PAYMENT_PERIODICITY
         time_to_pay = datetime.datetime.now() - datetime.timedelta(weeks=4)
 
-        if not PremiumPayment.objects.filter(user=self.user, created_at__gte=time_to_pay):
+        eth_accounts = EthAccount.objects.filter(user=self.user)
+        if not PremiumPayment.objects.filter(eth_account__in=eth_accounts, created_at__gte=time_to_pay):
             return True
         return False
 
@@ -125,13 +129,13 @@ class PolicyApplication(TimestampModel):
 
         # TODO I have to ensure about it and compare with business-logic
         assessment_tasks_count = RiskAssessmentTask.objects.filter(policy=self).count()
-        if assessment_tasks_count >= RISK_ASSESSORS_PER_POLICY_COUNT:
+        if assessment_tasks_count >= config.RISK_ASSESSORS_PER_POLICY_COUNT:
             return
 
         assessors_count = User.objects.filter(is_risk_assessor=True).exclude(
             pk=self.user.pk).count()
-        tasks_to_create_count = RISK_ASSESSORS_PER_POLICY_COUNT if assessors_count >= RISK_ASSESSORS_PER_POLICY_COUNT \
-            else assessors_count
+        tasks_to_create_count = config.RISK_ASSESSORS_PER_POLICY_COUNT if\
+            assessors_count >= config.RISK_ASSESSORS_PER_POLICY_COUNT else assessors_count
 
         assessors = User.objects.filter(is_risk_assessor=True).exclude(
             pk=self.user.pk).order_by('?')[:tasks_to_create_count]

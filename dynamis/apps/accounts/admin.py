@@ -1,15 +1,10 @@
 from django.contrib import admin
-from models import User, AccountConfig
+from models import User
 
 
 class UserAdmin(admin.ModelAdmin):
     pass
 
 
-class AccountConfigAdmin(admin.ModelAdmin):
-    pass
-
-
 admin.site.register(User, UserAdmin)
-admin.site.register(AccountConfig, AccountConfigAdmin)
 
