@@ -3,14 +3,14 @@
 {% load render_table from django_tables2 %}
 
 {% block content %}
-<h1>Assessor Dashboard</h1>
-<section>
-  <h3>Assessment Tasks</h3>
-  {% render_table table %}
+    <h1>Assessor Dashboard</h1>
+    <section>
+        <h3>Assessment Tasks</h3>
+        {% render_table table %}
 
-  <h3>Token Management</h3>
-  Token Management Interface will be here. 
-  Status of "invested" tokens will be here too.
-</section>
+        <h3>Token Management</h3>
+        Token Management Interface will be here.
+        Status of "invested" tokens will be here too.
+    </section>
 
 {% endblock content %}
