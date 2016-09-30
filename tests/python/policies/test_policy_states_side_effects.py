@@ -9,7 +9,7 @@ from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITT
 def test_to_deposit_refund(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     policy.to_deposit_refund()
     assert policy.rejected_count == 1
 
@@ -21,7 +21,9 @@ def test_p2p_review_to_completeness_check_review_lack_of_assessors(factories):
     user_3 = factories.UserFactory(is_risk_assessor=True)
     user_4 = factories.UserFactory(is_risk_assessor=True)
 
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
+    policy = factories.PolicyApplicationFactory(user=user)
+
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
@@ -37,9 +39,9 @@ def test_p2p_review_to_completeness_check_review_user_is_assessor(factories):
     user = factories.UserFactory(is_risk_assessor=True)
     user_2 = factories.UserFactory(is_risk_assessor=True)
     user_3 = factories.UserFactory(is_risk_assessor=True)
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
@@ -61,9 +63,9 @@ def test_p2p_review_to_completeness_check_review_enough_assessors(factories):
     user_6 = factories.UserFactory(is_risk_assessor=True)
     user_7 = factories.UserFactory(is_risk_assessor=True)
 
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
@@ -89,15 +91,15 @@ def test_p2p_review_to_completeness_check_review_random_assessors(factories):
     user_9 = factories.UserFactory(is_risk_assessor=True)
     user_10 = factories.UserFactory(is_risk_assessor=True)
 
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
-    deposit_2 = factories.SmartDepositFactory(user=user_0, is_confirmed=True)
     policy_2 = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                   user=user_0)
+    deposit_2 = factories.SmartDepositFactory(policy=policy_2, is_confirmed=True)
     app_item_2 = factories.IdentityApplicationItemFactory(policy_application=policy_2)
     factories.IdentityPeerReviewFactory(application_item=app_item_2, result='3')
 
@@ -118,9 +120,9 @@ def test_p2p_review_to_completeness_check_review_random_assessors(factories):
 def test_p2p_review_to_completeness_check_already_created(factories):
     user = factories.UserFactory()
     user_assessor = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 

@@ -133,7 +133,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
     success_url = '/'
 
     def get_queryset(self):
-        return SmartDeposit.objects.filter(user=self.request.user)
+        return SmartDeposit.objects.filter(policy__in=self.request.user.policies.all())
 
     def form_valid(self, form):
         form.save()
