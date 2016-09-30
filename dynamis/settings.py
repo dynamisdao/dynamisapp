@@ -270,6 +270,7 @@ CONSTANCE_CONFIG = {
     'RISK_ASSESSORS_PER_POLICY_COUNT': (5, 'How many risk assessors we need to move policy to status '
                                            'on_completeness_check'),
     'PREMIUM_PAYMENT_PERIODICITY': ('monthly', 'How often users have to pay premium payment'),
+        'EHT_TOKEN_EXCHANGE_RATE': (0.1, 'How many eth we have to spend to by 1 token'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

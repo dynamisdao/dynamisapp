@@ -18,6 +18,8 @@ from authtools.views import (
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
+from constance import config
+
 from dynamis.apps.accounts.forms import SmartDepositStubForm, FillEthOperationForm
 from dynamis.apps.accounts.tables import SmartDepositTable
 from dynamis.apps.policy.models import POLICY_STATUS_SUBMITTED
@@ -78,6 +80,9 @@ class WalletView(LoginRequired, ListView, FormView):
 
     @atomic
     def form_valid(self, form):
+        eth_account = EthAccount.objects.filter(user=self.request.user).first()
+        eth_account.eth_balance -= float(form.data['amount']) * config.EHT_TOKEN_EXCHANGE_RATE
+        eth_account.save()
         token_account, _ = TokenAccount.objects.get_or_create(user=self.request.user)
         token_account.immature_tokens_balance += float(form.data['amount'])
         token_account.save()

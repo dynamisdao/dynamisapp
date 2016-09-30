@@ -3,7 +3,8 @@
 
 {% block content %}
     {% react_component "Dynamis.WalletRoot" %}
-    <h5>Balance: {{ user.token_account.immature_tokens_balance }}</h5>
+    <h5>Immature Tokens Balance: {{ user.token_account.immature_tokens_balance }}</h5>
+    <h5>Eth Balance: {{ user.eth_accounts.first.eth_balance }}</h5>
     <form action="." method="post">
         {% csrf_token %}
         <div class="input-field" hidden="true">
