@@ -260,7 +260,7 @@ if DEBUG:
         'accept-encoding',
 
         # custom
-        'x-prototype-version'
+        'x-prototype-version',
         'allow'
     ]
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
