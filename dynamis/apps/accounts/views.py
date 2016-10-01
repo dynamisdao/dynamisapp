@@ -2,7 +2,7 @@ from django.core.urlresolvers import (
     reverse,
 )
 from django.core import signing
-from django.views.generic import ListView
+from django.db.transaction import atomic
 from django.views.generic import FormView
 from django.views.generic import (
     TemplateView,
@@ -15,15 +15,16 @@ from django.shortcuts import redirect
 from authtools.views import (
     PasswordChangeView,
 )
-from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
-from dynamis.apps.accounts.forms import SmartDepositStubForm
+from constance import config
+
+from dynamis.apps.accounts.forms import SmartDepositStubForm, FillEthOperationForm
 from dynamis.apps.accounts.tables import SmartDepositTable
-from dynamis.apps.payments.models import SmartDeposit
-from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
-    POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_SUBMITTED
+from dynamis.apps.policy.models import POLICY_STATUS_SUBMITTED
+from dynamis.apps.payments.models import SmartDeposit, FillEthOperation, TokenAccount, EthAccount
+from dynamis.apps.policy.models import POLICY_STATUS_INIT
 from dynamis.utils.mixins import LoginRequired
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 
@@ -67,8 +68,29 @@ class MyPolicyView(LoginRequired, TemplateView):
     template_name = "accounts/my_policy.html"
 
 
-class WalletView(TemplateView):
+class WalletView(LoginRequired, ListView, FormView):
+    form_class = FillEthOperationForm
+    success_url = '/accounts/wallet/'
+    object_list = FillEthOperation.objects.all()
     template_name = "accounts/wallet.html"
+
+    def get(self, request, *args, **kwargs):
+        EthAccount.objects.get_or_create(user=request.user)
+        return super(WalletView, self).get(request, *args, **kwargs)
+
+    @atomic
+    def form_valid(self, form):
+        eth_account = EthAccount.objects.filter(user=self.request.user).first()
+        eth_account.eth_balance -= float(form.data['amount']) * config.EHT_TOKEN_EXCHANGE_RATE
+        eth_account.save()
+        token_account, _ = TokenAccount.objects.get_or_create(user=self.request.user)
+        token_account.immature_tokens_balance += float(form.data['amount'])
+        token_account.save()
+        form.save()
+        return super(WalletView, self).form_valid(form)
+
+    def get_queryset(self):
+        return FillEthOperation.objects.filter(eth_account__in=self.request.user.eth_accounts.filter(is_active=True))
 
 
 class NotifyingPasswordChangeView(PasswordChangeView):
