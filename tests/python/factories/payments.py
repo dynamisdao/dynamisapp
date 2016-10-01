@@ -5,7 +5,7 @@ from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, EthAccoun
 
 class SmartDepositFactory(factory.DjangoModelFactory):
     eth_account = factory.SubFactory('factories.payments.EthAccountFactory')
-    user = factory.SubFactory('factories.accounts.UserFactory')
+    policy = factory.SubFactory('factories.policy.PolicyApplicationFactory')
     amount = 7.5
 
     class Meta:
