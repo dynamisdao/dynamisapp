@@ -28,7 +28,7 @@ class User(AbstractEmailUser):
         super(User, self).save(*args, **kwargs)
         if settings.DEBUG:
             eth_account, _ = EthAccount.objects.get_or_create(user=self)
-            eth_account.eth_balance += DEBUG_ETH_USER_INIT_BALANCE
+            eth_account.eth_balance += float(DEBUG_ETH_USER_INIT_BALANCE)
             eth_account.save()
 
     @property
