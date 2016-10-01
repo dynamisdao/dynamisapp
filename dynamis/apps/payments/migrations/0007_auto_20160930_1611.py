@@ -8,7 +8,10 @@ import django.db.models.deletion
 
 def delete_test_old_smart_deposits(apps, schema_editor):
     SmartDeposit = apps.get_model('payments', 'SmartDeposit')
-    SmartDeposit.objects.all().delete()
+    for smart_deposit in SmartDeposit.objects.all():
+        if smart_deposit.user.policies.exists():
+            smart_deposit.policy = smart_deposit.user.polisies.first
+            smart_deposit.save()
 
 
 class Migration(migrations.Migration):
@@ -18,16 +21,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(delete_test_old_smart_deposits),
-        migrations.RemoveField(
-            model_name='smartdeposit',
-            name='user',
-        ),
         migrations.AddField(
             model_name='smartdeposit',
             name='policy',
             field=models.OneToOneField(default=None, on_delete=django.db.models.deletion.CASCADE,
                                        related_name='smart_deposit', to='policy.PolicyApplication'),
             preserve_default=False,
+        ),
+        migrations.RunPython(delete_test_old_smart_deposits),
+        migrations.RemoveField(
+            model_name='smartdeposit',
+            name='user',
         ),
     ]
