@@ -9,8 +9,8 @@ import django.db.models.deletion
 def delete_test_old_smart_deposits(apps, schema_editor):
     SmartDeposit = apps.get_model('payments', 'SmartDeposit')
     for smart_deposit in SmartDeposit.objects.all():
-        if smart_deposit.user.polisies.exists():
-            smart_deposit.policy = smart_deposit.user.polisies.first()
+        if smart_deposit.user.policies.exists():
+            smart_deposit.policy = smart_deposit.user.policies.first()
             smart_deposit.save()
 
 
