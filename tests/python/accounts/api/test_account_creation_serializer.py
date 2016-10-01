@@ -1,6 +1,7 @@
 import pytest
 
 from dynamis.apps.accounts.api.v1.serializers import AccountCreationSerializer
+from dynamis.apps.payments.models import EthAccount
 
 
 def test_account_creation(User):
@@ -18,9 +19,7 @@ def test_account_creation(User):
     assert user.check_password('test-password')
     # see that the email address was normalized.
     assert user.email == 'test@example.com'
-
-    # TODO check EthAccount
-    # assert AccountConfig.objects.exists() is True
+    assert EthAccount.objects.exists() is True
 
 
 @pytest.mark.django_db
