@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='smartdeposit',
             name='policy',
-            field=models.OneToOneField(null=True, default=None, on_delete=django.db.models.deletion.CASCADE,
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE,
                                        related_name='smart_deposit', to='policy.PolicyApplication'),
             preserve_default=False,
         ),
