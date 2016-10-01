@@ -15,7 +15,7 @@
             <span class="card-title">Create Smart Deposit</span>
             {% include 'partials/form_as_fieldsets.html' %}
             <div class="input-field" hidden="true">
-                <input class="validate" id="id_amount" name="user" step="any" type="number" value="{{ user.id }}">
+                <input class=" validate" id="id_amount" name="policy" step="any" type="number" value="{{ user.policies.first.id }}">
             </div>
             <button class="btn btn-primary" type="submit">Save</button>
         </div>

@@ -21,8 +21,9 @@ class TokenAccount(TimestampModel):
 
 
 class SmartDeposit(TimestampModel):
-    eth_account = models.ForeignKey(EthAccount, related_name='smart_deposits')
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='smart_deposit')
+    # TODO delete null = True after development real smart deposits
+    eth_account = models.ForeignKey(EthAccount, related_name='smart_deposits', null=True)
+    policy = models.OneToOneField('policy.PolicyApplication', related_name='smart_deposit')
     is_confirmed = models.BooleanField(default=False)
     amount = models.FloatField()
 

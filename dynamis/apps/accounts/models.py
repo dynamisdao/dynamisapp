@@ -8,6 +8,9 @@ from django.core import signing
 from django.db import models
 from django.contrib.sites.models import Site
 
+from dynamis.apps.payments.models import EthAccount
+from dynamis.settings import DEBUG_ETH_USER_INIT_BALANCE
+
 
 class User(AbstractEmailUser):
     verified_at = models.DateTimeField(null=True, blank=True)
@@ -20,6 +23,13 @@ class User(AbstractEmailUser):
         default=False,
         help_text="Determines whether this user can participate as a risk assessor",
     )
+
+    def save(self, *args, **kwargs):
+        super(User, self).save(*args, **kwargs)
+        if settings.DEBUG:
+            eth_account, _ = EthAccount.objects.get_or_create(user=self)
+            eth_account.eth_balance += DEBUG_ETH_USER_INIT_BALANCE
+            eth_account.save()
 
     @property
     def is_admin(self):

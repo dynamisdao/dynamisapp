@@ -34,7 +34,7 @@ def test_to_deposit_refund(factories):
     user = factories.UserFactory()
     eth_account = factories.EthAccountFactory(user=user)
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(user=user, eth_account=eth_account, is_confirmed=True)
+    deposit = factories.SmartDepositFactory(policy=policy, eth_account=eth_account, is_confirmed=True)
     policy.to_deposit_refund()
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
 
@@ -49,19 +49,19 @@ def test_to_deposit_refund_no_deposit(factories):
 
 def test_deposit_refund_to_init(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
-    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_SMART_DEPOSIT_REFUND,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
+    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     policy.deposit_refund_to_init()
     assert policy.state == POLICY_STATUS_INIT
 
 
 def test_deposit_refund_to_init_not_refunded(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_SMART_DEPOSIT_REFUND,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     with pytest.raises(TransitionNotAllowed):
         policy.deposit_refund_to_init()
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
@@ -69,19 +69,19 @@ def test_deposit_refund_to_init_not_refunded(factories):
 
 def test_submit_to_p2p_review(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
 
 def test_submit_to_p2p_review_deposit_refunded(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
-    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
+    deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     with pytest.raises(TransitionNotAllowed):
         policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_SUBMITTED
@@ -89,9 +89,9 @@ def test_submit_to_p2p_review_deposit_refunded(factories):
 
 def test_p2p_review_to_completeness_check_int_result(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
@@ -101,9 +101,9 @@ def test_p2p_review_to_completeness_check_int_result(factories):
 
 def test_p2p_review_to_completeness_check_str_result(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='verified')
 
@@ -113,9 +113,9 @@ def test_p2p_review_to_completeness_check_str_result(factories):
 
 def test_p2p_review_to_completeness_check_falsified_result(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='falsified')
 
@@ -126,9 +126,9 @@ def test_p2p_review_to_completeness_check_falsified_result(factories):
 
 def test_p2p_review_to_completeness_check_low_result(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='2')
 
@@ -156,9 +156,9 @@ def test_completeness_check_to_assessment_review_true(factories):
 
 def test_risk_assessment_review_to_approved(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     policy.risk_assessment_review_to_approved()
     assert policy.state == POLICY_STATUS_APPROVED
@@ -166,9 +166,9 @@ def test_risk_assessment_review_to_approved(factories):
 
 def test_risk_assessment_review_to_approved_no_tasks(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     with pytest.raises(TransitionNotAllowed):
         policy.risk_assessment_review_to_approved()
     assert policy.state == POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW
@@ -176,9 +176,9 @@ def test_risk_assessment_review_to_approved_no_tasks(factories):
 
 def test_risk_assessment_review_to_approved_not_all_tasks_finished(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     risk_assessment_task_2 = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=False)
     with pytest.raises(TransitionNotAllowed):
@@ -188,9 +188,9 @@ def test_risk_assessment_review_to_approved_not_all_tasks_finished(factories):
 
 def test_activate_policy(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
@@ -202,9 +202,9 @@ def test_activate_policy(factories):
 
 def test_activate_no_premium(factories):
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
@@ -216,9 +216,9 @@ def test_activate_no_premium(factories):
 def test_activate_too_old_premium(factories):
     old_date = datetime.datetime.now() - datetime.timedelta(weeks=5)
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
@@ -234,9 +234,9 @@ def test_activate_too_old_premium(factories):
 def test_wait_for_premium(factories):
     new_date = datetime.datetime.now() - datetime.timedelta(weeks=6)
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ACTIVE,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     eth_account = factories.EthAccountFactory(user=user)
     premium = factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     premium.created_at = new_date
@@ -248,9 +248,9 @@ def test_wait_for_premium(factories):
 def test_wait_for_premium_too_new_premium(factories):
     new_date = datetime.datetime.now() - datetime.timedelta(weeks=1)
     user = factories.UserFactory()
-    deposit = factories.SmartDepositFactory(user=user, is_confirmed=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ACTIVE,
                                                 user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, is_confirmed=True)
     eth_account = factories.EthAccountFactory(user=user)
     premium = factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)
     premium.created_at = new_date

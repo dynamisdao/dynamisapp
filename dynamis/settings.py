@@ -10,6 +10,7 @@ dotenv.load_dotenv(os.path.join(BASE_DIR, '.env_defaults'))  # Development defau
 SECRET_KEY = env.get('DJANGO_SECRET_KEY', required=True)
 
 DEBUG = env.get('DJANGO_DEBUG', type=bool, default=False)
+DEBUG_ETH_USER_INIT_BALANCE = env.get('DEBUG_ETH_USER_INIT_BALANCE', type=float, default=10.0)
 
 ALLOWED_HOSTS = []
 
@@ -260,9 +261,11 @@ if DEBUG:
         'accept-encoding',
 
         # custom
-        'x-prototype-version'
-        'allow'
+        'x-prototype-version',
+        'allow',
+        'access-control-allow-headers'
     ]
+    CORS_EXPOSE_HEADERS = ['accept', 'content-type', 'set-cookie', 'cookie']
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
 
 CONSTANCE_CONFIG = {

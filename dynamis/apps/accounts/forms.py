@@ -9,7 +9,7 @@ class SmartDepositStubForm(forms.ModelForm):
         fields = (
             'is_confirmed',
             'amount',
-            'eth_account'
+            'policy'
         )
 
 

@@ -6,19 +6,19 @@
 <section>
   <h3>Policy Details</h3>
   <ul class="collection">
-       {% for policy in user.policies.all %}
+       {% if user.policies.exists %}
 	    <li class="collection-item">
-		 Policy #{{ policy.pk }}
-		 {% if policy.is_final %}
-		      <a href="{% url 'policy-edit' pk=policy.pk %}">Open (for DEBUG only)</a>
+		 Policy #{{ user.policies.first.pk }}
+		 {% if user.policies.first.is_final %}
+		      <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Open (for DEBUG only)</a>
 		 {% else %}
-		      <a href="{% url 'policy-edit' pk=policy.pk %}">Resume Application</a>
+		      <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
 		 {% endif %}
 	    </li>
 
-	    <li class="collection-item"> 
-                 Status: 
-		 {% if policy.is_final %}
+	    <li class="collection-item">
+                 Status:
+		 {% if user.policies.first.is_final %}
 		      <span class="badge green">Under Review</span>
 		 {% else %}
            	      <span class="badge green">Incomplete</span>
@@ -38,9 +38,9 @@
 	    <li class="collection-item"><button type="button" class="btn">Open a Claim</button></li>
 	    <li class="collection-item"><button type="button" class="btn">Close Policy</button></li>
 
-       {% empty %}
+       {% else %}
             <li class="collection-item">No Applications. (<a href="{% url 'policy-create' %}">start one?</a>)</li>
-       {% endfor %}
+       {% endif %}
   </ul>
 </section>
 
@@ -64,19 +64,20 @@
   <!--
   <h4>Policy Applications</h4>
   <ul class="collection">
-       {% for policy in user.policies.all %}
+{#       {% for policy in user.policies.all %}#}
+        {% if user.policies.exists %}
        <li class="collection-item">
          Policy Application #{{ policy.pk }}
-         {% if policy.is_final %}
+         {% if user.policies.first.is_final %}
            <span class="badge green">Pending Review</span>
          {% else %}
-           <a href="{% url 'policy-edit' pk=policy.pk %}">Resume Application</a>
+           <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
            <span class="badge green">Incomplete</span>
          {% endif %}
        </li>
-       {% empty %}
+       {% else %}
          <li class="collection-item">No Applications.  (<a href="{% url 'policy-create' %}">start one?</a>)</li>
-       {% endfor %}
+       {% endif %}
   </ul>
   -->
 

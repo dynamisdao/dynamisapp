@@ -50,13 +50,13 @@ class PolicyApplication(TimestampModel):
         return "%s's %s" % (self.user.get_full_name(), 'policy')
 
     def check_smart_deposit_refunded(self):
-        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        smart_deposits = SmartDeposit.objects.filter(policy__in=self.user.policies.all())
         if smart_deposits.exists() and SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
     def check_smart_deposit(self):
-        smart_deposits = SmartDeposit.objects.filter(user=self.user)
+        smart_deposits = SmartDeposit.objects.filter(policy__in=self.user.policies.all())
         if smart_deposits.exists() and not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
