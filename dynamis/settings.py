@@ -262,8 +262,10 @@ if DEBUG:
 
         # custom
         'x-prototype-version',
-        'allow'
+        'allow',
+        'access-control-allow-headers'
     ]
+    CORS_EXPOSE_HEADERS = ['access-control-allow-headers']
     CORS_ORIGIN_WHITELIST = env.get('CORS_ORIGIN_WHITELIST', type=tuple, default=tuple())
 
 CONSTANCE_CONFIG = {
