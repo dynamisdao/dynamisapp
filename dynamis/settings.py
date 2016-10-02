@@ -62,7 +62,10 @@ if DEBUG:
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'dynamis.middleware.DisableCSRF',
     ]
+
+    CSRF_COOKIE_SECURE = True
 
 else:
     MIDDLEWARE_CLASSES = [
