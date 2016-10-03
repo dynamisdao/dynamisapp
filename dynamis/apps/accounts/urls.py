@@ -16,9 +16,8 @@ from .views import (
     RiskAssessmentView,
     VerifyEmailView,
     NotifyingPasswordChangeView,
-    WalletView,
-    SmartDepositStubView)
-
+    WalletView)
+from dynamis.apps.policy.views import SmartDepositStubView
 
 urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
@@ -66,5 +65,4 @@ urlpatterns = [
 
     url(r'^risk-assessment/(?P<assessment_pk>[0-9]+)/$', RiskAssessmentView.as_view(), name='risk-assessment'),
 
-    url(r'^smart-deposit/$', SmartDepositStubView.as_view(), name='smart-deposit-stub'),
 ]
