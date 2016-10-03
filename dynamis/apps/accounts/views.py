@@ -1,33 +1,27 @@
+from authtools.views import (
+    PasswordChangeView,
+)
+from constance import config
+from django.contrib import messages
+from django.core import signing
 from django.core.urlresolvers import (
     reverse,
 )
-from django.core import signing
 from django.db.transaction import atomic
+from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.generic import FormView
 from django.views.generic import (
     TemplateView,
     RedirectView,
 )
-from django.utils import timezone
-from django.contrib import messages
-from django.shortcuts import redirect
-
-from authtools.views import (
-    PasswordChangeView,
-)
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
-from constance import config
-
-from dynamis.apps.accounts.forms import SmartDepositStubForm, FillEthOperationForm
-from dynamis.apps.accounts.tables import SmartDepositTable
-from dynamis.apps.policy.models import POLICY_STATUS_SUBMITTED
-from dynamis.apps.payments.models import SmartDeposit, FillEthOperation, TokenAccount, EthAccount
-from dynamis.apps.policy.models import POLICY_STATUS_INIT
-from dynamis.utils.mixins import LoginRequired
+from dynamis.apps.accounts.forms import FillEthOperationForm
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
-
+from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount
+from dynamis.utils.mixins import LoginRequired
 from .models import User
 
 
@@ -148,21 +142,3 @@ class VerifyEmailView(RedirectView):
             return None
 
 
-class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
-    template_name = "accounts/smart-deposit-stub.html"
-    form_class = SmartDepositStubForm
-    table_class = SmartDepositTable
-    success_url = '/'
-
-    def get_queryset(self):
-        return SmartDeposit.objects.filter(policy__in=self.request.user.policies.all())
-
-    def form_valid(self, form):
-        form.save()
-        policy = self.request.user.policies.all()[0]
-        if policy.state == POLICY_STATUS_INIT:
-            policy.submit()
-        elif policy.state == POLICY_STATUS_SUBMITTED:
-            policy.submit_to_p2p_review()
-            policy.save()
-        return super(SmartDepositStubView, self).form_valid(form)
