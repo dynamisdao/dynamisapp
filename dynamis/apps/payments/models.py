@@ -14,7 +14,7 @@ class EthAccount(TimestampModel):
 
 
 class TokenAccount(TimestampModel):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='token_account')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)#, related_name='token_account')
     immature_tokens_balance = models.FloatField(default=0.0)
     mature_tokens_balance = models.FloatField(default=0.0)
     disabled = models.BooleanField(default=False)

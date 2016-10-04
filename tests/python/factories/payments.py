@@ -1,6 +1,6 @@
 import factory
 
-from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, EthAccount, SmartDepositRefund
+from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, EthAccount, SmartDepositRefund, TokenAccount
 
 
 class SmartDepositFactory(factory.DjangoModelFactory):
@@ -34,3 +34,10 @@ class EthAccountFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = EthAccount
+
+
+class TokenAccountFactory(factory.DjangoModelFactory):
+    user = factory.SubFactory('factories.accounts.UserFactory')
+
+    class Meta:
+        model = TokenAccount

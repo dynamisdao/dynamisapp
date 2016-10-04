@@ -124,14 +124,32 @@ class AccountShortSerializer(serializers.ModelSerializer):
     used for user actions
     """
     keybase_verified = serializers.BooleanField(source='is_keybase_verified')
+    eth_balance = serializers.SerializerMethodField()
+    immature_tokens_balance = serializers.SerializerMethodField()
+    mature_tokens_balance = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('keybase_username',
                   'keybase_verified',
                   'email',
-                  'linkedin_account')
+                  'linkedin_account',
+                  'eth_balance',
+                  'immature_tokens_balance',
+                  'mature_tokens_balance')
         read_only_fields = ('keybase_verified',)
+
+    def get_eth_balance(self, instance):
+        if instance.eth_accounts.exists():
+            return instance.eth_accounts.first().eth_balance
+
+    def get_immature_tokens_balance(self, instance):
+        if instance.token_account:
+            return instance.token_account.immature_tokens_balance
+
+    def get_mature_tokens_balance(self, instance):
+        if instance.token_account:
+            return instance.token_account.mature_tokens_balance
 
     def validate(self, attrs):
         if 'email' in attrs:
@@ -150,6 +168,9 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     email_verified = serializers.SerializerMethodField()
     keybase_verified = serializers.BooleanField(source='is_keybase_verified')
     linkedin_account = serializers.CharField()
+    eth_balance = serializers.SerializerMethodField()
+    immature_tokens_balance = serializers.SerializerMethodField()
+    mature_tokens_balance = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -165,11 +186,26 @@ class AccountDetailSerializer(serializers.ModelSerializer):
                   'email_verified',
                   'id',
                   'keybase_verified',
-                  'linkedin_account'
+                  'linkedin_account',
+                  'eth_balance',
+                  'immature_tokens_balance',
+                  'mature_tokens_balance'
                   )
         read_only_fields = ('id',
                             'date_joined',
                             'last_login')
+
+    def get_eth_balance(self, instance):
+        if instance.eth_accounts.exists():
+            return instance.eth_accounts.first().eth_balance
+
+    def get_immature_tokens_balance(self, instance):
+        if instance.token_account.exists():
+            return instance.token_account.immature_tokens_balance
+
+    def get_mature_tokens_balance(self, instance):
+        if instance.token_account.exists():
+            return instance.token_account.mature_tokens_balance
 
     def get_email_verified(self, instance):
         if instance.verified_at:

@@ -27,7 +27,8 @@ def factories(transactional_db):
         SmartDepositFactory,
         SmartDepositRefundFactory,
         PremiumPaymentFactory,
-        EthAccountFactory
+        EthAccountFactory,
+        TokenAccountFactory
     )
 
     def is_factory(obj):
