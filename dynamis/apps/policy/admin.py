@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from dynamis.apps.policy.models import PolicyApplication, RiskAssessmentTask, ApplicationItem
+from dynamis.apps.policy.models import PolicyApplication, RiskAssessmentTask, ReviewTask
 
 
 class PolicyApplicationAdmin(admin.ModelAdmin):
@@ -17,4 +17,4 @@ class ApplicationItemAdmin(admin.ModelAdmin):
 
 admin.site.register(PolicyApplication, PolicyApplicationAdmin)
 admin.site.register(RiskAssessmentTask, RiskAssessmentTaskAdmin)
-admin.site.register(ApplicationItem, ApplicationItemAdmin)
+admin.site.register(ReviewTask, ApplicationItemAdmin)

@@ -3,7 +3,7 @@ import factory
 
 from dynamis.apps.policy.models import (
     PolicyApplication,
-    ApplicationItem,
+    ReviewTask,
     PeerReview,
     RiskAssessmentTask)
 
@@ -23,15 +23,15 @@ class BaseApplicationItemFactory(factory.DjangoModelFactory):
     data = json.dumps({'field-a': 'A'})
 
     class Meta:
-        model = ApplicationItem
+        model = ReviewTask
 
 
 class IdentityApplicationItemFactory(BaseApplicationItemFactory):
-    type = ApplicationItem.TYPE_IDENTITY
+    type = ReviewTask.TYPE_IDENTITY
 
 
 class EmploymentClaimApplicationItemFactory(BaseApplicationItemFactory):
-    type = ApplicationItem.TYPE_EMPLOYMENT_CLAIM
+    type = ReviewTask.TYPE_EMPLOYMENT_CLAIM
 
 
 class BasePeerReviewFactory(factory.DjangoModelFactory):

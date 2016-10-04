@@ -134,7 +134,7 @@ class PolicyApplication(TimestampModel):
 
         assessors_count = User.objects.filter(is_risk_assessor=True).exclude(
             pk=self.user.pk).count()
-        tasks_to_create_count = config.RISK_ASSESSORS_PER_POLICY_COUNT if\
+        tasks_to_create_count = config.RISK_ASSESSORS_PER_POLICY_COUNT if \
             assessors_count >= config.RISK_ASSESSORS_PER_POLICY_COUNT else assessors_count
 
         assessors = User.objects.filter(is_risk_assessor=True).exclude(
@@ -165,7 +165,7 @@ class PolicyApplication(TimestampModel):
         pass
 
 
-class ApplicationItem(TimestampModel):
+class ReviewTask(TimestampModel):
     policy_application = models.ForeignKey('policy.PolicyApplication', related_name='items')
     is_finished = models.BooleanField(default=False)
 
@@ -183,7 +183,7 @@ class ApplicationItem(TimestampModel):
 
 
 class PeerReview(TimestampModel):
-    application_item = models.ForeignKey('policy.ApplicationItem', related_name='peer_reviews')
+    application_item = models.ForeignKey('policy.ReviewTask', related_name='peer_reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='peer_reviews')
 
     data = models.TextField()
@@ -208,3 +208,14 @@ class RiskAssessmentTask(TimestampModel):
     is_finished = models.BooleanField(default=False)
     bet1 = models.FloatField(null=True)
     bet2 = models.FloatField(null=True)
+
+
+class EmploymentHistoryJob(TimestampModel):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='employment_history_jobs')
+    policy = models.ForeignKey(PolicyApplication, related_name='employment_history_jobs')
+    notes = models.TextField(blank=True, null=True)
+    company = models.CharField(max_length=255)
+    is_current_job = models.BooleanField()
+    state = models.CharField(blank=True, null=True, max_length=255)
+    date_begin = models.DateField()
+    date_end = models.DateField(null=True)

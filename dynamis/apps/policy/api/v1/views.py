@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.transaction import atomic
 
 from rest_framework import (
     mixins,
@@ -6,15 +7,16 @@ from rest_framework import (
     permissions,
     status,
 )
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
-from dynamis.apps.policy.business_logic import generate_application_items
+from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records
 from dynamis.apps.policy.models import (
     PolicyApplication,
-    ApplicationItem,
+    ReviewTask,
     PeerReview,
-    RiskAssessmentTask)
+    RiskAssessmentTask, POLICY_STATUS_INIT)
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
 from dynamis.core.view_mixins import DynamisCreateModelMixin
@@ -47,19 +49,31 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         return serializer.save(user=self.request.user)
 
     @detail_route(methods=['post'])
+    @atomic
     def submit(self, *args, **kwargs):
-        instance = self.get_object()
-        serializer = PolicySubmissionSerializer(instance, data=self.request.data)
+        policy = self.get_object()
+        if policy.state != POLICY_STATUS_INIT:
+            return ValidationError('Policy already submited')
+
+        serializer = PolicySubmissionSerializer(policy, data=self.request.data)
         serializer.is_valid(raise_exception=True)
-        policy_application = serializer.save()
-        generate_application_items(policy_application)
+        submitted_policy = serializer.save()
+
+        generate_review_tasks(submitted_policy)
+
+        generate_employment_history_job_records(submitted_policy)
+
         self.request.user.keybase_username = self.request.data["keybase_username"]
         self.request.user.save()
         messages.success(
             # messages framework requires we use the Django HTTPRequest object
             # instead of DRF's request object.
-            self.request._request, "Policy #{0} has been submitted".format(policy_application.pk)
+            self.request._request, "Policy #{0} has been submitted".format(submitted_policy.pk)
         )
+
+        policy.submit()
+        policy.save()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @detail_route(methods=['post'], url_path='upload-file')
@@ -74,11 +88,11 @@ class ReviewTasksViewSet(mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
                          viewsets.GenericViewSet):
     serializer_class = ApplicationItemSerializer
-    queryset = ApplicationItem.objects.none()
+    queryset = ReviewTask.objects.none()
     permissions_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return ApplicationItem.objects.get_review_queue(self.request.user)
+        return ReviewTask.objects.get_review_queue(self.request.user)
 
     # TODO Deprecated
     @detail_route(methods=['post'], url_path='submit-peer-review')
