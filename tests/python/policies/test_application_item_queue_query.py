@@ -37,9 +37,9 @@ def test_application_item_queue_with_no_peer_reviews(application_items, user,
     other_user_b = application_items[1][0]
     item_b_1, item_b_2, item_b_3 = application_items[1][1][1]
 
-    base_user_queue = models.ApplicationItem.objects.get_review_queue(user)
-    user_a_queue = models.ApplicationItem.objects.get_review_queue(other_user_a)
-    user_b_queue = models.ApplicationItem.objects.get_review_queue(other_user_b)
+    base_user_queue = models.ReviewTask.objects.get_review_queue(user)
+    user_a_queue = models.ReviewTask.objects.get_review_queue(other_user_a)
+    user_b_queue = models.ReviewTask.objects.get_review_queue(other_user_b)
 
     assert_qs_equal(
         (item_a_1, item_a_2, item_b_1, item_b_2, item_b_3),
@@ -70,7 +70,7 @@ def test_application_item_queue_with_reviewed_items(application_items,
         application_item=item_b_3, user=user,
     )
 
-    base_user_queue = models.ApplicationItem.objects.get_review_queue(user)
+    base_user_queue = models.ReviewTask.objects.get_review_queue(user)
 
     assert_qs_equal(
         (item_a_1, item_b_1, item_b_2),

@@ -13,7 +13,7 @@ from dynamis.utils.ipfs import get_ipfs_client
 
 from dynamis.apps.policy.models import (
     PolicyApplication,
-    ApplicationItem,
+    ReviewTask,
     PeerReview,
     RiskAssessmentTask)
 from dynamis.apps.policy.validation import (
@@ -98,7 +98,6 @@ class PolicySubmissionSerializer(serializers.ModelSerializer):
             }, sort_keys=True),
             'is_signed': True
         }
-
         return validated_data
 
 
@@ -106,7 +105,7 @@ class ApplicationItemSerializer(serializers.ModelSerializer):
     data = JSONSerializerField()
 
     class Meta:
-        model = ApplicationItem
+        model = ReviewTask
         fields = ('id', 'type', 'data', 'is_finished')
 
 
