@@ -71,9 +71,41 @@ def test_account_detail_serializer(factories):
         'email_verified': False,
         'linkedin_account': account.linkedin_account,
         'id': account.id,
+        'eth_balance': None,
+        'immature_tokens_balance': None,
+        'mature_tokens_balance': None,
     }
 
     serializer = AccountDetailSerializer(account)
+    assert serializer.data == data
+
+
+def test_account_detail_serializer_no_eth_and_token_accounts(factories):
+    date_now = datetime.datetime.now()
+    user = factories.UserFactory(date_joined=date_now)
+    token_account = factories.TokenAccountFactory(user=user)
+    eth_account = factories.EthAccountFactory(user=user)
+
+    data = {
+        'keybase_username': user.keybase_username,
+        'keybase_verified': user.is_keybase_verified,
+        'email': user.email,
+        'date_joined': date_now.isoformat(),
+        'last_login': user.last_login,
+        'verified_at': user.verified_at,
+        'superuser': user.is_superuser,
+        'staff': user.is_staff,
+        'active': user.is_active,
+        'risk_assessor': user.is_risk_assessor,
+        'email_verified': False,
+        'linkedin_account': user.linkedin_account,
+        'id': user.id,
+        'eth_balance': user.eth_accounts.first().eth_balance,
+        'immature_tokens_balance': user.token_account.immature_tokens_balance,
+        'mature_tokens_balance': user.token_account.mature_tokens_balance,
+    }
+
+    serializer = AccountDetailSerializer(user)
     assert serializer.data == data
 
 

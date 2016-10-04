@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.core import signing
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from rest_framework import serializers
@@ -144,12 +145,16 @@ class AccountShortSerializer(serializers.ModelSerializer):
             return instance.eth_accounts.first().eth_balance
 
     def get_immature_tokens_balance(self, instance):
-        if instance.token_account:
+        try:
             return instance.token_account.immature_tokens_balance
+        except ObjectDoesNotExist:
+            return
 
     def get_mature_tokens_balance(self, instance):
-        if instance.token_account:
+        try:
             return instance.token_account.mature_tokens_balance
+        except ObjectDoesNotExist:
+            return
 
     def validate(self, attrs):
         if 'email' in attrs:
@@ -200,12 +205,16 @@ class AccountDetailSerializer(serializers.ModelSerializer):
             return instance.eth_accounts.first().eth_balance
 
     def get_immature_tokens_balance(self, instance):
-        if instance.token_account.exists():
+        try:
             return instance.token_account.immature_tokens_balance
+        except ObjectDoesNotExist:
+            return
 
     def get_mature_tokens_balance(self, instance):
-        if instance.token_account.exists():
+        try:
             return instance.token_account.mature_tokens_balance
+        except ObjectDoesNotExist:
+            return
 
     def get_email_verified(self, instance):
         if instance.verified_at:
