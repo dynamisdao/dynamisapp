@@ -85,6 +85,17 @@ def generate_employment_history_job_records(policy_application):
             }
         except KeyError:
             raise ValidationError('Incorrect job data')
+        kwargs_to_update = {}
+
+        if 'city' in job_record:
+            kwargs_to_update.update({'city': job_record['city']})
+        if 'confirmerEmail' in job_record:
+            kwargs_to_update.update({'confirmer_email': job_record['confirmerEmail']})
+        if 'confirmerName' in job_record:
+            kwargs_to_update.update({'confirmer_name': job_record['confirmerName']})
+        if 'jobTitile' in job_record:
+            kwargs_to_update.update({'job_titile': job_record['jobTitile']})
+
+        data_to_create.update(kwargs_to_update)
 
         EmploymentHistoryJob.objects.create(**data_to_create)
-

@@ -215,6 +215,19 @@ class EmploymentHistoryJob(TimestampModel):
     policy = models.ForeignKey(PolicyApplication, related_name='employment_history_jobs')
     notes = models.TextField(blank=True, null=True)
     company = models.CharField(max_length=255)
+
+    # TODO set as not null field
+    city = models.CharField(blank=True, null=True, max_length=255)
+
+    # TODO set as not null field
+    job_titile = models.CharField(blank=True, null=True, max_length=255)
+
+    # TODO set as not null field ?
+    confirmer_email = models.EmailField(blank=True, max_length=255)
+
+    # TODO set as not null field ?
+    confirmer_name = models.CharField(blank=True, null=True, max_length=255)
+
     is_current_job = models.BooleanField()
     state = models.CharField(blank=True, null=True, max_length=255)
     date_begin = models.DateField()
