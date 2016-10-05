@@ -42,7 +42,6 @@ def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_cli
     assert policy_application.items.count() == 2
 
     assert policy_application.state == POLICY_STATUS_SUBMITTED
-    assert EmploymentHistoryJob.objects.all().count() == 1
 
 
 def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
@@ -78,4 +77,3 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     assert policy_application.items.count() == 2
 
     assert policy_application.state == POLICY_STATUS_SUBMITTED
-    assert EmploymentHistoryJob.objects.all().count() == 1

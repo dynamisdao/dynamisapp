@@ -32,7 +32,7 @@ def test_generate_employment_history_job_records_no_policy_data(factories):
     policy = factories.PolicyApplicationFactory()
     with pytest.raises(ValidationError) as excinfo:
         generate_employment_history_job_records(policy)
-    assert excinfo.value.detail[0] == 'Policy have no data'
+    assert excinfo.value.detail[0] == 'policy have no jobs in employmentHistory'
 
 
 def test_generate_employment_history_job_records_incorrect_job_data(gpg_key, gpg, factories, api_client,
@@ -47,7 +47,7 @@ def test_generate_employment_history_job_records_incorrect_job_data(gpg_key, gpg
 
     policy_application = factories.PolicyApplicationFactory(
         user=user,
-        data=json.dumps({'policy_data': policy_data}),
+        data=json.dumps(policy_data),
     )
     with pytest.raises(ValidationError) as excinfo:
         generate_employment_history_job_records(policy_application)
@@ -66,7 +66,7 @@ def test_generate_employment_history_job_records_pk(gpg_key, gpg, factories, api
 
     policy_application = factories.PolicyApplicationFactory(
         user=user,
-        data=json.dumps({'policy_data': policy_data}),
+        data=json.dumps(policy_data),
     )
     generate_employment_history_job_records(policy_application)
 

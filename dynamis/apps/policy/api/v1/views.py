@@ -16,7 +16,7 @@ from dynamis.apps.policy.models import (
     PolicyApplication,
     ReviewTask,
     PeerReview,
-    RiskAssessmentTask, POLICY_STATUS_INIT)
+    RiskAssessmentTask, POLICY_STATUS_INIT, EmploymentHistoryJob)
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
 from dynamis.core.view_mixins import DynamisCreateModelMixin
@@ -45,8 +45,23 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         self.check_permissions(request)
         return super(PolicyApplicationViewSet, self).list(request, *args, **kwargs)
 
+    @atomic
     def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
+        policy = serializer.save(user=self.request.user)
+        self.generate_employment_history_jobs(policy)
+        return policy
+
+    @atomic
+    def perform_update(self, serializer):
+        serializer.save()
+        policy = self.get_object()
+        self.generate_employment_history_jobs(policy)
+
+    @staticmethod
+    def generate_employment_history_jobs(policy):
+        EmploymentHistoryJob.objects.filter(policy=policy).delete()
+        if policy.data:
+            generate_employment_history_job_records(policy)
 
     @detail_route(methods=['post'])
     @atomic
@@ -60,8 +75,6 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         submitted_policy = serializer.save()
 
         generate_review_tasks(submitted_policy)
-
-        generate_employment_history_job_records(submitted_policy)
 
         self.request.user.keybase_username = self.request.data["keybase_username"]
         self.request.user.save()
