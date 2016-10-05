@@ -53,8 +53,10 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
 
     @atomic
     def perform_update(self, serializer):
-        serializer.save()
-        policy = self.get_object()
+        policy = serializer.save()
+        if policy.state != POLICY_STATUS_INIT:
+            policy.cancel_submission()
+            policy.save()
         self.generate_employment_history_jobs(policy)
 
     @staticmethod

@@ -2,7 +2,8 @@ from django.core.urlresolvers import reverse
 
 from rest_framework import status
 
-from dynamis.apps.policy.models import PolicyApplication, EmploymentHistoryJob
+from dynamis.apps.policy.models import PolicyApplication, EmploymentHistoryJob, POLICY_STATUS_SUBMITTED, \
+    POLICY_STATUS_INIT
 
 
 def test_create_policy(user, api_client, policy_data, job_data):
@@ -37,3 +38,17 @@ def test_update_policy(user, api_client, policy_data, job_data, factories):
     assert response.status_code == status.HTTP_200_OK
     assert PolicyApplication.objects.all().count() == 1
     assert EmploymentHistoryJob.objects.all().count() == 1
+
+
+def test_update_policy_check_cancel_submission(user, api_client, policy_data, job_data, factories):
+    policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED)
+
+    policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
+    policy_data['employmentHistory']['jobs'].append(job_data)
+
+    url = reverse('v1:policy-detail-new', args=[policy.pk])
+    response = api_client.put(url, data={'data': policy_data})
+    assert response.status_code == status.HTTP_200_OK
+    assert PolicyApplication.objects.all().count() == 1
+    assert EmploymentHistoryJob.objects.all().count() == 1
+    assert PolicyApplication.objects.all().first().state == POLICY_STATUS_INIT
