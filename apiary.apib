@@ -614,7 +614,24 @@ Attach the file to the application. Will uplad it to IPFS.
 + Response 200
 
 
+### Get SmartDeposit info [GET /api/v1/policies/{policyid}/smart_deposit]
 
+When policy is at least in **POLICY_STATUS_SUBMITTED**, this method will return information about Smart Deposit. 
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "amountInDollars": 50,
+                
+                // in ETH (converted on the flight)
+                "amountInEth": 1.2,
+                
+                // where SmartDeposit should be sent to
+                "addressToSend": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                
+                "status": "waiting"
+            }
 
 
 
