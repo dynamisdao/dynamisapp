@@ -32,7 +32,7 @@ def test_generate_employment_history_job_records_no_policy_data(factories):
     policy = factories.PolicyApplicationFactory()
     with pytest.raises(ValidationError) as excinfo:
         generate_employment_history_job_records(policy)
-    assert excinfo.value.detail[0] == 'Policy have no data'
+    assert excinfo.value.detail[0] == 'policy have no jobs in employmentHistory'
 
 
 def test_generate_employment_history_job_records_incorrect_job_data(gpg_key, gpg, factories, api_client,
@@ -47,14 +47,14 @@ def test_generate_employment_history_job_records_incorrect_job_data(gpg_key, gpg
 
     policy_application = factories.PolicyApplicationFactory(
         user=user,
-        data=json.dumps({'policy_data': policy_data}),
+        data=json.dumps(policy_data),
     )
     with pytest.raises(ValidationError) as excinfo:
         generate_employment_history_job_records(policy_application)
     assert excinfo.value.detail[0] == 'Incorrect job data'
 
 
-def test_generate_employment_history_job_records_pk(gpg_key, gpg, factories, api_client,
+def test_generate_employment_history_job_records_ok(gpg_key, gpg, factories, api_client,
                                                     user, policy_data, monkeypatch, job_data):
     policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
     policy_data['employmentHistory']['jobs'].append(job_data)
@@ -66,7 +66,7 @@ def test_generate_employment_history_job_records_pk(gpg_key, gpg, factories, api
 
     policy_application = factories.PolicyApplicationFactory(
         user=user,
-        data=json.dumps({'policy_data': policy_data}),
+        data=json.dumps(policy_data),
     )
     generate_employment_history_job_records(policy_application)
 
@@ -81,3 +81,36 @@ def test_generate_employment_history_job_records_pk(gpg_key, gpg, factories, api
     assert job_record.date_begin.year == int(job_data['startYear'])
     assert job_record.date_end.month == int(job_data['endMonth']) + 1
     assert job_record.date_end.year == int(job_data['endYear'])
+
+
+def test_generate_employment_history_job_records_extended(gpg_key, gpg, factories, api_client,
+                                                          user, policy_data, monkeypatch, job_data_extended):
+    policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
+    policy_data['employmentHistory']['jobs'].append(job_data_extended)
+
+    monkeypatch.setitem(testing.PROOF_DB, ('test',), policy_data['identity']['verification_data']['proofs'])
+
+    # sanity check that we are using valid test data.
+    validate_policy_application(policy_data)
+
+    policy_application = factories.PolicyApplicationFactory(
+        user=user,
+        data=json.dumps(policy_data),
+    )
+    generate_employment_history_job_records(policy_application)
+
+    job_record = EmploymentHistoryJob.objects.get()
+    assert job_record.user == policy_application.user
+    assert job_record.policy == policy_application
+    assert job_record.company == job_data_extended['company']
+    assert job_record.is_current_job == job_data_extended['currentJob']
+    assert job_record.notes == job_data_extended['notes']
+    assert job_record.state == job_data_extended['state']
+    assert job_record.city == job_data_extended['city']
+    assert job_record.confirmer_email == job_data_extended['confirmerEmail']
+    assert job_record.confirmer_name == job_data_extended['confirmerName']
+    assert job_record.job_titile == job_data_extended['jobTitile']
+    assert job_record.date_begin.month == int(job_data_extended['startMonth']) + 1
+    assert job_record.date_begin.year == int(job_data_extended['startYear'])
+    assert job_record.date_end.month == int(job_data_extended['endMonth']) + 1
+    assert job_record.date_end.year == int(job_data_extended['endYear'])

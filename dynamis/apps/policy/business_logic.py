@@ -38,13 +38,6 @@ def generate_review_tasks(policy_application):
     return ReviewTask.objects.bulk_create(application_items)
 
 
-def get_policy_data(policy_application):
-    try:
-        return json.loads(policy_application.data)['policy_data']
-    except KeyError:
-        raise ValidationError('Policy have no data')
-
-
 def convert_month_year_to_date(month, year):
     """
     :type month: str
@@ -69,7 +62,7 @@ def convert_month_year_to_date(month, year):
 
 
 def generate_employment_history_job_records(policy_application):
-    policy_data = get_policy_data(policy_application)
+    policy_data = json.loads(policy_application.data)
 
     try:
         employment_records = policy_data['employmentHistory']['jobs']
@@ -92,6 +85,17 @@ def generate_employment_history_job_records(policy_application):
             }
         except KeyError:
             raise ValidationError('Incorrect job data')
+        kwargs_to_update = {}
+
+        if 'city' in job_record:
+            kwargs_to_update.update({'city': job_record['city']})
+        if 'confirmerEmail' in job_record:
+            kwargs_to_update.update({'confirmer_email': job_record['confirmerEmail']})
+        if 'confirmerName' in job_record:
+            kwargs_to_update.update({'confirmer_name': job_record['confirmerName']})
+        if 'jobTitile' in job_record:
+            kwargs_to_update.update({'job_titile': job_record['jobTitile']})
+
+        data_to_create.update(kwargs_to_update)
 
         EmploymentHistoryJob.objects.create(**data_to_create)
-
