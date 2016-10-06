@@ -11,7 +11,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
-from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records
+from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records, \
+    set_answers_on_questions
 from dynamis.apps.policy.models import (
     PolicyApplication,
     ReviewTask,
@@ -49,6 +50,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
     def perform_create(self, serializer):
         policy = serializer.save(user=self.request.user)
         self.generate_employment_history_jobs(policy)
+        self.set_answers_on_questions(policy)
         return policy
 
     @atomic
@@ -58,6 +60,12 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
             policy.cancel_submission()
             policy.save()
         self.generate_employment_history_jobs(policy)
+        self.set_answers_on_questions(policy)
+
+    @staticmethod
+    def set_answers_on_questions(policy):
+        if policy.data:
+            set_answers_on_questions(policy)
 
     @staticmethod
     def generate_employment_history_jobs(policy):

@@ -23,7 +23,7 @@ POLICY_STATUS_ACTIVE = 8
 POLICY_STATUS_WAIT_FOR_PREMIUM = 9
 POLICY_STATUS_ON_COMPLETENESS_CHECK = 10
 
-POLICY_STATUS = {
+POLICY_STATUS = (
     (POLICY_STATUS_INIT, 'init'),
     (POLICY_STATUS_SUBMITTED, 'submitted_wait_for_deposit'),
     (POLICY_STATUS_ON_P2P_REVIEW, 'on_p2p_review'),
@@ -34,7 +34,38 @@ POLICY_STATUS = {
     (POLICY_STATUS_DELETED, 'deleted'),
     (POLICY_STATUS_ACTIVE, 'active'),
     (POLICY_STATUS_WAIT_FOR_PREMIUM, 'wait_for_premium')
-}
+)
+
+LESS_THAN_YEAR = 0
+IN_ABOUT_YEAR = 1
+BEFORE_THE_END_OF_NEXT_YEAR = 2
+MAYBE_BEFORE_TWO_YEARS_TIME = 3
+MORE_THAN_TWO_YEARS = 4
+I_LOVE_MY_JOB = 5
+
+HOW_LONG_STAY_ANSWER_CHOICES = (
+    (LESS_THAN_YEAR, "Less than 1 year"),
+    (IN_ABOUT_YEAR, "In about 1 year"),
+    (BEFORE_THE_END_OF_NEXT_YEAR, "Before the end of next year"),
+    (MAYBE_BEFORE_TWO_YEARS_TIME, "Maybe before 2 years time"),
+    (MORE_THAN_TWO_YEARS, "More than 2 years"),
+    (I_LOVE_MY_JOB, "I love my job. I will work for my present employer till the day I die."),
+)
+
+THREE_WEEKS_TO_MONTH = 0
+ONE_TO_TWO_MONTHS = 1
+TWO_TO_THREE_MONTHS = 2
+THREE_TO_FOUR_MONTHS = 3
+MORE_THAN_FOUR_MONTHS = 4
+
+UNEMPLOYMENT_PERIOD_ANSWER_CHOICES = (
+    (THREE_WEEKS_TO_MONTH, "Maybe 3 weeks to 1 month"),
+    (IN_ABOUT_YEAR, "Perhaps 1 to 2 months"),
+    (BEFORE_THE_END_OF_NEXT_YEAR, "Possibly 2 to 3 months"),
+    (MAYBE_BEFORE_TWO_YEARS_TIME, "Potentially 3 to 4 months"),
+    (MORE_THAN_TWO_YEARS, "I will need more than 4 months of coverage."),
+
+)
 
 
 class PolicyApplication(TimestampModel):
@@ -45,6 +76,8 @@ class PolicyApplication(TimestampModel):
     data = models.TextField()
     rejected_count = models.PositiveSmallIntegerField(default=0)
     state = FSMIntegerField(default=POLICY_STATUS_INIT, protected=True, choices=POLICY_STATUS)
+    how_long_stay_answer = models.PositiveSmallIntegerField(choices=HOW_LONG_STAY_ANSWER_CHOICES, null=True)
+    unemployment_period_answer = models.PositiveSmallIntegerField(choices=UNEMPLOYMENT_PERIOD_ANSWER_CHOICES, null=True)
 
     def __unicode__(self):
         return "%s's %s" % (self.user.get_full_name(), 'policy')
