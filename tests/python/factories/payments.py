@@ -7,6 +7,7 @@ class SmartDepositFactory(factory.DjangoModelFactory):
     eth_account = factory.SubFactory('factories.payments.EthAccountFactory')
     policy = factory.SubFactory('factories.policy.PolicyApplicationFactory')
     amount = 7.5
+    coast = 20
 
     class Meta:
         model = SmartDeposit

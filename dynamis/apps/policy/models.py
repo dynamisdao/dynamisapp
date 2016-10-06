@@ -52,18 +52,20 @@ HOW_LONG_STAY_ANSWER_CHOICES = (
     (I_LOVE_MY_JOB, "I love my job. I will work for my present employer till the day I die."),
 )
 
-THREE_WEEKS_TO_MONTH = 0
-ONE_TO_TWO_MONTHS = 1
-TWO_TO_THREE_MONTHS = 2
-THREE_TO_FOUR_MONTHS = 3
-MORE_THAN_FOUR_MONTHS = 4
+ONE_TO_TWO_WEEKS = 0
+THREE_WEEKS_TO_MONTH = 1
+ONE_TO_TWO_MONTHS = 2
+TWO_TO_THREE_MONTHS = 3
+THREE_TO_FOUR_MONTHS = 4
+MORE_THAN_FOUR_MONTHS = 5
 
 UNEMPLOYMENT_PERIOD_ANSWER_CHOICES = (
+    (ONE_TO_TWO_WEEKS, "About 1 to 2 weeks"),
     (THREE_WEEKS_TO_MONTH, "Maybe 3 weeks to 1 month"),
-    (IN_ABOUT_YEAR, "Perhaps 1 to 2 months"),
-    (BEFORE_THE_END_OF_NEXT_YEAR, "Possibly 2 to 3 months"),
-    (MAYBE_BEFORE_TWO_YEARS_TIME, "Potentially 3 to 4 months"),
-    (MORE_THAN_TWO_YEARS, "I will need more than 4 months of coverage."),
+    (ONE_TO_TWO_MONTHS, "Perhaps 1 to 2 months"),
+    (TWO_TO_THREE_MONTHS, "Possibly 2 to 3 months"),
+    (THREE_TO_FOUR_MONTHS, "Potentially 3 to 4 months"),
+    (MORE_THAN_FOUR_MONTHS, "I will need more than 4 months of coverage."),
 
 )
 
