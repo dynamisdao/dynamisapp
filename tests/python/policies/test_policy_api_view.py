@@ -29,8 +29,10 @@ def test_create_policy_no_answers_in_data(user, api_client, policy_data, job_dat
     assert PolicyApplication.objects.all().count() == 0
     url = reverse('v1:policy-list-new')
     response = api_client.post(url, data={'data': policy_data})
-    assert response.data == ['Please provide correct answers on questions']
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_201_CREATED
+    policy = PolicyApplication.objects.get()
+    assert policy.how_long_stay_answer == 0
+    assert policy.unemployment_period_answer == 0
 
 
 def test_create_policy_no_data(user, api_client):
