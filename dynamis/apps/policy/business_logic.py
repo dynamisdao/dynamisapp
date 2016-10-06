@@ -5,8 +5,11 @@ import calendar
 
 from rest_framework.exceptions import ValidationError
 
+from dynamis.apps.payments.models import SmartDeposit
 from dynamis.apps.policy.models import ReviewTask, EmploymentHistoryJob, HOW_LONG_STAY_ANSWER_CHOICES, \
-    UNEMPLOYMENT_PERIOD_ANSWER_CHOICES
+    UNEMPLOYMENT_PERIOD_ANSWER_CHOICES, LESS_THAN_YEAR, IN_ABOUT_YEAR, BEFORE_THE_END_OF_NEXT_YEAR, \
+    MAYBE_BEFORE_TWO_YEARS_TIME, MORE_THAN_TWO_YEARS, I_LOVE_MY_JOB, ONE_TO_TWO_WEEKS, THREE_WEEKS_TO_MONTH, \
+    ONE_TO_TWO_MONTHS, TWO_TO_THREE_MONTHS, THREE_TO_FOUR_MONTHS, MORE_THAN_FOUR_MONTHS
 
 
 # TODO: This should be made idempotent as to not create duplicate application items in the event
@@ -120,3 +123,31 @@ def set_answers_on_questions(policy_application):
     policy_application.how_long_stay_answer = how_long_stay_answer
     policy_application.unemployment_period_answer = unemployment_period_answer
     policy_application.save()
+
+
+how_long_stay_answer_coasts = {
+    LESS_THAN_YEAR: 0,
+    IN_ABOUT_YEAR: 10,
+    BEFORE_THE_END_OF_NEXT_YEAR: 20,
+    MAYBE_BEFORE_TWO_YEARS_TIME: 30,
+    MORE_THAN_TWO_YEARS: 40,
+    I_LOVE_MY_JOB: 50
+}
+
+unemployment_period_answer_coasts = {
+    ONE_TO_TWO_WEEKS: 50,
+    THREE_WEEKS_TO_MONTH: 40,
+    ONE_TO_TWO_MONTHS: 30,
+    TWO_TO_THREE_MONTHS: 20,
+    THREE_TO_FOUR_MONTHS: 10,
+    MORE_THAN_FOUR_MONTHS: 0
+}
+
+
+def calculate_and_set_smart_deposit_coast(policy):
+    smart_deposit_coast = how_long_stay_answer_coasts[
+        policy.how_long_stay_answer or 0] + unemployment_period_answer_coasts[policy.unemployment_period_answer or 0]
+    if not SmartDeposit.objects.filter(policy=policy).exists():
+        SmartDeposit.objects.create(policy=policy, coast=smart_deposit_coast, amount=0)
+    else:
+        SmartDeposit.objects.filter(policy=policy).update(coast=smart_deposit_coast)

@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
 from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records, \
-    set_answers_on_questions
+    set_answers_on_questions, calculate_and_set_smart_deposit_coast
 from dynamis.apps.policy.models import (
     PolicyApplication,
     ReviewTask,
@@ -51,6 +51,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         policy = serializer.save(user=self.request.user)
         self.generate_employment_history_jobs(policy)
         self.set_answers_on_questions(policy)
+        calculate_and_set_smart_deposit_coast(policy)
         return policy
 
     @atomic
@@ -61,6 +62,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
             policy.save()
         self.generate_employment_history_jobs(policy)
         self.set_answers_on_questions(policy)
+        calculate_and_set_smart_deposit_coast(policy)
 
     @staticmethod
     def set_answers_on_questions(policy):
