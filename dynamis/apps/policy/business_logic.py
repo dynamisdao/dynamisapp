@@ -5,7 +5,8 @@ import calendar
 
 from rest_framework.exceptions import ValidationError
 
-from dynamis.apps.policy.models import ReviewTask, EmploymentHistoryJob
+from dynamis.apps.policy.models import ReviewTask, EmploymentHistoryJob, HOW_LONG_STAY_ANSWER_CHOICES, \
+    UNEMPLOYMENT_PERIOD_ANSWER_CHOICES
 
 
 # TODO: This should be made idempotent as to not create duplicate application items in the event
@@ -99,3 +100,16 @@ def generate_employment_history_job_records(policy_application):
         data_to_create.update(kwargs_to_update)
 
         EmploymentHistoryJob.objects.create(**data_to_create)
+
+
+def set_answers_on_questions(policy_application):
+    policy_data = json.loads(policy_application.data)
+    try:
+        how_long_stay_answer = HOW_LONG_STAY_ANSWER_CHOICES[policy_data['questions']['howLongStay']][0]
+        unemployment_period_answer = UNEMPLOYMENT_PERIOD_ANSWER_CHOICES[
+            policy_data['questions']['unemploymentPeriod']][0]
+    except (KeyError, IndexError):
+        raise ValidationError('Please provide correct answers on questions')
+    policy_application.how_long_stay_answer = how_long_stay_answer
+    policy_application.unemployment_period_answer = unemployment_period_answer
+    policy_application.save()

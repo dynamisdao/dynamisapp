@@ -13,7 +13,8 @@ def policy_data():
         },
         'employmentHistory': {
             'jobs': [],
-        }
+        },
+        'questions': {}
     }
     return policy_data
 
@@ -50,3 +51,12 @@ def job_data_extended():
         'jobTitile': 'developer'
     }
     return job_data
+
+
+@pytest.fixture
+def questions_data():
+    questions_data = {
+        'howLongStay': 0,
+        'unemploymentPeriod': 2
+    }
+    return questions_data

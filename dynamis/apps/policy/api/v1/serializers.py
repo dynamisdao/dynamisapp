@@ -37,8 +37,8 @@ class PolicyApplicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PolicyApplication
-        fields = ('id', 'data', 'is_signed')
-        read_only_fields = ('is_signed',)
+        fields = ('id', 'data', 'is_signed', 'state')
+        read_only_fields = ('is_signed', 'state')
 
 
 class PolicySubmissionSerializer(serializers.ModelSerializer):
