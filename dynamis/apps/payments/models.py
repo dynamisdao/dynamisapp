@@ -26,7 +26,7 @@ class SmartDeposit(TimestampModel):
     policy = models.OneToOneField('policy.PolicyApplication', related_name='smart_deposit')
     is_confirmed = models.BooleanField(default=False)
     amount = models.FloatField()
-    coast = models.FloatField()
+    coast = models.FloatField(null=True)
 
 
 class SmartDepositRefund(TimestampModel):
