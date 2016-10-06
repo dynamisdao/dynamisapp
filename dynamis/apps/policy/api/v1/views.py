@@ -88,6 +88,9 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
 
         generate_review_tasks(submitted_policy)
 
+        # TODO remove when old frontend will disabled
+        calculate_and_set_smart_deposit_coast(policy)
+
         self.request.user.keybase_username = self.request.data["keybase_username"]
         self.request.user.save()
         messages.success(
