@@ -622,15 +622,18 @@ When policy is at least in **POLICY_STATUS_SUBMITTED**, this method will return 
     + Body
 
             {
-                "amountInDollars": 50,
+                "amount_in_dollars": 50,
                 
                 // in ETH (converted on the flight)
-                "amountInEth": 1.2,
+                "amount_in_eth": 1.2,
                 
                 // where SmartDeposit should be sent to
-                "addressToSend": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
                 
-                "status": "waiting"
+                // 0 - initial
+                // 1 - waiting
+                // 2 - received
+                "status": 0
             }
 
 
