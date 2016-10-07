@@ -2,66 +2,82 @@
 {% load react_renderer %}
 
 {% block content %}
-<h1>My policy</h1>
-<section>
-  <h3>Policy Details</h3>
-  <ul class="collection">
-       {% if user.policies.exists %}
-	    <li class="collection-item">
-		 Policy #{{ user.policies.first.pk }}
-		 {% if user.policies.first.is_final %}
-		      <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Open (for DEBUG only)</a>
-		 {% else %}
-		      <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
-		 {% endif %}
-	    </li>
+    <h1>My policy</h1>
+    <section>
+        <h3>Policy Details</h3>
+        <ul class="collection">
+            {% if user.policies.exists %}
+                <li class="collection-item">
+                    Policy #{{ user.policies.first.pk }}
+                    {% if user.policies.first.is_final %}
+                        <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Open (for DEBUG only)</a>
+                    {% else %}
+                        <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
+                    {% endif %}
+                </li>
 
-	    <li class="collection-item">
-                 Status:
-		 {% if user.policies.first.is_final %}
-		      <span class="badge green">Under Review</span>
-		 {% else %}
-           	      <span class="badge green">Incomplete</span>
-		 {% endif %}
-	    </li>
+                <li class="collection-item">
+                    Status:
+                    {% if user.policies.first.is_final %}
+                        <span class="badge green">Under Review</span>
+                    {% else %}
+                        <span class="badge green">Incomplete</span>
+                    {% endif %}
+                </li>
 
-	    <li class="collection-item">Premium: $2/Mo.</li>
-	    <li class="collection-item">Coverage: 50% of monthly salary</li>
-	    <li class="collection-item">Effective Date: 1/21/2016</li>
-	    <li class="collection-item">Eligibility: 12 days to eligibility</li>
-	    <li class="collection-item">Payment Plan: Monthly - Manual Pay</li>
+                <li class="collection-item">Premium: $2/Mo.</li>
+                <li class="collection-item">Coverage: 50% of monthly salary</li>
+                <li class="collection-item">Effective Date: 1/21/2016</li>
+                <li class="collection-item">Eligibility: 12 days to eligibility</li>
+                <li class="collection-item">Payment Plan: Monthly - Manual Pay</li>
 
-	    <li class="collection-item">Address: {% react_component "Dynamis.components.EthAddress" address="0x12345" %}</li>
+                <li class="collection-item">
+                    Address: {% react_component "Dynamis.components.EthAddress" address="0x12345" %}</li>
 
-	    <li class="collection-item"><button type="button" class="btn">Verify My Policy</button></li>
-	    <li class="collection-item"><button type="button" class="btn">Payment &amp; Claim History</button></li>
-	    <li class="collection-item"><button type="button" class="btn">Open a Claim</button></li>
-	    <li class="collection-item"><button type="button" class="btn">Close Policy</button></li>
+                <li class="collection-item">
+                    <button type="button" class="btn">Verify My Policy</button>
+                </li>
+                <li class="collection-item">
+                    <button type="button" class="btn">Payment &amp; Claim History</button>
+                </li>
+                <li class="collection-item">
+                    <button type="button" class="btn">Open a Claim</button>
+                </li>
+                <li class="collection-item">
+                    <button type="button" class="btn">Close Policy</button>
+                </li>
+                {% if user.policies.first.state == 2 %}
+                    <li class="collection-item">
+                        <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.first.id %}">Pay Smart
+                            Deposit</a>
+                    </li>
+                {% endif %}
 
-       {% else %}
-            <li class="collection-item">No Applications. (<a href="{% url 'policy-create' %}">start one?</a>)</li>
-       {% endif %}
-  </ul>
-</section>
+            {% else %}
+                <li class="collection-item">No Applications. (<a href="{% url 'policy-create' %}">start one?</a>)</li>
+            {% endif %}
+        </ul>
+    </section>
 
-<h1>My P2P Pool</h1>
-<section>
-  <ul class="collection">
-    <li class="collection-item">Fred Smith</li>
-    <li class="collection-item">Lyne Knight</li>
-    <li class="collection-item">Joe Mann</li>
-    <li class="collection-item">Larry Bird</li>
-    <li class="collection-item">Betty Ford</li>
-    <li class="collection-item">Joe Smith</li>
-  </ul>
-</section>
+    <h1>My P2P Pool</h1>
+    <section>
+        <ul class="collection">
+            <li class="collection-item">Fred Smith</li>
+            <li class="collection-item">Lyne Knight</li>
+            <li class="collection-item">Joe Mann</li>
+            <li class="collection-item">Larry Bird</li>
+            <li class="collection-item">Betty Ford</li>
+            <li class="collection-item">Joe Smith</li>
+        </ul>
+    </section>
 
-<section>
-  <h3>Things that wont be in the final product</h3>
-  <p>Things down here are just here to provide an easy link to them during development and will be removed as the features related to them mature.</p>
-  <a href="{% url 'peer-review-items' %}" class="btn">Review your peers</a>
+    <section>
+        <h3>Things that wont be in the final product</h3>
+        <p>Things down here are just here to provide an easy link to them during development and will be removed as the
+            features related to them mature.</p>
+        <a href="{% url 'peer-review-items' %}" class="btn">Review your peers</a>
 
-  <!--
+        <!--
   <h4>Policy Applications</h4>
   <ul class="collection">
 {#       {% for policy in user.policies.all %}#}
@@ -81,6 +97,6 @@
   </ul>
   -->
 
-</section>
+    </section>
 
 {% endblock content %}

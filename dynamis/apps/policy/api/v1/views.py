@@ -80,7 +80,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
     def submit(self, *args, **kwargs):
         policy = self.get_object()
         if policy.state != POLICY_STATUS_INIT:
-            return ValidationError('Policy already submited')
+            raise ValidationError('Policy already submited')
 
         serializer = PolicySubmissionSerializer(policy, data=self.request.data)
         serializer.is_valid(raise_exception=True)
