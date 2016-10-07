@@ -69,16 +69,16 @@ if DEBUG:
 
 else:
     MIDDLEWARE_CLASSES = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
 
 EMAIL_BACKEND = env.get('DJANGO_EMAIL_BACKEND', required=True)
 EMAIL_HOST = env.get('DJANGO_EMAIL_HOST', type=str, default='localhost')
@@ -289,7 +289,11 @@ CONSTANCE_CONFIG = {
     'RISK_ASSESSORS_PER_POLICY_COUNT': (5, 'How many risk assessors we need to move policy to status '
                                            'on_completeness_check'),
     'PREMIUM_PAYMENT_PERIODICITY': ('monthly', 'How often users have to pay premium payment'),
-        'EHT_TOKEN_EXCHANGE_RATE': (0.1, 'How many eth we have to spend to by 1 token'),
+    'EHT_TOKEN_EXCHANGE_RATE': (0.1, 'How many eth we have to spend to by 1 token'),
+    'DOLLAR_ETH_EXCHANGE_RATE': (12.57, 'How many dollars we have to spend to by 1 Ethereum'),
+    'DOLLAR_ETH_EXCHANGE_RATE_VALID_FOR_MINUTES': (60, 'How many minutes dollar/eth rate will valid'),
+    'WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES': (60, 'How many minutes we can wait for smart deposit'),
+    'ADDRESS_TO_SEND_ETH': ('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8_test', 'address to send eth'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
