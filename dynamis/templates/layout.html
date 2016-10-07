@@ -14,9 +14,6 @@
 
                         <li><a href="{% url 'my-policy' %}">My policy</a></li>
                         <li><a href="">Make a Payment</a></li>
-                        {% if user.policies.first.state == 2 %}
-                            <li><a href="{% url 'smart-deposit-stub' pk=user.policies.first.id %}">Smart Deposit STUB</a></li>
-                        {% endif %}
                         <li><a href="">Open a Claim</a></li>
 
                         {% if user.is_risk_assessor %}
