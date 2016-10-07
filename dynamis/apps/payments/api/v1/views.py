@@ -1,3 +1,4 @@
+from constance import config
 from django.utils import timezone
 from rest_framework import mixins
 from rest_framework import permissions
@@ -19,6 +20,7 @@ class SmartDepositViewSet(mixins.RetrieveModelMixin,
         instance = self.get_object()
         if instance.wait_for < timezone.now():
             instance.wait_to_init()
+            instance.coast_dollar = instance.coast * config.DOLLAR_ETH_EXCHANGE_RATE
             instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)

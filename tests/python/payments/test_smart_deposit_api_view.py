@@ -1,4 +1,6 @@
 import datetime
+
+from constance import config
 from django.core.urlresolvers import reverse
 
 from rest_framework import status
@@ -22,9 +24,17 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user)
     deposit = factories.SmartDepositFactory(policy=policy, state=1,
                                             wait_for=datetime.datetime.now() - datetime.timedelta(minutes=5))
-    assert SmartDeposit.objects.get().state == 1
+    deposit = SmartDeposit.objects.get()
+    assert deposit.state == 1
+    assert deposit.coast_dollar == deposit.coast * config.DOLLAR_ETH_EXCHANGE_RATE
+
+    new_exchange_rate = 14.5
+    config.DOLLAR_ETH_EXCHANGE_RATE = new_exchange_rate
+
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
+
     assert response.status_code == status.HTTP_200_OK
     deposit = SmartDeposit.objects.get()
     assert deposit.state == 0
+    assert deposit.coast_dollar == deposit.coast * new_exchange_rate
