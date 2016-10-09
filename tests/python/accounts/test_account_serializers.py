@@ -2,6 +2,7 @@ import datetime
 
 from dynamis.apps.accounts.api.v1.serializers import EthAccountSerializer, AccountShortSerializer, \
     AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer
+from dynamis.apps.policy.api.v1.serializers import PolicyListSerializer
 
 
 def test_account_settings_serializer(factories):
@@ -19,6 +20,7 @@ def test_account_short_serializer(factories):
     user = factories.UserFactory()
     token_account = factories.TokenAccountFactory(user=user)
     eth_account = factories.EthAccountFactory(user=user)
+    policy = factories.PolicyApplicationFactory(user=user)
 
     data = {
         'keybase_username': user.keybase_username,
@@ -28,7 +30,7 @@ def test_account_short_serializer(factories):
         'eth_balance': user.eth_accounts.first().eth_balance,
         'immature_tokens_balance': user.token_account.immature_tokens_balance,
         'mature_tokens_balance': user.token_account.mature_tokens_balance,
-
+        'policies': [PolicyListSerializer(policy).data]
     }
 
     serializer = AccountShortSerializer(user)
@@ -46,6 +48,7 @@ def test_account_short_serializer_no_eth_and_token_accounts(factories):
         'eth_balance': None,
         'immature_tokens_balance':  None,
         'mature_tokens_balance':  None,
+        'policies': []
 
     }
 
@@ -56,6 +59,7 @@ def test_account_short_serializer_no_eth_and_token_accounts(factories):
 def test_account_detail_serializer(factories):
     date_now = datetime.datetime.now()
     account = factories.UserFactory(date_joined=date_now)
+    policy = factories.PolicyApplicationFactory(user=account)
 
     data = {
         'keybase_username': account.keybase_username,
@@ -74,6 +78,7 @@ def test_account_detail_serializer(factories):
         'eth_balance': None,
         'immature_tokens_balance': None,
         'mature_tokens_balance': None,
+        'policies': [PolicyListSerializer(policy).data]
     }
 
     serializer = AccountDetailSerializer(account)
@@ -103,6 +108,7 @@ def test_account_detail_serializer_no_eth_and_token_accounts(factories):
         'eth_balance': user.eth_accounts.first().eth_balance,
         'immature_tokens_balance': user.token_account.immature_tokens_balance,
         'mature_tokens_balance': user.token_account.mature_tokens_balance,
+        'policies': []
     }
 
     serializer = AccountDetailSerializer(user)

@@ -9,6 +9,7 @@ from rest_framework import serializers
 
 from dynamis.apps.identity import get_provider
 from dynamis.apps.payments.models import EthAccount
+from dynamis.apps.policy.api.v1.serializers import PolicyListSerializer
 from dynamis.settings import DEBUG
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
@@ -128,6 +129,7 @@ class AccountShortSerializer(serializers.ModelSerializer):
     eth_balance = serializers.SerializerMethodField()
     immature_tokens_balance = serializers.SerializerMethodField()
     mature_tokens_balance = serializers.SerializerMethodField()
+    policies = PolicyListSerializer(many=True)
 
     class Meta:
         model = User
@@ -137,7 +139,8 @@ class AccountShortSerializer(serializers.ModelSerializer):
                   'linkedin_account',
                   'eth_balance',
                   'immature_tokens_balance',
-                  'mature_tokens_balance')
+                  'mature_tokens_balance',
+                  'policies')
         read_only_fields = ('keybase_verified',)
 
     def get_eth_balance(self, instance):
@@ -176,6 +179,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     eth_balance = serializers.SerializerMethodField()
     immature_tokens_balance = serializers.SerializerMethodField()
     mature_tokens_balance = serializers.SerializerMethodField()
+    policies = PolicyListSerializer(many=True)
 
     class Meta:
         model = User
@@ -194,7 +198,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
                   'linkedin_account',
                   'eth_balance',
                   'immature_tokens_balance',
-                  'mature_tokens_balance'
+                  'mature_tokens_balance',
+                  'policies'
                   )
         read_only_fields = ('id',
                             'date_joined',
