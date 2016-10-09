@@ -41,6 +41,12 @@ class PolicyApplicationSerializer(serializers.ModelSerializer):
         read_only_fields = ('is_signed', 'state')
 
 
+class PolicyListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolicyApplication
+        fields = ('id',)
+
+
 class PolicySubmissionSerializer(serializers.ModelSerializer):
     default_error_messages = dict(itertools.chain(
         (
