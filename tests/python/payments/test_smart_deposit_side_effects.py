@@ -1,3 +1,4 @@
+from constance import config
 from django.utils import timezone
 
 from dynamis.apps.payments.models import SmartDeposit
@@ -12,3 +13,4 @@ def test_check_wait_for_deposit_time(factories):
     deposit = SmartDeposit.objects.get()
 
     assert deposit.wait_for > timezone.now()
+    assert deposit.exchange_rate_at_invoice_time == config.DOLLAR_ETH_EXCHANGE_RATE

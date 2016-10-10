@@ -101,6 +101,8 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
 
         policy.submit()
         policy.save()
+        policy.smart_deposit.init_to_wait()
+        policy.smart_deposit.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

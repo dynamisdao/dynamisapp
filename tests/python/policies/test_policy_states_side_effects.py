@@ -9,7 +9,7 @@ from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITT
 def test_to_deposit_refund(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=2)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=10)
     policy.to_deposit_refund()
     assert policy.rejected_count == 1
 

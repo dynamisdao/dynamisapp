@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from rest_framework import status
 
+from dynamis.apps.payments.models import SmartDeposit, SMART_DEPOSIT_STATUS_WAITING, SMART_DEPOSIT_STATUS_INIT
 from dynamis.apps.policy.models import PolicyApplication, POLICY_STATUS_SUBMITTED, EmploymentHistoryJob
 from dynamis.apps.policy.validation import validate_policy_application
 from dynamis.utils import testing
@@ -77,3 +78,6 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     assert policy_application.items.count() == 2
 
     assert policy_application.state == POLICY_STATUS_SUBMITTED
+
+    smart_deposit = SmartDeposit.objects.get(policy=policy_application)
+    assert smart_deposit.state == SMART_DEPOSIT_STATUS_WAITING
