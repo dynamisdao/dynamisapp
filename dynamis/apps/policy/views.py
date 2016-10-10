@@ -1,9 +1,12 @@
-from django.views.generic import RedirectView
+from django.http import HttpResponseRedirect
+from django.utils import timezone
 from django.views.generic import (
     TemplateView,
     DetailView,
-    FormView, ListView)
+    ListView)
 from django_tables2 import SingleTableMixin
+from constance import config
+from rest_framework.generics import get_object_or_404
 
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
@@ -19,7 +22,7 @@ class PolicyCreateView(DetailView):
 
     def get_object(self):
         if self.request.user.is_authenticated():
-            return self.request.user.policies.first()
+            return self.request.user.policies.last()
         else:
             return None
 
@@ -36,12 +39,29 @@ class PeerReviewItemsView(LoginRequired, TemplateView):
     template_name = "policies/peer_review.html"
 
 
-class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
+class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
     template_name = "accounts/smart-deposit-stub.html"
-    form_class = SmartDepositStubForm
     table_class = SmartDepositTable
-    success_url = '/'
-    # self.kwargs.get('activation_key')
+
+    def get(self, request, *args, **kwargs):
+        instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
+        if instance.wait_for and instance.wait_for < timezone.now():
+            instance.wait_to_init()
+            instance.coast_dollar = instance.coast * config.DOLLAR_ETH_EXCHANGE_RATE
+            instance.save()
+        return super(SmartDepositStubView, self).get(request, args, kwargs)
+
+    def post(self, request, *args, **kwargs):
+        instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
+        form = SmartDepositStubForm(request.POST or None, instance=instance)
+        if form.is_valid():
+            to_return = self.form_valid(form)
+        else:
+            to_return = self.form_invalid(form)
+        if instance.amount and instance.amount >= instance.coast:
+            instance.wait_to_received()
+            instance.save()
+        return to_return
 
     def get_policy(self):
         return PolicyApplication.objects.get(user=self.request.user, id=self.kwargs.get('pk'))
@@ -52,11 +72,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, FormView, ListView):
     def form_valid(self, form):
         form.save()
         policy = self.get_policy()
-        if policy.state == POLICY_STATUS_INIT:
-            policy.submit()
+        if policy.state == POLICY_STATUS_SUBMITTED and policy.smart_deposit.amount >= policy.smart_deposit.coast:
             policy.submit_to_p2p_review()
             policy.save()
-        elif policy.state == POLICY_STATUS_SUBMITTED:
-            policy.submit_to_p2p_review()
-            policy.save()
-        return super(SmartDepositStubView, self).form_valid(form)
+        return HttpResponseRedirect('/policies/{}/smart-deposit/'.format(policy.pk))

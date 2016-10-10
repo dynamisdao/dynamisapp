@@ -8,17 +8,17 @@
         <ul class="collection">
             {% if user.policies.exists %}
                 <li class="collection-item">
-                    Policy #{{ user.policies.first.pk }}
-                    {% if user.policies.first.is_final %}
-                        <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Open (for DEBUG only)</a>
+                    Policy #{{ user.policies.last.pk }}
+                    {% if user.policies.last.is_final %}
+                        <a href="{% url 'policy-edit' pk=user.policies.last.pk %}">Open (for DEBUG only)</a>
                     {% else %}
-                        <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
+                        <a href="{% url 'policy-edit' pk=user.policies.last.pk %}">Resume Application</a>
                     {% endif %}
                 </li>
 
                 <li class="collection-item">
                     Status:
-                    {% if user.policies.first.is_final %}
+                    {% if user.policies.last.is_final %}
                         <span class="badge green">Under Review</span>
                     {% else %}
                         <span class="badge green">Incomplete</span>
@@ -46,9 +46,9 @@
                 <li class="collection-item">
                     <button type="button" class="btn">Close Policy</button>
                 </li>
-                {% if user.policies.first.state == 2 %}
+                {% if user.policies.last.state == 2 %}
                     <li class="collection-item">
-                        <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.first.id %}">Pay Smart
+                        <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.last.id %}">Pay Smart
                             Deposit</a>
                     </li>
                 {% endif %}
@@ -84,10 +84,10 @@
         {% if user.policies.exists %}
        <li class="collection-item">
          Policy Application #{{ policy.pk }}
-         {% if user.policies.first.is_final %}
+         {% if user.policies.last.is_final %}
            <span class="badge green">Pending Review</span>
          {% else %}
-           <a href="{% url 'policy-edit' pk=user.policies.first.pk %}">Resume Application</a>
+           <a href="{% url 'policy-edit' pk=user.policies.last.pk %}">Resume Application</a>
            <span class="badge green">Incomplete</span>
          {% endif %}
        </li>

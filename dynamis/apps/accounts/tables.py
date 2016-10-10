@@ -9,11 +9,16 @@ from dynamis.utils.tables import MaterializedTable
 class SmartDepositTable(MaterializedTable):
     class Meta(MaterializedTable.Meta):
         model = SmartDeposit
-        order_by = ('id',)
+        order_by = ('policy_id',)
         fields = (
-            'id',
+            'policy_id',
             'amount',
-            'is_confirmed'
+            'coast',
+            'coast_dollar',
+            'exchange_rate_at_invoice_time',
+            'state',
+            'policy.state',
+            'wait_for'
         )
 
 

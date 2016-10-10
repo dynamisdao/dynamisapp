@@ -14,8 +14,8 @@ SMART_DEPOSIT_STATUS_RECEIVED = 2
 
 SMART_DEPOSIT_STATUS = (
     (SMART_DEPOSIT_STATUS_INIT, 'init'),
-    (SMART_DEPOSIT_STATUS_WAITING, 'submitted_wait_for_deposit'),
-    (SMART_DEPOSIT_STATUS_RECEIVED, 'on_p2p_review')
+    (SMART_DEPOSIT_STATUS_WAITING, 'wait_for_deposit'),
+    (SMART_DEPOSIT_STATUS_RECEIVED, 'received')
 )
 
 
@@ -42,6 +42,7 @@ class SmartDeposit(TimestampModel):
     amount_dollar = models.FloatField(null=True)
     coast = models.FloatField(null=True)
     coast_dollar = models.FloatField(null=True)
+    exchange_rate_at_invoice_time = models.FloatField(null=True)
     state = FSMIntegerField(default=SMART_DEPOSIT_STATUS_INIT, protected=True, choices=SMART_DEPOSIT_STATUS)
     wait_for = models.DateTimeField(null=True)
 
@@ -49,17 +50,23 @@ class SmartDeposit(TimestampModel):
         self.coast_dollar = self.coast * config.DOLLAR_ETH_EXCHANGE_RATE
         super(SmartDeposit, self).save(*args, **kwargs)
 
+    def check_smart_deposit_amount(self):
+        if self.amount >= self.coast:
+            return True
+
     @transition(field=state, source=SMART_DEPOSIT_STATUS_INIT, target=SMART_DEPOSIT_STATUS_WAITING)
     def init_to_wait(self):
         self.wait_for = datetime.datetime.now() + datetime.timedelta(
             minutes=config.WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES)
+        self.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
         self.save()
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_INIT)
     def wait_to_init(self):
         pass
 
-    @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_RECEIVED)
+    @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_RECEIVED,
+                conditions=[check_smart_deposit_amount])
     def wait_to_received(self):
         pass
 

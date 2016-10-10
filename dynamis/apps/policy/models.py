@@ -25,7 +25,7 @@ POLICY_STATUS_ON_COMPLETENESS_CHECK = 10
 
 POLICY_STATUS = (
     (POLICY_STATUS_INIT, 'init'),
-    (POLICY_STATUS_SUBMITTED, 'submitted_wait_for_deposit'),
+    (POLICY_STATUS_SUBMITTED, 'submitted'),
     (POLICY_STATUS_ON_P2P_REVIEW, 'on_p2p_review'),
     (POLICY_STATUS_ON_COMPLETENESS_CHECK, 'on_completeness_check'),
     (POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, 'on_risk_assessment_review'),
@@ -85,14 +85,23 @@ class PolicyApplication(TimestampModel):
         return "%s's %s" % (self.user.get_full_name(), 'policy')
 
     def check_smart_deposit_refunded(self):
-        smart_deposits = SmartDeposit.objects.filter(policy__in=self.user.policies.all())
+        smart_deposits = SmartDeposit.objects.filter(policy=self)
         if smart_deposits.exists() and SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
     def check_smart_deposit(self):
-        smart_deposits = SmartDeposit.objects.filter(policy__in=self.user.policies.all())
-        if smart_deposits.exists() and not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
+        smart_deposits = SmartDeposit.objects.filter(policy=self)
+        if smart_deposits.exists() and\
+                not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists() and\
+                smart_deposits[0].amount >= smart_deposits[0].coast:
+            return True
+        return False
+
+    def check_smart_for_refund(self):
+        smart_deposits = SmartDeposit.objects.filter(policy=self)
+        if smart_deposits.exists() and\
+                not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
 
@@ -143,7 +152,7 @@ class PolicyApplication(TimestampModel):
         pass
 
     @transition(field=state, source='*', target=POLICY_STATUS_ON_SMART_DEPOSIT_REFUND,
-                conditions=[check_smart_deposit])
+                conditions=[check_smart_for_refund])
     def to_deposit_refund(self):
         self.rejected_count += 1
         self.save()
