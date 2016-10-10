@@ -20,6 +20,5 @@ router.register(r'application-items', ReviewTasksViewSet, 'application-item')
 
 router.register(r'peer-review-history', PeerReviewHistoryViewSet, 'peer-review-history')
 router.register(r'assessment_tasks', RiskAssessmentTaskViewSet, 'assessment_tasks')
-router.register(r'smart_deposit', SmartDepositViewSet, 'smart_deposit')
 
 urlpatterns = router.urls
