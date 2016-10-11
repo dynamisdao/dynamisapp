@@ -8,7 +8,8 @@ from django.core.urlresolvers import (
     reverse,
 )
 from django.db.transaction import atomic
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import FormView
 from django.views.generic import (
@@ -18,9 +19,10 @@ from django.views.generic import (
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
-from dynamis.apps.accounts.forms import FillEthOperationForm
+from dynamis.apps.accounts.forms import FillEthOperationForm, RiskAssessmentTaskForm
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount
+from dynamis.apps.policy.models import RiskAssessmentTask
 from dynamis.utils.mixins import LoginRequired
 from .models import User
 
@@ -53,6 +55,22 @@ class AssessorDashboardView(LoginRequired, SingleTableMixin, ListView):
 
 class RiskAssessmentView(LoginRequired, TemplateView):
     template_name = "accounts/risk_assessment.html"
+
+    def get(self, request, *args, **kwargs):
+        get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
+        return super(RiskAssessmentView, self).get(request, args, kwargs)
+
+    def post(self, request, *args, **kwargs):
+        instance = get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
+        form = RiskAssessmentTaskForm(request.POST or None, instance=instance)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect('/')
 
     def get_object(self):
         return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])

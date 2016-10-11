@@ -1,6 +1,7 @@
 from django import forms
 
 from dynamis.apps.payments.models import SmartDeposit, FillEthOperation
+from dynamis.apps.policy.models import RiskAssessmentTask
 
 
 class SmartDepositStubForm(forms.ModelForm):
@@ -18,4 +19,16 @@ class FillEthOperationForm(forms.ModelForm):
         fields = (
             'eth_account',
             'amount',
+        )
+
+
+class RiskAssessmentTaskForm(forms.ModelForm):
+    class Meta:
+        model = RiskAssessmentTask
+        fields = (
+            'policy',
+            'bet1',
+            'bet2',
+            'question1',
+            'question2'
         )
