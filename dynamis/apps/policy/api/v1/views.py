@@ -29,7 +29,7 @@ from .serializers import (
     PeerReviewSubmissionSerializer,
     PeerReviewSerializer,
     IPFSFileSerializer,
-    RiskAssessmentTaskDetailSerializer, RiskAssessmentTaskShortSerializer)
+    RiskAssessmentTaskDetailUserSerializer, RiskAssessmentTaskShortSerializer, RiskAssessmentTaskDetailAdminSerializer)
 
 
 class PolicyApplicationViewSet(DynamisCreateModelMixin,
@@ -155,7 +155,7 @@ class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
                                 mixins.UpdateModelMixin,
                                 mixins.ListModelMixin,
                                 viewsets.GenericViewSet):
-    serializer_class = RiskAssessmentTaskDetailSerializer
+    serializer_class = RiskAssessmentTaskDetailUserSerializer
     permission_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
     queryset = RiskAssessmentTask.objects.all()
     filter_backends = (IsOwnerOrAdminFilterBackend,)
@@ -163,3 +163,8 @@ class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
     def list(self, request, *args, **kwargs):
         self.serializer_class = RiskAssessmentTaskShortSerializer
         return super(RiskAssessmentTaskViewSet, self).list(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_admin:
+            self.serializer_class = RiskAssessmentTaskDetailAdminSerializer
+        return super(RiskAssessmentTaskViewSet, self).update(request, *args, **kwargs)

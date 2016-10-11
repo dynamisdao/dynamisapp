@@ -1,7 +1,9 @@
 import json
 import itertools
 
+from constance import config
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import (
@@ -24,6 +26,7 @@ from dynamis.apps.policy.validation import (
 
 class JSONSerializerField(serializers.Field):
     """ Serializer for JSONField -- required to make field writable"""
+
     def to_internal_value(self, data):
         return json.dumps(data, sort_keys=True)
 
@@ -193,12 +196,52 @@ class IPFSFileSerializer(serializers.Serializer):
         }
 
 
-class RiskAssessmentTaskDetailSerializer(serializers.ModelSerializer):
+class RiskAssessmentTaskDetailBaseSerializer(serializers.ModelSerializer):
     policyid = serializers.IntegerField(source='policy.id', required=False, read_only=True)
 
     class Meta:
         model = RiskAssessmentTask
-        fields = ('id', 'policyid', 'is_finished', 'bet1', 'bet2')
+        fields = ('id', 'policyid', 'is_finished', 'bet1', 'bet2', 'question1', 'question2')
+
+    def validate_bet1(self, value):
+        return self.validate_bets(value)
+
+    def validate_bet2(self, value):
+        return self.validate_bets(value)
+
+    def validate_question1(self, value):
+        if config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MIN <= value <= \
+                config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MAX:
+            return value
+        raise ValidationError('invalid months, you have to choice between {} - {}'.format(
+            config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MIN,
+            config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MAX))
+
+    def validate_question2(self, value):
+        if config.WEEKS_PAID_FOR_FIRST_CLAIM_MIN <= value <= \
+                config.WEEKS_PAID_FOR_FIRST_CLAIM_MAX:
+            return value
+        raise ValidationError('invalid weeks, you have to choice between {} - {}'.format(
+            config.WEEKS_PAID_FOR_FIRST_CLAIM_MIN,
+            config.WEEKS_PAID_FOR_FIRST_CLAIM_MAX))
+
+
+class RiskAssessmentTaskDetailUserSerializer(RiskAssessmentTaskDetailBaseSerializer):
+    @staticmethod
+    def validate_bets(bet):
+        if config.BET_MIN_AMOUNT_USER <= bet <= config.BET_MAX_AMOUNT_USER:
+            return bet
+        raise ValidationError('invalid bet amount, availible choice {}-{}'.format(config.BET_MIN_AMOUNT_USER,
+                                                                                  config.BET_MAX_AMOUNT_USER))
+
+
+class RiskAssessmentTaskDetailAdminSerializer(RiskAssessmentTaskDetailBaseSerializer):
+    @staticmethod
+    def validate_bets(bet):
+        if config.BET_MIN_AMOUNT_ADMIN <= bet <= config.BET_MAX_AMOUNT_ADMIN:
+            return bet
+        raise ValidationError('invalid bet amount, availible choice {}-{}'.format(config.BET_MIN_AMOUNT_ADMIN,
+                                                                                  config.BET_MAX_AMOUNT_ADMIN))
 
 
 class RiskAssessmentTaskShortSerializer(serializers.ModelSerializer):

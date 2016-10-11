@@ -1,7 +1,8 @@
+from constance import config
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailSerializer, RiskAssessmentTaskShortSerializer
+from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailUserSerializer, RiskAssessmentTaskShortSerializer
 from dynamis.apps.policy.models import RiskAssessmentTask
 
 
@@ -75,7 +76,7 @@ def test_get_my_assessment_task(user_webtest_client, api_client, factories):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == RiskAssessmentTaskDetailSerializer(risk_assessment_task).data
+    assert response.data == RiskAssessmentTaskDetailUserSerializer(risk_assessment_task).data
 
 
 def test_get_other_task_if_admin(api_client, factories):
@@ -89,7 +90,7 @@ def test_get_other_task_if_admin(api_client, factories):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == RiskAssessmentTaskDetailSerializer(risk_assessment_task).data
+    assert response.data == RiskAssessmentTaskDetailUserSerializer(risk_assessment_task).data
 
 
 def test_get_other_task_if_not_admin(api_client, factories):
@@ -109,8 +110,8 @@ def test_update_my_task(user_webtest_client, api_client, factories):
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user_webtest_client.user)
 
     data_to_update = {
-        'bet1': 5.2,
-        'bet2': 8.2,
+        'bet1': config.BET_MAX_AMOUNT_USER,
+        'bet2': config.BET_MAX_AMOUNT_USER,
         'is_finished': True
     }
 
@@ -119,8 +120,8 @@ def test_update_my_task(user_webtest_client, api_client, factories):
     response = api_client.put(url, data=data_to_update)
 
     assert response.status_code == status.HTTP_200_OK
-    assert RiskAssessmentTask.objects.get().bet1 == 5.2
-    assert RiskAssessmentTask.objects.get().bet2 == 8.2
+    assert RiskAssessmentTask.objects.get().bet1 == config.BET_MAX_AMOUNT_USER
+    assert RiskAssessmentTask.objects.get().bet2 == config.BET_MAX_AMOUNT_USER
     assert RiskAssessmentTask.objects.get().is_finished is True
 
 
@@ -131,8 +132,8 @@ def test_update_other_task_if_admin(user_webtest_client, api_client, factories):
     api_client.force_authenticate(user_admin)
 
     data_to_update = {
-        'bet1': 5.2,
-        'bet2': 8.2,
+        'bet1': config.BET_MAX_AMOUNT_ADMIN,
+        'bet2': config.BET_MAX_AMOUNT_ADMIN,
         'is_finished': True
     }
 
@@ -141,8 +142,8 @@ def test_update_other_task_if_admin(user_webtest_client, api_client, factories):
     response = api_client.put(url, data=data_to_update)
 
     assert response.status_code == status.HTTP_200_OK
-    assert RiskAssessmentTask.objects.get().bet1 == 5.2
-    assert RiskAssessmentTask.objects.get().bet2 == 8.2
+    assert RiskAssessmentTask.objects.get().bet1 == config.BET_MAX_AMOUNT_ADMIN
+    assert RiskAssessmentTask.objects.get().bet2 == config.BET_MAX_AMOUNT_ADMIN
     assert RiskAssessmentTask.objects.get().is_finished is True
 
 

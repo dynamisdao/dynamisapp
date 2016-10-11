@@ -294,6 +294,19 @@ CONSTANCE_CONFIG = {
     'DOLLAR_ETH_EXCHANGE_RATE_VALID_FOR_MINUTES': (60, 'How many minutes dollar/eth rate will valid'),
     'WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES': (60, 'How many minutes we can wait for smart deposit'),
     'ADDRESS_TO_SEND_ETH': ('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8_test', 'address to send eth'),
+    'BET_MIN_AMOUNT_USER': (1, 'RiskAssessor allowed to use minimum 1 token on ClaimStart and 1 token on ClaimLength.'),
+    'BET_MAX_AMOUNT_USER': (2, 'RiskAssessor allowed to use maximum 2 tokens on ClaimStart and 2 tokens on '
+                               'ClaimLength.'),
+    'BET_MIN_AMOUNT_ADMIN': (1, 'Admin is allowed to use minimum 1 token on ClaimStart and 1 token on ClaimLength.'),
+    'BET_MAX_AMOUNT_ADMIN': (4, 'Admin is allowed to use maximum 4 tokens on ClaimStart and 4 tokens on ClaimLength.'),
+    'MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MIN': (6, 'How many months of premiums will this policyholder pay'
+                                                          ' before opening a claim?'),
+    'MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MAX': (36, 'How many months of premiums will this policyholder pay'
+                                                           ' before opening a claim?'),
+    'WEEKS_PAID_FOR_FIRST_CLAIM_MIN': (0, 'How many weeks will be paid out to this'
+                                          ' policyholder for their first claim?'),
+    'WEEKS_PAID_FOR_FIRST_CLAIM_MAX': (88, 'How many weeks will be paid out to this'
+                                           ' policyholder for their first claim?'),
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

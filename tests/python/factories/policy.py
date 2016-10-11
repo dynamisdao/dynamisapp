@@ -1,5 +1,6 @@
 import json
 import factory
+from constance import config
 
 from dynamis.apps.policy.models import (
     PolicyApplication,
@@ -56,8 +57,10 @@ class EmploymentClaimPeerReviewFactory(BasePeerReviewFactory):
 class RiskAssessmentTaskFactory(factory.DjangoModelFactory):
     user = factory.SubFactory('factories.accounts.UserFactory')
     policy = factory.SubFactory('factories.policy.PolicyApplicationFactory')
-    bet1 = 1.5
-    bet2 = 2.5
+    bet1 = config.BET_MIN_AMOUNT_USER
+    bet2 = config.BET_MIN_AMOUNT_USER
+    question1 = config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MAX
+    question2 = config.WEEKS_PAID_FOR_FIRST_CLAIM_MAX
 
     class Meta:
         model = RiskAssessmentTask
