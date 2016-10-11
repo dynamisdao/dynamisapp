@@ -2,6 +2,7 @@ from constance import config
 from rest_framework import status
 from rest_framework.reverse import reverse
 
+from dynamis.apps.payments.models import MakeBetOperation
 from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailUserSerializer, RiskAssessmentTaskShortSerializer
 from dynamis.apps.policy.models import RiskAssessmentTask
 
@@ -106,8 +107,14 @@ def test_get_other_task_if_not_admin(api_client, factories):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_update_my_task(user_webtest_client, api_client, factories):
+def test_update_my_task(user_webtest_client, api_client, factories, internal_contractor):
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user_webtest_client.user)
+
+    user_token_amount = 50
+    user_token_account = factories.TokenAccountFactory(user=user_webtest_client.user,
+                                                       immature_tokens_balance=user_token_amount)
+
+    contractor_token_account = factories.TokenAccountFactory(user=internal_contractor)
 
     data_to_update = {
         'bet1': config.BET_MAX_AMOUNT_USER,
@@ -119,14 +126,31 @@ def test_update_my_task(user_webtest_client, api_client, factories):
 
     response = api_client.put(url, data=data_to_update)
 
+    amount = data_to_update['bet1'] + data_to_update['bet2']
+
     assert response.status_code == status.HTTP_200_OK
     assert RiskAssessmentTask.objects.get().bet1 == config.BET_MAX_AMOUNT_USER
     assert RiskAssessmentTask.objects.get().bet2 == config.BET_MAX_AMOUNT_USER
     assert RiskAssessmentTask.objects.get().is_finished is True
 
+    bet_operation = MakeBetOperation.objects.get()
+    assert bet_operation.assessor_token_account.user == risk_assessment_task.user
+    assert bet_operation.internal_contractor_token_account.user == internal_contractor
+    assert bet_operation.risk_assessment_task == risk_assessment_task
+    assert bet_operation.amount == amount
 
-def test_update_other_task_if_admin(user_webtest_client, api_client, factories):
+    contractor_token_account.refresh_from_db()
+    assert contractor_token_account.immature_tokens_balance == amount
+    user_token_account.refresh_from_db()
+    assert user_token_account.immature_tokens_balance == user_token_amount - amount
+
+
+def test_update_other_task_if_admin(user_webtest_client, api_client, factories, internal_contractor):
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user_webtest_client.user)
+
+    user_token_amount = 50
+    user_token_account = factories.TokenAccountFactory(user=user_webtest_client.user,
+                                                       immature_tokens_balance=user_token_amount)
 
     user_admin = factories.UserFactory(is_staff=True)
     api_client.force_authenticate(user_admin)
@@ -145,6 +169,12 @@ def test_update_other_task_if_admin(user_webtest_client, api_client, factories):
     assert RiskAssessmentTask.objects.get().bet1 == config.BET_MAX_AMOUNT_ADMIN
     assert RiskAssessmentTask.objects.get().bet2 == config.BET_MAX_AMOUNT_ADMIN
     assert RiskAssessmentTask.objects.get().is_finished is True
+
+    bet_operation = MakeBetOperation.objects.get()
+    assert bet_operation.assessor_token_account.user == risk_assessment_task.user
+    assert bet_operation.internal_contractor_token_account.user == internal_contractor
+    assert bet_operation.risk_assessment_task == risk_assessment_task
+    assert bet_operation.amount == config.BET_MAX_AMOUNT_ADMIN + config.BET_MAX_AMOUNT_ADMIN
 
 
 def test_update_other_task(user_webtest_client, api_client, factories):

@@ -105,3 +105,10 @@ class SellTokenOperation(TimestampModel):
     eth_account = models.ForeignKey(EthAccount, related_name='sell_token_operations')
     token_account = models.ForeignKey(TokenAccount, related_name='sell_token_operations')
     amount = models.FloatField()
+
+
+class MakeBetOperation(TimestampModel):
+    assessor_token_account = models.ForeignKey(TokenAccount, related_name='make_bet_operations')
+    internal_contractor_token_account = models.ForeignKey(TokenAccount, related_name='receive_bet_operations')
+    risk_assessment_task = models.OneToOneField('policy.RiskAssessmentTask', related_name='make_bet_operations')
+    amount = models.FloatField(null=True)

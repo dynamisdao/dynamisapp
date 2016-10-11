@@ -230,3 +230,16 @@ def gpg_key(generate_gpg_key):
     database.
     """
     return generate_gpg_key('test')
+
+
+@pytest.fixture()
+def internal_contractor(factories):
+    from dynamis.apps.accounts.models import User
+    try:
+        return User.objects.get(internal_contractor=True)
+    except User.DoesNotExist:
+        return factories.UserFactory(
+            email='internal_contractor@example.com',
+            password='password',
+            internal_contractor=True
+        )

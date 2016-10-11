@@ -21,7 +21,7 @@ from django_tables2 import SingleTableMixin
 
 from dynamis.apps.accounts.forms import FillEthOperationForm, RiskAssessmentTaskForm
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
-from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount
+from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount, MakeBetOperation
 from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailAdminSerializer, \
     RiskAssessmentTaskDetailUserSerializer
 from dynamis.apps.policy.models import RiskAssessmentTask
@@ -62,6 +62,7 @@ class RiskAssessmentView(LoginRequired, TemplateView):
         get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
         return super(RiskAssessmentView, self).get(request, args, kwargs)
 
+    @atomic
     def post(self, request, *args, **kwargs):
         instance = get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
         form = RiskAssessmentTaskForm(request.POST or None, instance=instance)
@@ -78,8 +79,19 @@ class RiskAssessmentView(LoginRequired, TemplateView):
 
         serializer = serializer_class(data=form.data)
         serializer.is_valid(raise_exception=True)
-        return to_return
 
+        token_account, _ = TokenAccount.objects.get_or_create(user=instance.user)
+
+        internal_contractor = User.objects.get(internal_contractor=True)
+        contractor_token_account, _ = TokenAccount.objects.get_or_create(user=internal_contractor)
+
+        operation, _ = MakeBetOperation.objects.get_or_create(risk_assessment_task=instance,
+                                                              assessor_token_account=token_account,
+                                                              internal_contractor_token_account=contractor_token_account)
+        operation.amount = int(form.data['bet1']) + int(form.data['bet2'])
+        operation.save()
+
+        return to_return
 
     def form_valid(self, form):
         form.save()
@@ -171,5 +183,3 @@ class VerifyEmailView(RedirectView):
         # catch either one.
         except signing.BadSignature:
             return None
-
-
