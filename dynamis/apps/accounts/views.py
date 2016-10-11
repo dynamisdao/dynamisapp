@@ -22,6 +22,8 @@ from django_tables2 import SingleTableMixin
 from dynamis.apps.accounts.forms import FillEthOperationForm, RiskAssessmentTaskForm
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
 from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount
+from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailAdminSerializer, \
+    RiskAssessmentTaskDetailUserSerializer
 from dynamis.apps.policy.models import RiskAssessmentTask
 from dynamis.utils.mixins import LoginRequired
 from .models import User
@@ -63,10 +65,21 @@ class RiskAssessmentView(LoginRequired, TemplateView):
     def post(self, request, *args, **kwargs):
         instance = get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
         form = RiskAssessmentTaskForm(request.POST or None, instance=instance)
-        if form.is_valid():
-            return self.form_valid(form)
+
+        if request.user.is_admin:
+            serializer_class = RiskAssessmentTaskDetailAdminSerializer
         else:
-            return self.form_invalid(form)
+            serializer_class = RiskAssessmentTaskDetailUserSerializer
+
+        if form.is_valid():
+            to_return = self.form_valid(form)
+        else:
+            to_return = self.form_invalid(form)
+
+        serializer = serializer_class(data=form.data)
+        serializer.is_valid(raise_exception=True)
+        return to_return
+
 
     def form_valid(self, form):
         form.save()
