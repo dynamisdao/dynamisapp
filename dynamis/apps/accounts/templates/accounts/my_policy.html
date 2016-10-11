@@ -34,18 +34,6 @@
                 <li class="collection-item">
                     Address: {% react_component "Dynamis.components.EthAddress" address="0x12345" %}</li>
 
-                <li class="collection-item">
-                    <button type="button" class="btn">Verify My Policy</button>
-                </li>
-                <li class="collection-item">
-                    <button type="button" class="btn">Payment &amp; Claim History</button>
-                </li>
-                <li class="collection-item">
-                    <button type="button" class="btn">Open a Claim</button>
-                </li>
-                <li class="collection-item">
-                    <button type="button" class="btn">Close Policy</button>
-                </li>
                 {% if user.policies.last.state == 2 %}
                     <li class="collection-item">
                         <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.last.id %}">Pay Smart
