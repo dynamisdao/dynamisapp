@@ -7,6 +7,12 @@ from dynamis.utils.tables import MaterializedTable
 
 
 class SmartDepositTable(MaterializedTable):
+    coast = tables.Column(verbose_name='price, ETH')
+    coast_dollar = tables.Column(verbose_name='price, USD')
+    exchange_rate_at_invoice_time = tables.Column(verbose_name='current exchange rate')
+    amount = tables.Column(verbose_name='amount received')
+    policy_state = tables.Column(verbose_name='policy state', accessor='policy.state')
+
     class Meta(MaterializedTable.Meta):
         model = SmartDeposit
         order_by = ('policy_id',)
@@ -17,7 +23,7 @@ class SmartDepositTable(MaterializedTable):
             'coast_dollar',
             'exchange_rate_at_invoice_time',
             'state',
-            'policy.state',
+            'policy_state',
             'wait_for'
         )
 

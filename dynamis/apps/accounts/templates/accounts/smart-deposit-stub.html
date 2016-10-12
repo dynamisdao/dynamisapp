@@ -37,7 +37,7 @@
                         <div class="input-field col s12" type="hidden">
                             <input class=" validate" id="id_amount" name="amount"
                                    value="{{ user.policies.last.smart_deposit.coast }}" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Smart Deposit Coast: </label>
+                            <label class="s12 " for="id_amount">Amount to send, ETH</label>
                         </div>
                     </div>
                     <div class="input-field " type="hidden">
@@ -53,18 +53,6 @@
                 </form>
             </div>
             <br>
-        <li class="collection-item">
-            <form action="." method="post">
-                {% csrf_token %}
-                <div class="input-field" hidden="true">
-                    <input class="validate" id="id_amount" name="amount" step="any" type="number" value=1>
-                </div>
-                <div class="input-field" hidden="true">
-                    <input class="validate" id="id_eth_account" name="eth_account" step="any" type="number"
-                           value="{{ user.eth_accounts.first.id }}">
-                </div>
-                <button class="btn btn-primary" type="submit">Buy 1 immature token</button>
-            </form>
         </li>
     </ul>
 
