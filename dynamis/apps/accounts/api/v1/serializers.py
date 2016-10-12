@@ -53,12 +53,10 @@ class AccountCreationSerializer(serializers.Serializer):
             create_account_kwargs['keybase_username'] = validated_data['keybase_username']
         user = User.objects.create_user(**create_account_kwargs)
 
-        create_settings_kwargs = {
-            'user': user
-        }
+        eth_account, created = EthAccount.objects.get_or_create(user=user)
         if 'eth_address' in validated_data:
-            create_settings_kwargs['eth_address'] = validated_data['eth_address']
-        EthAccount.objects.create(**create_settings_kwargs)
+            eth_account.eth_address = validated_data['eth_address']
+            eth_account.save()
 
         # TODO FIXME - we have to find more elegant way to separate test/prod behavior
         if DEBUG and validated_data.get('debug_no_verify', None) is True:
