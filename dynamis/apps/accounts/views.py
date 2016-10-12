@@ -8,7 +8,8 @@ from django.core.urlresolvers import (
     reverse,
 )
 from django.db.transaction import atomic
-from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import FormView
 from django.views.generic import (
@@ -18,9 +19,12 @@ from django.views.generic import (
 from django.views.generic.list import ListView
 from django_tables2 import SingleTableMixin
 
-from dynamis.apps.accounts.forms import FillEthOperationForm
+from dynamis.apps.accounts.forms import FillEthOperationForm, RiskAssessmentTaskForm
 from dynamis.apps.accounts.tables import RiskAssessmentTaskTable
-from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount
+from dynamis.apps.payments.models import FillEthOperation, TokenAccount, EthAccount, MakeBetOperation
+from dynamis.apps.policy.api.v1.serializers import RiskAssessmentTaskDetailAdminSerializer, \
+    RiskAssessmentTaskDetailUserSerializer
+from dynamis.apps.policy.models import RiskAssessmentTask
 from dynamis.utils.mixins import LoginRequired
 from .models import User
 
@@ -53,6 +57,45 @@ class AssessorDashboardView(LoginRequired, SingleTableMixin, ListView):
 
 class RiskAssessmentView(LoginRequired, TemplateView):
     template_name = "accounts/risk_assessment.html"
+
+    def get(self, request, *args, **kwargs):
+        get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
+        return super(RiskAssessmentView, self).get(request, args, kwargs)
+
+    @atomic
+    def post(self, request, *args, **kwargs):
+        instance = get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
+        form = RiskAssessmentTaskForm(request.POST or None, instance=instance)
+
+        if request.user.is_admin:
+            serializer_class = RiskAssessmentTaskDetailAdminSerializer
+        else:
+            serializer_class = RiskAssessmentTaskDetailUserSerializer
+
+        if form.is_valid():
+            to_return = self.form_valid(form)
+        else:
+            to_return = self.form_invalid(form)
+
+        serializer = serializer_class(data=form.data)
+        serializer.is_valid(raise_exception=True)
+
+        token_account, _ = TokenAccount.objects.get_or_create(user=instance.user)
+
+        internal_contractor = User.objects.get(internal_contractor=True)
+        contractor_token_account, _ = TokenAccount.objects.get_or_create(user=internal_contractor)
+
+        operation, _ = MakeBetOperation.objects.get_or_create(risk_assessment_task=instance,
+                                                              assessor_token_account=token_account,
+                                                              internal_contractor_token_account=contractor_token_account)
+        operation.amount = int(form.data['bet1']) + int(form.data['bet2'])
+        operation.save()
+
+        return to_return
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect('/')
 
     def get_object(self):
         return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])
@@ -140,5 +183,3 @@ class VerifyEmailView(RedirectView):
         # catch either one.
         except signing.BadSignature:
             return None
-
-

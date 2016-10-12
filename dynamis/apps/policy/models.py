@@ -251,7 +251,13 @@ class RiskAssessmentTask(TimestampModel):
     policy = models.ForeignKey(PolicyApplication, related_name='risk_assessment_tasks')
     is_finished = models.BooleanField(default=False)
     bet1 = models.FloatField(null=True)
+    question1 = models.PositiveSmallIntegerField(null=True,
+                                                 help_text='How many months will this policyholder pay in premiums'
+                                                           ' before opening a claim?')
     bet2 = models.FloatField(null=True)
+    question2 = models.FloatField(null=True,
+                                  help_text='How many weeks will this policyholder recieve in payments before '
+                                            'closing a claim? ')
 
 
 class EmploymentHistoryJob(TimestampModel):

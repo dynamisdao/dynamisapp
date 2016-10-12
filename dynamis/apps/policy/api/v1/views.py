@@ -11,6 +11,8 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route
 
+from dynamis.apps.accounts.models import User
+from dynamis.apps.payments.models import TokenAccount, MakeBetOperation
 from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records, \
     set_answers_on_questions, calculate_and_set_smart_deposit_coast
 from dynamis.apps.policy.models import (
@@ -29,7 +31,7 @@ from .serializers import (
     PeerReviewSubmissionSerializer,
     PeerReviewSerializer,
     IPFSFileSerializer,
-    RiskAssessmentTaskDetailSerializer, RiskAssessmentTaskShortSerializer)
+    RiskAssessmentTaskDetailUserSerializer, RiskAssessmentTaskShortSerializer, RiskAssessmentTaskDetailAdminSerializer)
 
 
 class PolicyApplicationViewSet(DynamisCreateModelMixin,
@@ -155,7 +157,7 @@ class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
                                 mixins.UpdateModelMixin,
                                 mixins.ListModelMixin,
                                 viewsets.GenericViewSet):
-    serializer_class = RiskAssessmentTaskDetailSerializer
+    serializer_class = RiskAssessmentTaskDetailUserSerializer
     permission_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
     queryset = RiskAssessmentTask.objects.all()
     filter_backends = (IsOwnerOrAdminFilterBackend,)
@@ -163,3 +165,28 @@ class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
     def list(self, request, *args, **kwargs):
         self.serializer_class = RiskAssessmentTaskShortSerializer
         return super(RiskAssessmentTaskViewSet, self).list(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if request.user.is_admin:
+            self.serializer_class = RiskAssessmentTaskDetailAdminSerializer
+        return super(RiskAssessmentTaskViewSet, self).update(request, *args, **kwargs)
+
+    @atomic
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        amount = instance.bet1 + instance.bet2
+        user_token_account = TokenAccount.objects.get(user=instance.user)
+
+        internal_contractor = User.objects.get(internal_contractor=True)
+        contractor_token_account, _ = TokenAccount.objects.get_or_create(user=internal_contractor)
+
+        operation = MakeBetOperation.objects.create(risk_assessment_task=instance,
+                                                    assessor_token_account=user_token_account,
+                                                    internal_contractor_token_account=contractor_token_account,
+                                                    amount=amount)
+
+        user_token_account.immature_tokens_balance -= amount
+        user_token_account.save()
+
+        contractor_token_account.immature_tokens_balance += amount
+        contractor_token_account.save()
