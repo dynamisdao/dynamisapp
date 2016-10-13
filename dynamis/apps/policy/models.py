@@ -10,6 +10,8 @@ from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, SmartDepo
 from dynamis.apps.accounts.models import User
 from dynamis.core.models import TimestampModel
 from constance import config
+
+from dynamis.settings import DEBUG
 from .querysets import ApplicationItemQueryset
 
 POLICY_STATUS_INIT = 1
@@ -141,6 +143,9 @@ class PolicyApplication(TimestampModel):
         return False
 
     def check_is_completeness_checked(self):
+        # TODO remove 'if debug' when we complete develop and will test all states
+        if DEBUG:
+            return True
         return self.is_completeness_checked
 
     @transition(field=state, source=POLICY_STATUS_INIT, target=POLICY_STATUS_SUBMITTED)
@@ -210,7 +215,7 @@ class PolicyApplication(TimestampModel):
 
 
 class ReviewTask(TimestampModel):
-    policy_application = models.ForeignKey('policy.PolicyApplication', related_name='items')
+    policy_application = models.ForeignKey('policy.PolicyApplication', related_name='review_tasks')
     is_finished = models.BooleanField(default=False)
 
     TYPE_IDENTITY = 'identity'

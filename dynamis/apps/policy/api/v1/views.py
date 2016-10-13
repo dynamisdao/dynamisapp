@@ -23,6 +23,7 @@ from dynamis.apps.policy.models import (
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
 from dynamis.core.permissions import IsAdminOrObjectOwnerPermission
 from dynamis.core.view_mixins import DynamisCreateModelMixin
+from dynamis.settings import DEBUG
 
 from .serializers import (
     PolicyApplicationSerializer,
@@ -131,15 +132,29 @@ class ReviewTasksViewSet(mixins.ListModelMixin,
     def submit_peer_review(self, *args, **kwargs):
         return self.verify(*args, **kwargs)
 
+    # TODO refactoring - when we will call this url twice - system will produce two PeerReview objects -
+    # better to use get_or_create
+    @atomic
     @detail_route(methods=['post'], url_path='verify')
     def verify(self, *args, **kwargs):
-        application_item = self.get_object()
+        review_task = self.get_object()
         serializer = PeerReviewSubmissionSerializer(
             data=self.request.data,
             keybase_username=self.request.user.get_keybase_username(),
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=self.request.user, application_item=application_item)
+        serializer.save(user=self.request.user, application_item=review_task)
+
+        review_task.is_finished = True
+        review_task.save()
+
+        policy = review_task.policy_application
+        if not ReviewTask.objects.filter(policy_application=policy, is_finished=False).exists():
+            if DEBUG:
+                policy.p2p_review_to_completeness_check()
+            policy.completeness_check_to_risk_assessment_review()
+            policy.save()
+
         return Response(status=status.HTTP_200_OK)
 
 
