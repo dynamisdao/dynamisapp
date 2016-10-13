@@ -183,3 +183,11 @@ class VerifyEmailView(RedirectView):
         # catch either one.
         except signing.BadSignature:
             return None
+
+
+class RootView(LoginRequired, SingleTableMixin, ListView):
+    template_name = "_index.html"
+    table_class = RiskAssessmentTaskTable
+
+    def get_queryset(self):
+        return self.request.user.risk_assessment_tasks.all()

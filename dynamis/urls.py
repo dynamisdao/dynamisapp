@@ -19,12 +19,13 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from dynamis.apps.accounts.views import RootView
 
 admin.autodiscover()
 
 urlpatterns = [
     url(
-        r'^$', TemplateView.as_view(template_name='_index.html'),
+        r'^$', RootView.as_view(),
         name="site-index",
     ),
 
