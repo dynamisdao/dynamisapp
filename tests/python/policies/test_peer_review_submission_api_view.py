@@ -108,7 +108,7 @@ def test_review_task_verify_api_view_not_finished_tasks_exists(user, api_client,
 
     response = api_client.post(submit_review_url, data)
 
-    assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     policy = PolicyApplication.objects.get(pk=policy.pk)
     review_task = ReviewTask.objects.get(pk=review_task.pk)
