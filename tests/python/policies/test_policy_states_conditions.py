@@ -1,4 +1,6 @@
 import datetime
+import json
+
 import pytest
 from django_fsm import TransitionNotAllowed
 
@@ -74,7 +76,7 @@ def test_submit_to_p2p_review_ok(factories, policy_data, job_data):
     policy_data['employmentHistory']['jobs'].append(job_data)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
-                                                data=policy_data)
+                                                data=json.dumps({'policy_data': policy_data}))
     deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=20)
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW

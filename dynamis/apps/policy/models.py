@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import ast
 import datetime
 import itertools
+import json
+
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -175,10 +177,10 @@ class PolicyApplication(TimestampModel):
 
         # TODO: This should be made idempotent as to not create duplicate application items in the event
         #  that this is triggered twice.
-        if isinstance(self.data, dict):
-            policy_data = self.data
-        else:
-            policy_data = ast.literal_eval(self.data)
+        print '---------------!!!!!!!'
+        # print self.data
+        print type(self.data)
+        policy_data = json.loads(self.data)['policy_data']
         identities = policy_data['identity']['verification_data']['proofs']
         employment_records = policy_data['employmentHistory']['jobs']
 
@@ -186,7 +188,7 @@ class PolicyApplication(TimestampModel):
             {
                 'policy_application_id': self.pk,
                 'type': ReviewTask.TYPE_IDENTITY,
-                'data': item,
+                'data': json.dumps(item),
             }
             for item in identities
         )
@@ -194,7 +196,7 @@ class PolicyApplication(TimestampModel):
             {
                 'policy_application_id': self.pk,
                 'type': ReviewTask.TYPE_EMPLOYMENT_CLAIM,
-                'data': item,
+                'data': json.dumps(item),
             }
             for item in employment_records
         )

@@ -1,3 +1,5 @@
+import json
+
 from constance import config
 
 from dynamis.apps.payments.models import SMART_DEPOSIT_STATUS_RECEIVED
@@ -145,7 +147,7 @@ def test_submit_to_p2p_review(factories, policy_data, job_data):
     user_3 = factories.UserFactory(is_risk_assessor=True)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
-                                                data=policy_data)
+                                                data=json.dumps({'policy_data': policy_data}))
     deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED, coast=20, amount=20)
 
     policy.submit_to_p2p_review()
