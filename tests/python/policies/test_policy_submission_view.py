@@ -40,7 +40,7 @@ def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_cli
     policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True
 
-    assert policy_application.review_tasks.count() == 2
+    assert policy_application.review_tasks.count() == 0
 
     assert policy_application.state == POLICY_STATUS_SUBMITTED
 
@@ -75,7 +75,7 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True
 
-    assert policy_application.review_tasks.count() == 2
+    assert policy_application.review_tasks.count() == 0
 
     assert policy_application.state == POLICY_STATUS_SUBMITTED
 

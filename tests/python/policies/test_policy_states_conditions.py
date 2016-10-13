@@ -1,4 +1,6 @@
 import datetime
+import json
+
 import pytest
 from django_fsm import TransitionNotAllowed
 
@@ -68,10 +70,13 @@ def test_deposit_refund_to_init_not_refunded(factories):
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
 
 
-def test_submit_to_p2p_review_ok(factories):
+def test_submit_to_p2p_review_ok(factories, policy_data, job_data):
     user = factories.UserFactory()
+    policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
+    policy_data['employmentHistory']['jobs'].append(job_data)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
-                                                user=user)
+                                                user=user,
+                                                data=json.dumps({'policy_data': policy_data}))
     deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=20)
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
