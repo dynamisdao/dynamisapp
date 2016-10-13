@@ -35,7 +35,7 @@ def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_cli
     }
 
     response = api_client.post(submit_url, data)
-    assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True
@@ -70,7 +70,7 @@ def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
     }
 
     response = api_client.post(submit_url, data)
-    assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     policy_application = PolicyApplication.objects.get()
     assert policy_application.is_final is True

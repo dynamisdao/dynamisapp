@@ -107,7 +107,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         policy.smart_deposit.init_to_wait()
         policy.smart_deposit.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
     @detail_route(methods=['post'], url_path='upload-file')
     def upload_file(self, *args, **kwargs):
@@ -155,7 +155,7 @@ class ReviewTasksViewSet(mixins.ListModelMixin,
             policy.completeness_check_to_risk_assessment_review()
             policy.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 class PeerReviewHistoryViewSet(mixins.ListModelMixin,
