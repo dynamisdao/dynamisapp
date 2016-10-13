@@ -13,7 +13,7 @@ from rest_framework.decorators import detail_route
 
 from dynamis.apps.accounts.models import User
 from dynamis.apps.payments.models import TokenAccount, MakeBetOperation
-from dynamis.apps.policy.business_logic import generate_review_tasks, generate_employment_history_job_records, \
+from dynamis.apps.policy.business_logic import generate_employment_history_job_records, \
     set_answers_on_questions, calculate_and_set_smart_deposit_coast
 from dynamis.apps.policy.models import (
     PolicyApplication,
@@ -88,8 +88,6 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         serializer = PolicySubmissionSerializer(policy, data=self.request.data)
         serializer.is_valid(raise_exception=True)
         submitted_policy = serializer.save()
-
-        generate_review_tasks(submitted_policy)
 
         # TODO remove when old frontend will disabled
         calculate_and_set_smart_deposit_coast(policy)

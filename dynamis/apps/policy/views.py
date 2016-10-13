@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.views.generic import (
@@ -51,6 +52,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
             instance.save()
         return super(SmartDepositStubView, self).get(request, args, kwargs)
 
+    @atomic
     def post(self, request, *args, **kwargs):
         instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
         form = SmartDepositStubForm(request.POST or None, instance=instance)

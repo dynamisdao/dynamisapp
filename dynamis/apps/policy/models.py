@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 
+import ast
 import datetime
+import itertools
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
@@ -94,15 +96,15 @@ class PolicyApplication(TimestampModel):
 
     def check_smart_deposit(self):
         smart_deposits = SmartDeposit.objects.filter(policy=self)
-        if smart_deposits.exists() and\
-                not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists() and\
-                smart_deposits[0].amount >= smart_deposits[0].coast:
+        if smart_deposits.exists() and \
+                not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists() and \
+                        smart_deposits[0].amount >= smart_deposits[0].coast:
             return True
         return False
 
     def check_smart_for_refund(self):
         smart_deposits = SmartDeposit.objects.filter(policy=self)
-        if smart_deposits.exists() and\
+        if smart_deposits.exists() and \
                 not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists():
             return True
         return False
@@ -170,7 +172,37 @@ class PolicyApplication(TimestampModel):
     @transition(field=state, source=POLICY_STATUS_SUBMITTED, target=POLICY_STATUS_ON_P2P_REVIEW,
                 conditions=[check_smart_deposit])
     def submit_to_p2p_review(self):
-        pass
+
+        # TODO: This should be made idempotent as to not create duplicate application items in the event
+        #  that this is triggered twice.
+        if isinstance(self.data, dict):
+            policy_data = self.data
+        else:
+            policy_data = ast.literal_eval(self.data)
+        identities = policy_data['identity']['verification_data']['proofs']
+        employment_records = policy_data['employmentHistory']['jobs']
+
+        identity_items = (
+            {
+                'policy_application_id': self.pk,
+                'type': ReviewTask.TYPE_IDENTITY,
+                'data': item,
+            }
+            for item in identities
+        )
+        employment_history_items = (
+            {
+                'policy_application_id': self.pk,
+                'type': ReviewTask.TYPE_EMPLOYMENT_CLAIM,
+                'data': item,
+            }
+            for item in employment_records
+        )
+        application_items = [
+            ReviewTask(**item)
+            for item in itertools.chain(identity_items, employment_history_items)
+            ]
+        return ReviewTask.objects.bulk_create(application_items)
 
     @transition(field=state, source=POLICY_STATUS_ON_P2P_REVIEW,
                 target=POLICY_STATUS_ON_COMPLETENESS_CHECK, conditions=[check_p2p_review])

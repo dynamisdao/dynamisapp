@@ -12,36 +12,6 @@ from dynamis.apps.policy.models import ReviewTask, EmploymentHistoryJob, HOW_LON
     ONE_TO_TWO_MONTHS, TWO_TO_THREE_MONTHS, THREE_TO_FOUR_MONTHS, MORE_THAN_FOUR_MONTHS
 
 
-# TODO: This should be made idempotent as to not create duplicate application items in the event
-#  that this is triggered twice.
-def generate_review_tasks(policy_application):
-    policy_data = json.loads(policy_application.data)['policy_data']
-    identities = policy_data['identity']['verification_data']['proofs']
-    employment_records = policy_data['employmentHistory']['jobs']
-
-    identity_items = (
-        {
-            'policy_application_id': policy_application.pk,
-            'type': ReviewTask.TYPE_IDENTITY,
-            'data': json.dumps(item),
-        }
-        for item in identities
-    )
-    employment_history_items = (
-        {
-            'policy_application_id': policy_application.pk,
-            'type': ReviewTask.TYPE_EMPLOYMENT_CLAIM,
-            'data': json.dumps(item),
-        }
-        for item in employment_records
-    )
-    application_items = [
-        ReviewTask(**item)
-        for item in itertools.chain(identity_items, employment_history_items)
-        ]
-    return ReviewTask.objects.bulk_create(application_items)
-
-
 def convert_month_year_to_date(month, year):
     """
     :type month: str
