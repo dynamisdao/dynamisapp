@@ -62,7 +62,8 @@ if DEBUG:
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'dynamis.middleware.DisableCSRF',
+        'dynamis.middleware.DisableCSRFMiddleWare',
+        'dynamis.middleware.ReplaceResponseCodesMiddleWare',
     ]
 
     CSRF_COOKIE_SECURE = True

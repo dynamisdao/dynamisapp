@@ -144,7 +144,7 @@ def test_create_account(api_client, factories):
     url = reverse('v1:accounts-list')
     response = api_client.post(url, data=data)
 
-    assert response.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_200_OK
     user = User.objects.get(email=email, keybase_username=keybase_username)
     assert user.is_keybase_verified is False
     account_config = EthAccount.objects.get(user=user)
@@ -171,7 +171,7 @@ def test_user_creation_api_view(User, api_client):
     assert '_auth_user_id' not in api_client.session.keys()
 
     response = api_client.post(account_create_url, data)
-    assert response.status_code == status.HTTP_201_CREATED, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     # Make sure verification email was sent.
     assert len(mail.outbox) == 1
@@ -204,7 +204,7 @@ def test_user_creation_debug_no_verify_api_view(User, api_client):
     assert '_auth_user_id' not in api_client.session.keys()
 
     response = api_client.post(account_create_url, data)
-    assert response.status_code == status.HTTP_201_CREATED, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     # Make sure verification email was sent.
     assert len(mail.outbox) == 0

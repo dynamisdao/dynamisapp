@@ -28,7 +28,7 @@ def test_peer_review_submission_api_view(user, api_client, factories, gpg_key,
     assert not user.peer_reviews.exists()
 
     response = api_client.post(submit_review_url, data)
-    assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     assert user.peer_reviews.exists()
 
@@ -56,6 +56,6 @@ def test_review_task_verify_api_view(user, api_client, factories, gpg_key,
     assert not user.peer_reviews.exists()
 
     response = api_client.post(submit_review_url, data)
-    assert response.status_code == status.HTTP_204_NO_CONTENT, response.data
+    assert response.status_code == status.HTTP_200_OK, response.data
 
     assert user.peer_reviews.exists()
