@@ -177,9 +177,6 @@ class PolicyApplication(TimestampModel):
 
         # TODO: This should be made idempotent as to not create duplicate application items in the event
         #  that this is triggered twice.
-        print '---------------!!!!!!!'
-        # print self.data
-        print type(self.data)
         policy_data = json.loads(self.data)['policy_data']
         identities = policy_data['identity']['verification_data']['proofs']
         employment_records = policy_data['employmentHistory']['jobs']
