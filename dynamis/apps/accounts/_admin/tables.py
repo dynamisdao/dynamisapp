@@ -36,6 +36,9 @@ class UserTable(MaterializedTable):
 
 class PolicyTable(MaterializedTable):
     id = tables.LinkColumn('admin-namespace:policy-detail', kwargs={'pk': A('id')})
+    user_email = tables.LinkColumn('admin-namespace:user-detail', kwargs={'pk': A('user.pk')}, accessor='user.email',
+                                   verbose_name="user's email")
+    user_pk = tables.Column(verbose_name='user id', accessor='user.pk')
 
     class Meta(MaterializedTable.Meta):
         model = PolicyApplication
@@ -44,6 +47,4 @@ class PolicyTable(MaterializedTable):
             'id',
             'is_final',
             'is_signed',
-            'user.pk',
-            'user.email',
         )
