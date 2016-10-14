@@ -52,7 +52,7 @@ class AssessorDashboardView(LoginRequired, SingleTableMixin, ListView):
     table_class = RiskAssessmentTaskTable
 
     def get_queryset(self):
-        return self.request.user.risk_assessment_tasks.all()
+        return self.request.user.risk_assessment_tasks.filter(is_finished=False)
 
 
 class RiskAssessmentView(LoginRequired, TemplateView):
@@ -90,6 +90,9 @@ class RiskAssessmentView(LoginRequired, TemplateView):
                                                               internal_contractor_token_account=contractor_token_account)
         operation.amount = int(form.data['bet1']) + int(form.data['bet2'])
         operation.save()
+
+        instance.is_finished = True
+        instance.save()
 
         return to_return
 
