@@ -120,7 +120,7 @@ export function submitSignedApplication() {
       method: 'post',
     }).done(function(data) {
       // Redirect the user to the user profile.
-      window.location = urls['user-profile'];
+      window.location = urls['my-policy'];
     }).fail(function(response) {
       if(response.status === 400) {
         dispatchDjangoErrorMessages(dispatch, 'policy_submission', response.responseJSON);

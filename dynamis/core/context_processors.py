@@ -8,6 +8,7 @@ URLS = {
     'application-item-list': reverse_lazy('v1:application-item-list'),
     'peer-review-history': reverse_lazy('v1:peer-review-history-list'),
     'verify-keybase': reverse_lazy('v1:verify-keybase'),
+    'my-policy': reverse_lazy('my-policy'),
 }
 
 
