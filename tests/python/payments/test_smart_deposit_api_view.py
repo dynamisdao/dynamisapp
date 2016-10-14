@@ -26,7 +26,7 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
                                             wait_for=datetime.datetime.now() - datetime.timedelta(minutes=5))
     deposit = SmartDeposit.objects.get()
     assert deposit.state == 1
-    assert deposit.coast_dollar == deposit.coast * config.DOLLAR_ETH_EXCHANGE_RATE
+    assert deposit.coast == round(deposit.coast_dollar / config.DOLLAR_ETH_EXCHANGE_RATE, 3)
 
     new_exchange_rate = 14.5
     config.DOLLAR_ETH_EXCHANGE_RATE = new_exchange_rate
@@ -37,4 +37,4 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
     assert response.status_code == status.HTTP_200_OK
     deposit = SmartDeposit.objects.get()
     assert deposit.state == 0
-    assert deposit.coast_dollar == deposit.coast * new_exchange_rate
+    assert deposit.coast == round(deposit.coast_dollar / new_exchange_rate, 3)

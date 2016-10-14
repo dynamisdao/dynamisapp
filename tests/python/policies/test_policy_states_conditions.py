@@ -37,7 +37,8 @@ def test_to_deposit_refund(factories):
     user = factories.UserFactory()
     eth_account = factories.EthAccountFactory(user=user)
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, eth_account=eth_account, state=2, coast=20, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, eth_account=eth_account, state=2, coast_dollar=200,
+                                            amount=20)
     policy.to_deposit_refund()
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
 
@@ -77,7 +78,7 @@ def test_submit_to_p2p_review_ok(factories, policy_data, job_data):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast_dollar=200, amount=20)
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
@@ -86,7 +87,7 @@ def test_submit_to_p2p_review_small_amount(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=10)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast_dollar=200, amount=1)
     with pytest.raises(TransitionNotAllowed):
         policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_SUBMITTED
@@ -96,7 +97,7 @@ def test_submit_to_p2p_review_deposit_refunded(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=10)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast_dollar=200, amount=10)
     deposit_refund = factories.SmartDepositRefundFactory(smart_deposit=deposit, is_confirmed=True)
     with pytest.raises(TransitionNotAllowed):
         policy.submit_to_p2p_review()
@@ -209,7 +210,7 @@ def test_activate_policy(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast=20, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, coast_dollar=200, amount=20)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')

@@ -115,9 +115,9 @@ unemployment_period_answer_coasts = {
 
 
 def calculate_and_set_smart_deposit_coast(policy):
-    smart_deposit_coast = how_long_stay_answer_coasts[
+    smart_deposit_coast_dollar = how_long_stay_answer_coasts[
         policy.how_long_stay_answer or 0] + unemployment_period_answer_coasts[policy.unemployment_period_answer or 0]
     if not SmartDeposit.objects.filter(policy=policy).exists():
-        SmartDeposit.objects.create(policy=policy, coast=smart_deposit_coast, amount=0)
+        SmartDeposit.objects.create(policy=policy, coast_dollar=smart_deposit_coast_dollar, amount=0)
     else:
-        SmartDeposit.objects.filter(policy=policy).update(coast=smart_deposit_coast)
+        SmartDeposit.objects.filter(policy=policy).update(coast_dollar=smart_deposit_coast_dollar)
