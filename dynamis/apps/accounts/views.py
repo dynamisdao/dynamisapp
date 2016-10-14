@@ -55,12 +55,13 @@ class AssessorDashboardView(LoginRequired, SingleTableMixin, ListView):
         return self.request.user.risk_assessment_tasks.all()
 
 
-class RiskAssessmentView(LoginRequired, TemplateView):
+class RiskAssessmentView(LoginRequired, FormView, TemplateView):
     template_name = "accounts/risk_assessment.html"
+    form_class = RiskAssessmentTaskForm
 
     def get(self, request, *args, **kwargs):
         get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
-        return super(RiskAssessmentView, self).get(request, args, kwargs)
+        return super(RiskAssessmentView, self).get(request, *args, **kwargs)
 
     @atomic
     def post(self, request, *args, **kwargs):
@@ -75,10 +76,11 @@ class RiskAssessmentView(LoginRequired, TemplateView):
         if form.is_valid():
             to_return = self.form_valid(form)
         else:
-            to_return = self.form_invalid(form)
+            return self.form_invalid(form)
 
         serializer = serializer_class(data=form.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return self.form_invalid(form)
 
         token_account, _ = TokenAccount.objects.get_or_create(user=instance.user)
 

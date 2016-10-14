@@ -50,25 +50,44 @@
                 <h4>As a Risk Assessor - Please Answer</h4>
                 <div className="card-action">
                     <form action="." method="post">
-                        <p>How many months will this policyholder pay in premiums before opening a claim? </p>
+                        {% if user.is_admin %}
+                            <p>How many months will this policyholder pay in premiums before opening a claim?</p>
+                        {% else %}
+                            <p>How many months will this policyholder pay in premiums before opening a claim?</p>
+                        {% endif %}
                         {#                        <div class="input-field " type="hidden">#}
                         <div class="input-field col s12" type="hidden">
                             <input class=" validate" id="id_amount" name="question1" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Months</label>
+                            <label class="s12 " for="id_amount">Months
+                                ({{ config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MIN }}
+                                - {{ config.MONTHS_PAY_PREMIUMS_BEFORE_OPENING_A_CLAIM_MAX }})</label>
                         </div>
                         <div class="input-field col s12" type="hidden">
                             <input class=" validate" id="id_amount" name="bet1" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Your bet</label>
+                            {% if user.is_admin %}
+                                <label class="s12 " for="id_amount">Your bet
+                                    ({{ config.BET_MIN_AMOUNT_ADMIN }}-{{ config.BET_MAX_AMOUNT_ADMIN }})</label>
+                            {% else %}
+                                <label class="s12 " for="id_amount">Your bet
+                                    ({{ config.BET_MIN_AMOUNT_USER }}-{{ config.BET_MAX_AMOUNT_USER }})</label>
+                            {% endif %}
                         </div>
                         {#                        </div>#}
                         <p>How many weeks will this policyholder recieve in payments before closing a claim?</p>
                         <div class="input-field col s12" type="hidden">
                             <input class=" validate" id="id_amount" name="question2" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Weeks</label>
+                            <label class="s12 " for="id_amount">Weeks ({{ config.WEEKS_PAID_FOR_FIRST_CLAIM_MIN }}
+                                - {{ config.WEEKS_PAID_FOR_FIRST_CLAIM_MAX }})</label>
                         </div>
                         <div class="input-field col s12" type="hidden">
                             <input class=" validate" id="id_amount" name="bet2" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Your bet</label>
+                            {% if user.is_admin %}
+                                <label class="s12 " for="id_amount">Your bet
+                                    ({{ config.BET_MIN_AMOUNT_ADMIN }}-{{ config.BET_MAX_AMOUNT_ADMIN }})</label>
+                            {% else %}
+                                <label class="s12 " for="id_amount">Your bet
+                                    ({{ config.BET_MIN_AMOUNT_USER }}-{{ config.BET_MAX_AMOUNT_USER }})</label>
+                            {% endif %}
                         </div>
                         <div class="input-field " type="hidden">
                             <div class="col s12" type="hidden">
