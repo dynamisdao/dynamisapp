@@ -203,3 +203,6 @@ class RiskAssessmentTaskViewSet(mixins.RetrieveModelMixin,
 
         contractor_token_account.immature_tokens_balance += amount
         contractor_token_account.save()
+
+        instance.is_finished = True
+        instance.save()

@@ -143,6 +143,8 @@ def test_update_my_task(user_webtest_client, api_client, factories, internal_con
     assert contractor_token_account.immature_tokens_balance == amount
     user_token_account.refresh_from_db()
     assert user_token_account.immature_tokens_balance == user_token_amount - amount
+    risk_assessment_task.refresh_from_db()
+    assert risk_assessment_task.is_finished is True
 
 
 def test_update_other_task_if_admin(user_webtest_client, api_client, factories, internal_contractor):
@@ -175,6 +177,9 @@ def test_update_other_task_if_admin(user_webtest_client, api_client, factories, 
     assert bet_operation.internal_contractor_token_account.user == internal_contractor
     assert bet_operation.risk_assessment_task == risk_assessment_task
     assert bet_operation.amount == config.BET_MAX_AMOUNT_ADMIN + config.BET_MAX_AMOUNT_ADMIN
+
+    risk_assessment_task.refresh_from_db()
+    assert risk_assessment_task.is_finished is True
 
 
 def test_update_other_task(user_webtest_client, api_client, factories):
