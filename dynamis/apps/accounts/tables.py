@@ -7,8 +7,8 @@ from dynamis.utils.tables import MaterializedTable
 
 
 class SmartDepositTable(MaterializedTable):
-    coast = tables.Column(verbose_name='price, ETH')
-    coast_dollar = tables.Column(verbose_name='price, USD')
+    coast = tables.Column(verbose_name='amount, ETH')
+    coast_dollar = tables.Column(verbose_name='amount, USD')
     exchange_rate_at_invoice_time = tables.Column(verbose_name='current exchange rate')
     amount = tables.Column(verbose_name='amount received')
     policy_state = tables.Column(verbose_name='policy state', accessor='policy.state')
