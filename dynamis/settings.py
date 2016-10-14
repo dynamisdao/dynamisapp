@@ -111,6 +111,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'dynamis.core.context_processors.api_urls',
+                'constance.context_processors.config',
             ],
         },
     },
