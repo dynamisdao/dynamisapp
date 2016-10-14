@@ -4,10 +4,10 @@
 
 {% block content %}
     <ul class="collection">
-        {% if user.policies.exists and user.policies.last.state == 1 %}
+        {% if user.policies.exists %}
             <li class="collection-item">
                 <h5>
-                    You have <a href="{% url 'policy-edit' pk=user.policies.last.pk %}">opened Policy</a>
+                    You have <a href="{% url 'my-policy' %}">opened Policy</a>
                 </h5>
             </li>
         {% endif %}
@@ -22,6 +22,5 @@
                 {% render_table table %}
             </li>
         {% endif %}
-        </li>
     </ul>
 {% endblock content %}
