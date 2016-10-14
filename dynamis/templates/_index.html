@@ -1,6 +1,26 @@
 {% extends "layout.html" %}
 {% load react_renderer %}
+{% load render_table from django_tables2 %}
 
 {% block content %}
-  {% react_component "Dynamis.Root" %}
+    <ul class="collection">
+        {% if user.policies.exists %}
+            <li class="collection-item">
+                <h5>
+                    You have <a href="{% url 'my-policy' %}">opened Policy</a>
+                </h5>
+            </li>
+        {% endif %}
+        <li class="collection-item">
+            {% react_component "Dynamis.PeerReviewShortRoot" %}
+        </li>
+        {% if user.is_risk_assessor and user.risk_assessment_tasks.exists %}
+            <li class="collection-item">
+                <h5>
+                    Assessment Tasks
+                </h5>
+                {% render_table table %}
+            </li>
+        {% endif %}
+    </ul>
 {% endblock content %}

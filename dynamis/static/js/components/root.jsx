@@ -10,6 +10,7 @@ import Wallet from './wallet';
 import PolicyForm from './policy-form';
 import PolicyFormAdmin from './policy-form-admin';
 import PeerReview from './peer-review';
+import PeerReviewShort from './peer-review-short';
 import VerifyKeybase from './verify-keybase';
 
 function initStore(store) {
@@ -82,6 +83,18 @@ export var PeerReviewRoot = React.createClass({
     );
   }
 });
+
+
+export var PeerReviewShortRoot = React.createClass({
+  render() {
+    return (
+      <Provider store={createReduxStore()}>
+        <PeerReviewShort />
+      </Provider>
+    );
+  }
+});
+
 
 export function VerifyKeybaseRoot(props) {
   return (
