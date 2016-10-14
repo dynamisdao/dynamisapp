@@ -12,7 +12,7 @@ from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITT
 def test_to_deposit_refund(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=POLICY_STATUS_SUBMITTED, coast=20, amount=10)
+    deposit = factories.SmartDepositFactory(policy=policy, state=POLICY_STATUS_SUBMITTED, coast_dollar=200, amount=10)
     policy.to_deposit_refund()
     assert policy.rejected_count == 1
 
@@ -148,7 +148,7 @@ def test_submit_to_p2p_review(factories, policy_data, job_data):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED, coast=20, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED, coast_dollar=200, amount=20)
 
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW

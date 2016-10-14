@@ -24,7 +24,7 @@ def test_create_policy(user, api_client, policy_data, job_data, questions_data):
     assert policy.unemployment_period_answer == policy_data['questions']['unemploymentPeriod']
     coast_one = how_long_stay_answer_coasts[policy_data['questions']['howLongStay']]
     coast_two = unemployment_period_answer_coasts[policy_data['questions']['unemploymentPeriod']]
-    assert SmartDeposit.objects.get().coast == coast_one + coast_two
+    assert SmartDeposit.objects.get().coast_dollar == coast_one + coast_two
 
 
 def test_create_policy_no_answers_in_data(user, api_client, policy_data, job_data):
@@ -69,7 +69,7 @@ def test_update_policy(user, api_client, policy_data, job_data, factories, quest
     assert policy.unemployment_period_answer == policy_data['questions']['unemploymentPeriod']
     coast_one = how_long_stay_answer_coasts[policy_data['questions']['howLongStay']]
     coast_two = unemployment_period_answer_coasts[policy_data['questions']['unemploymentPeriod']]
-    assert SmartDeposit.objects.get().coast == coast_one + coast_two
+    assert SmartDeposit.objects.get().coast_dollar == coast_one + coast_two
 
 
 def test_update_policy_check_cancel_submission(user, api_client, policy_data, job_data, factories, questions_data):

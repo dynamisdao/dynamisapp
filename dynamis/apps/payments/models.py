@@ -47,7 +47,8 @@ class SmartDeposit(TimestampModel):
     wait_for = models.DateTimeField(null=True)
 
     def save(self, *args, **kwargs):
-        self.coast_dollar = self.coast * config.DOLLAR_ETH_EXCHANGE_RATE
+        raw_coast = self.coast_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
+        self.coast = round(raw_coast, 3)
         super(SmartDeposit, self).save(*args, **kwargs)
 
     def check_smart_deposit_amount(self):
