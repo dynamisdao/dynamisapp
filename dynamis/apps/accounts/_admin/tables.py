@@ -45,6 +45,7 @@ class PolicyTable(MaterializedTable):
         order_by = ('id',)
         fields = (
             'id',
-            'is_final',
-            'is_signed',
+            # 'is_final',
+            # 'is_signed',
+            'state'
         )

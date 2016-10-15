@@ -1,44 +1,46 @@
 {% extends "layout.html" %}
 {% load staticfiles %}
-
+{% load render_table from django_tables2 %}
 
 {% block extra_css %}
-  <link rel="stylesheet" type="text/css" href="{% static 'vendor/clippy/clippy.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/clippy/clippy.css' %}">
 {% endblock %}
 
 {% block bread %}
-  <a href="{% url 'admin-namespace:site-index' %}" class="breadcrumb">Admin</a>
+    <a href="{% url 'admin-namespace:site-index' %}" class="breadcrumb">Admin</a>
 {% endblock %}
 
 {% block crumbs %}
-  <span class="breadcrumb">Home</span>
+    <span class="breadcrumb">Home</span>
 {% endblock %}
 
 {% block content %}
-  <h1>Admin Home</h1>
-  <p>Welcome to the Dynamis Admin</p>
+    <h1>Admin Home</h1>
+    <p>Welcome to the Dynamis Admin</p>
 
-  <ul class="collection">
-    <li class="collection-item"><a href="{% url 'admin-namespace:user-index' %}">Users</a></li>
-    <li class="collection-item"><a href="{% url 'admin-namespace:policy-index' %}">Policies</a></li>
-  </ul>
-            
+    <ul class="collection">
+        <li class="collection-item"><a href="{% url 'admin-namespace:user-index' %}">Users</a></li>
+        <li class="collection-item"><a href="{% url 'admin-namespace:policy-index' %}">Policies</a></li>
+    </ul>
+
+    {% render_table table %}
 {% endblock content %}
 
 {% block body %}
-  {{ block.super }}
-  <script src="{% static 'vendor/clippy/clippy.js' %}"></script>
-  <script type="text/javascript">
-clippy.load('Clippy', function(agent) {
-  // disable sounds
-  agent._animator._sounds = {};
-  agent.show();
-  function reAnimate() {
-    var r = Math.floor(Math.random() * 10) + 1;
-    agent.animate();
-    setTimeout(reAnimate, Math.floor(Math.random() * 15000) + 15000);
-  }
-  setTimeout(reAnimate, 20000);
-});
-  </script>
+    {{ block.super }}
+    <script src="{% static 'vendor/clippy/clippy.js' %}"></script>
+    <script type="text/javascript">
+        clippy.load('Clippy', function (agent) {
+            // disable sounds
+            agent._animator._sounds = {};
+            agent.show();
+            function reAnimate() {
+                var r = Math.floor(Math.random() * 10) + 1;
+                agent.animate();
+                setTimeout(reAnimate, Math.floor(Math.random() * 15000) + 15000);
+            }
+
+            setTimeout(reAnimate, 20000);
+        });
+    </script>
 {% endblock body %}
