@@ -1,4 +1,4 @@
-ingFORMAT: 1A
+FORMAT: 1A
 HOST: http://dynamisapp.herokuapp.com/
 
 # Dynamis Backend API
@@ -49,8 +49,6 @@ Log the user out
 
 ### Create new Account [POST /api/v1/accounts]
 
-TODO: this method is not implemented yet
-
 Create new account by calling this method. As a side-effect will send user a verification e-mail.
 
 + Request (application/json)
@@ -63,11 +61,9 @@ Create new account by calling this method. As a side-effect will send user a ver
             // the field is optional
             "linkedin_account": "http://me.linkedin.com",
             
-            // TODO: still not implemented
             // the field is optional
             "keybase_username": "someusername",
             
-            // TODO: still not implemented
             // the field is optional
             "eth_address": "0xCf14744B3B4Ac720026569249CA4eb19Fc86A708"
         }
@@ -147,6 +143,17 @@ If **not admin** - can get only my account info.
 
                 "is_keybase_verified": true,
                 
+                "eth_balance": 10,
+                "immature_tokens_balance": 0,
+                "mature_tokens_balance: 0,
+                
+                "policies": [
+                    1,
+                    3,
+                    5
+                },
+                
+                
                 // only if admin is asking:
                 "email_verified": true,
                 "keybase_username": "",
@@ -215,91 +222,58 @@ If signature is bad - return 404.
 
 + Response 400
 
+## Peer Review Tasks [/api/v1/review-tasks]
 
-### Get Items for Peer Review [GET /api/v1/accounts/{accountid}/review-items]
+### Get Items for Peer Review [GET]
 
-TODO: this method is not implemented yet.
+Get list of items that need to be reviewed (by me). This is not a **risk assessment tasks** (that is done only by RiskAssessors)! 
+Before we need to verify user identity and verify employment information. This is done by an ordinary users. 
 
-Get list of items that need to be reviewed (by me).
+If **admin** - get all tasks for all users. 
+If **not admin** - get all tasks for current user (me) only.
 
 + Response 200
     + Body
     
             {
-                "count": 4, 
-                "next": null, 
-                "previous": null, 
-                "results": [
+                tasks: [
                     {
-                        "id": 4,
-                        "type": "employment-claim",
-                        "data": {
-                            "files": [],
-                            "startYear": "2012",
-                            "company": "Some Company",
-                            "startMonth": "4",
-                            "currentJob": true,
-                            "endMonth": 7,
-                            "state": "READ_ONLY",
-                            "endYear": 2016,
-                            "notes": "* Job Title:\n* ..."
-                        }
+                        // global review task ID
+                        id: 1,
+            
+                        is_finished: true
                     },
-                    {
-                        "id": 5,
-                        "type": "identity",
-                        "data": {
-                            "proof_id": "82a65cae07098baf1bbc3010",
-                            "proof_url": "https://twitter.com/joshuad31/status/715338474593714176",
-                            "presentation_tag": "tweet",
-                            "nametag": "joshuad31",
-                            "human_url": "https://twitter.com/joshuad31/status/715338474593714176",
-                            "state": 1,
-                            "proof_type": "twitter",
-                            "service_url": "https://twitter.com/joshuad31",
-                            "sig_id": "4736793cfd5c53dc2991bd3d1e6c03f8228698aa5d83bb694e90cae358981aeb0f",
-                            "presentation_group": "twitter"
-                        }
-                    },
-                    {
-                        "id": 6,
-                        "type": "identity",
-                        "data": {
-                            "proof_id": "89c8fe08f77974ea6c2a4b10",
-                            "proof_url": "https://keybase.io/joshuad31/sigchain#4f1c7845f623eaeecc9c143525b2aead1fe099ded23a1d24d18f58761d61e5660f",
-                            "presentation_tag": "dns",
-                            "nametag": "dynamisapp.com",
-                            "human_url": "dns://dynamisapp.com",
-                            "state": 1,
-                            "proof_type": "dns",
-                            "service_url": "http://dynamisapp.com",
-                            "sig_id": "4f1c7845f623eaeecc9c143525b2aead1fe099ded23a1d24d18f58761d61e5660f",
-                            "presentation_group": "dynamisapp.com"
-                        }
-                    },
-                    {
-                        "id": 7,
-                        "type": "employment-claim",
-                        "data": {
-                            "files": [],
-                            "startYear": "2012",
-                            "company": "International Paper",
-                            "startMonth": "0",
-                            "currentJob": false,
-                            "endMonth": "2",
-                            "state": "READ_ONLY",
-                            "endYear": "2016",
-                            "notes": "* Job Title: Voice Engineer\n* Reason for leaving: Start working on Dynamis\n\nIn order to verify my employment at International paper you can contact Lisa Harmon who was my boss. They can be reached via 817-751-1513. You can verify their position with the company by their linkedin profile located at: https://www.linkedin.com/in/lisa-harmon-2991a53b."
-                        }
-                    }
+                    ...
                 ]
             }
 
-### Submit Peer Review [POST /api/v1/accounts/{accountid}/review-items]
 
-TODO: this method is not implemented yet.
+### Get Item for Peer Review [GET /api/v1/review-tasks/{review_task_id}]
 
-After the Peer has reviewed some parts of an application - he can set **Verify/Falsify/Can't Tell**. 
+Get Peer Review task.
+
++ Parameters
+    + review_task_id (number) - ID of a task
+    
++ Response 200
+    + Body
+    
+            {
+                "type": "employment-claim",
+                "files": [],
+                "startYear": "2012",
+                "company": "Some Company",
+                "startMonth": "4",
+                "currentJob": true,
+                "endMonth": 7,
+                "state": "READ_ONLY",
+                "endYear": 2016,
+                "notes": "* Job Title:\n* ..."
+            }
+
+### Submit Peer Review [POST /api/v1/review-tasks/{review_task_id}/verify]
+
+After the Peer has reviewed some parts of an application - i want to be able to set **Verify/Falsify/Can't Tell**. 
 
 Please see [screenshot here](https://s4.postimg.org/47engihul/Screen_Shot_2016_08_17_at_19_05_14.png).
 
@@ -308,75 +282,32 @@ Please see [another screenshot here](https://s3.postimg.org/a501ucv83/Screen_Sho
 That creates the message ```{"task_hash":"things","result":"no"}``` (for example) that he needs then to sign.
 
 + Parameters
-    + accountid (number) - ID of an account
+    + review_task_id (number) - ID of a task
 
 + Request (application/json)
     + Body
 
             {
-                // Pass Review Item ID here
-                "task_id": "4",
-                
                 "signed_message": "4234234jkfjsdlkfaj"
             }
         
 + Response 200
 
-### Get Review History [GET /api/v1/accounts/{accountid}/review-history]
+## Assessment Tasks [/api/v1/assessment_tasks]
 
-TODO: this method is not implemented yet.
+### Get List of My Assessment Tasks [GET /api/v1/assessment_tasks]
 
-Get the list of what peers have reviewed already (identity, employment-claim, etc). 
+Assessment Task is a 'task' that is assigned to RiskAssessor. RiskAssessor should review it and make a bet.
 
-+ Response 200
-    + Body
-    
-            {
-                "count": 1, 
-                "next": null, 
-                "previous": null, 
-                "results": [
-                    {
-                        "id": 1,
-                        "application_item": {
-                            "id": 5,
-                            "type": "identity",
-                            "data": {
-                                "proof_id": "82a65cae07098baf1bbc3010",
-                                "proof_url": "https://twitter.com/joshuad31/status/715338474593714176",
-                                "presentation_tag": "tweet",
-                                "nametag": "joshuad31",
-                                "human_url": "https://twitter.com/joshuad31/status/715338474593714176",
-                                "state": 1,
-                                "proof_type": "twitter",
-                                "service_url": "https://twitter.com/joshuad31",
-                                "sig_id": "4736793cfd5c53dc2991bd3d1e6c03f8228698aa5d83bb694e90cae358981aeb0f",
-                                "presentation_group": "twitter"
-                            }
-                        },
-                        "user": 6,
-                        "data": "{\"policy_application\": {\"reason\": \"Good profile\", \"result\": 4, \"task_hash\": \"things\"}, \"public_key\": \"-----BEGIN PGP PUBLIC KEY BLOCK-----}"
-                    }
-                ]
-            }
+RiskAssessor wants to get list of assessments that is assigned to him.
 
-## Assessments [/api/v1/assessments]
-
-### Get List of My Assessments [GET /api/v1/assessments]
-
-TODO: this method is not implemented yet.
-
-Assessment is a 'task' that is assigned to RiskAssessor. RiskAssessor should review it and make a bet.
-
-RiskAssessor want to get list of assessments that is assigned to him.
-
-If **admin** - get all assessments for all users. 
-If **not admin** - get all assessments for current user (me) only.
+If **admin** - get all tasks for all users. 
+If **not admin** - get all tasks for current user (me) only.
 
 + Response 200 (application/json)
     
         {
-            assessments: [
+            tasks: [
                 {
                     // global assessment ID
                     id: 1,
@@ -389,16 +320,14 @@ If **not admin** - get all assessments for current user (me) only.
         }
 
  
-### Get Assessments Info [GET /api/v1/assessments/{assessmentid}]
-
-TODO: this method is not implemented yet.
+### Get Assessment Tasks Info [GET /api/v1/assessment_tasks/{taskid}]
 
 Get assessment full info.
 If **admin** - can get any.
 If **not admin** - can get only my assessments.
 
 + Parameters
-    + assessmentid (number) - Assessment ID (global for all users)
+    + taskid (number) - Assessment Task ID (global for all users)
 
 + Response 200 (application/json)
     
@@ -413,16 +342,15 @@ If **not admin** - can get only my assessments.
             bet2: 2.2
         }
    
-### Update Assessments Info [PUT /api/v1/assessments/{assessmentid}]
+### Update Assessment Task Info [PUT /api/v1/assessment_tasks/{taskid}]
 
-TODO: this method is not implemented yet.
 
-Update assessment data.
+Update assessment task data.
 If **admin** - can get any.
-If **not admin** - can get only my assessments.
+If **not admin** - can get only my assessment tasks.
 
 + Parameters
-    + assessmentid (number) - Assessment ID (global for all users)
+    + taskid (number) - Assessment Task ID (global for all users)
 
 + Request (application/json)
     
@@ -488,7 +416,22 @@ Insurance contracts are designed to meet specific needs and thus have many featu
             
             // TODO: field is still not implemented
             "is_signed": true,
-                
+            
+            // See https://github.com/dynamisdao/dynamisapp/wiki/Policy-State-Diagram
+            // and https://github.com/dynamisdao/dynamisapp/wiki/Risk-Assessment-(Policy-Review) 
+            //
+            // POLICY_STATUS_INIT = 1
+            // POLICY_STATUS_SUBMITTED = 2
+            // POLICY_STATUS_ON_P2P_REVIEW = 3
+            // POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW = 4
+            // POLICY_STATUS_APPROVED = 5
+            // POLICY_STATUS_ON_SMART_DEPOSIT_REFUND = 6
+            // POLICY_STATUS_DELETED = 7
+            // POLICY_STATUS_ACTIVE = 8
+            // POLICY_STATUS_WAIT_FOR_PREMIUM = 9
+            // POLICY_STATUS_ON_COMPLETENESS_CHECK = 10
+            "state": 1,
+            
             "data":
             {
                 "public_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: KEY BLOCK-----",
@@ -545,6 +488,31 @@ Insurance contracts are designed to meet specific needs and thus have many featu
                                 "notes": "* Job Title:\n* Reason for leaving:\nProgrammer."
                             }
                         ]
+                    },
+                    
+                    "questions":{
+                        // "In a perfect world how long do you see yourself staying with your present employer?
+                        // Some things to consider might be going back to school or starting a family."
+                        // 
+                        // 0 - Less than 1 year
+                        // 1 - In about 1 year
+                        // 2 - Before the end of next year
+                        // 3 - Maybe before 2 years time
+                        // 4 - More than 2 years
+                        // 5 - I love my job. I will work for my present employer till the day I die. :)
+                        "howLongStay": 1,
+                        
+                        // "If and when you finally do need coverage about how long do you suppose you might need 
+                        // it for? Some things to consider might be the acquiring of a new skill, moving to a new 
+                        // industry, starting a completely new career."
+                        // 
+                        // 0 - About 1 to 2 weeks
+                        // 1 - Maybe 3 weeks to 1 month
+                        // 2 - Perhaps 1 to 2 months
+                        // 3 - Possibly 2 to 3 months
+                        // 4 - Potentially 3 to 4 months
+                        // 5 - I will need more than 4 months of coverage.
+                        "unemploymentPeriod": 0
                     }
                 }
             }
@@ -568,16 +536,20 @@ Update the policy.
                     "employmentHistory": {
                         "jobs": [
                             {
-                                "files": [],
-                                "state": "READ_ONLY",
-                                "notes": "* Job Title:\n* ....",
-                                "currentJob": true,
+                                "startYear": "2015"
+                                "company": "Sample",
                                 "startMonth": "3",
+                                "currentJob": true,
                                 "endMonth": 7,
                                 "endYear": 2016,
-                                "startYear": "2015"
+                                "state": "READ_ONLY",
+                                "notes": "* Job Title:\n* ...."
                             }
                         ]
+                    },
+                    "questions":{
+                        "howLongStay": 1,
+                        "unemploymentPeriod": 0
                     },
                     "requestedPremiumAmount": 250
                 }
@@ -607,6 +579,11 @@ Update the policy.
                                 "endYear": 2016
                             }
                         ]
+                    },
+                    
+                    "questions":{
+                        "howLongStay": 1,
+                        "unemploymentPeriod": 0
                     }
                 }
             }
@@ -644,7 +621,27 @@ Attach the file to the application. Will uplad it to IPFS.
 + Response 200
 
 
+### Get SmartDeposit info [GET /api/v1/policies/{policyid}/smart_deposit]
 
+When policy is at least in **POLICY_STATUS_SUBMITTED**, this method will return information about Smart Deposit. 
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "amount_in_dollars": 50,
+                
+                // in ETH (converted on the flight)
+                "amount_in_eth": 1.2,
+                
+                // where SmartDeposit should be sent to
+                "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                
+                // 0 - initial
+                // 1 - waiting
+                // 2 - received
+                "status": 0
+            }
 
 
 
@@ -757,7 +754,12 @@ Insurance contracts are designed to meet specific needs and thus have many featu
                                 "endMonth": 7,
                                 "state": "READ_ONLY",
                                 "endYear": 2016,
-                                "notes": "* Job Title:\n* Reason for leaving:\nProgrammer."
+                                "notes": "* Job Title:\n* Reason for leaving:\nProgrammer.",
+                                
+                                "city": "Moscow",
+                                "jobTitle": "Programmer",
+                                "confirmerEmail":"alex@sample_company.com",
+                                "confirmerName":"Alex Soschnikov"
                             }
                         ]
                     }
@@ -790,7 +792,12 @@ Update the policy.
                                 "startMonth": "3",
                                 "endMonth": 7,
                                 "endYear": 2016,
-                                "startYear": "2015"
+                                "startYear": "2015",
+                                
+                                "city": "Moscow",
+                                "jobTitle": "Programmer",
+                                "confirmerEmail":"alex@sample_company.com",
+                                "confirmerName":"Alex Soschnikov"
                             }
                         ]
                     },
@@ -819,7 +826,12 @@ Update the policy.
                                 "currentJob": true,
                                 "endMonth": 7,
                                 "state": "READ_ONLY",
-                                "endYear": 2016
+                                "endYear": 2016,
+                                
+                                "city": "Moscow",
+                                "jobTitle": "Programmer",
+                                "confirmerEmail":"alex@sample_company.com",
+                                "confirmerName":"Alex Soschnikov"
                             }
                         ]
                     }
