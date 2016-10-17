@@ -1,12 +1,12 @@
 from __future__ import unicode_literals
 
-import ast
 import datetime
 import itertools
 import json
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django_fsm import transition, FSMIntegerField
 
@@ -16,6 +16,7 @@ from dynamis.core.models import TimestampModel
 from constance import config
 
 from dynamis.settings import DEBUG
+from dynamis.utils.strftimedelta import timedelta_to_str_years_days
 from .querysets import ApplicationItemQueryset
 
 POLICY_STATUS_INIT = 1
@@ -318,3 +319,7 @@ class EmploymentHistoryJob(TimestampModel):
     state = models.CharField(blank=True, null=True, max_length=255)
     date_begin = models.DateField()
     date_end = models.DateField(null=True)
+
+    def duration(self):
+        end_time = (self.date_end or timezone.now().date())
+        return timedelta_to_str_years_days((end_time - self.date_begin))
