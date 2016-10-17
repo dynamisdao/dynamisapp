@@ -23,7 +23,8 @@ class EthAccount(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='eth_accounts')
     is_active = models.BooleanField(default=True)
     eth_balance = models.FloatField(default=0.0)
-    eth_address = models.URLField(null=True)
+    eth_address = models.CharField(null=True, max_length=1023)
+    eth_node_host = models.URLField(null=True)
 
 
 class TokenAccount(TimestampModel):
