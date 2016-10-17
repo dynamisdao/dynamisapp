@@ -30,12 +30,12 @@ def test_change_account_config(user_webtest_client, api_client, factories):
     account_config = factories.EthAccountFactory(user=user_webtest_client.user)
     url = reverse('v1:account-settings-detail', args=[account_config.pk])
 
-    assert EthAccount.objects.get().eth_address is None
+    assert EthAccount.objects.get().eth_node_host is None
 
-    page = api_client.put(url, data={'eth_address': new_eth_address})
+    page = api_client.put(url, data={'eth_node_host': new_eth_address})
 
     assert page.status_code == 200
-    assert EthAccount.objects.get().eth_address == new_eth_address
+    assert EthAccount.objects.get().eth_node_host == new_eth_address
 
 
 def test_deny_change_other_user_account_config(api_client, factories):

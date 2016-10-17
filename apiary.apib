@@ -26,7 +26,7 @@ Log in user and get **sessionid** Cookie.
     
                 {
                     // current user account ID
-                    "accountid": "123456"
+                    "accountid": 123
                 }
 
 ## Logout [/api/v1/logout]
@@ -63,13 +63,15 @@ Create new account by calling this method. As a side-effect will send user a ver
             // the field is optional
             "linkedin_account": "http://me.linkedin.com",
             
-            // TODO: still not implemented
             // the field is optional
             "keybase_username": "someusername",
             
-            // TODO: still not implemented
             // the field is optional
-            "eth_address": "0xCf14744B3B4Ac720026569249CA4eb19Fc86A708"
+            "eth_address": "0xCf14744B3B4Ac720026569249CA4eb19Fc86A708",
+
+            // the field is optional
+            // not send verification email and verify account straight away if debug mode
+            "debug_no_verify": true
         }
         
 + Response 200
@@ -84,9 +86,15 @@ Get list of all account IDs.
             {
                 "results": 
                 [
-                    "231313231",
-                    "231421843",
-                    "894898989"
+                    {
+                    "id": 1,
+                     "email": "test@example.com",
+                    },
+
+                    {
+                    "id": 2,
+                     "email": "test_2@example.com",
+                    },
                 ]
             }
 
@@ -108,19 +116,34 @@ If **not admin** - can update only my account info.
             {
                 "email": "xxx@mail.com",
                 "keybase_username": "something",
-                
                 "linkedin_account": "http://me.linkedin.com",
-            
+
+                // read only
+                "id": 1,
+                "keybase_verified": true,
+                "eth_balance": 2.0,
+                "immature_tokens_balance": 2.5,
+                "mature_tokens_balance": 3.0,
+                "policies": [
+                  {
+                  "id": 1,
+                  },
+                  {
+                  "id": 2,
+                  }
+                ]
+
                 // only if admin is asking:
                 "email_verified": true,
+                "verified_at": "2016-10-17T12:05:58.737691",
                 "active": true,
                 "superuser": true,
                 "staff": true,
                 "risk_assessor": true,
                 
-                // these can't be set
-                // "date_joined": "",
-                // "last_login": ""
+                // read_only
+                "date_joined": "2016-10-17T12:05:58.737691",
+                "last_login": "2016-10-17T12:05:58.737691"
             }
 
 ### Get Account [GET /api/v1/accounts/{accountid}]
@@ -141,23 +164,32 @@ If **not admin** - can get only my account info.
             {
                 "email": "xxx@mail.com",
                 "keybase_username": "something",
-                "eth_address": "0xCf14744B3B4Ac720026569249CA4eb19Fc86A708",
-                
                 "linkedin_account": "http://me.linkedin.com",
+                "id": 1,
+                "keybase_verified": true,
+                "eth_balance": 2.0,
+                "immature_tokens_balance": 2.5,
+                "mature_tokens_balance": 3.0,
+                "policies": [
+                  {
+                  "id": 1,
+                  },
+                  {
+                  "id": 2,
+                  }
+                ]
 
-                "is_keybase_verified": true,
-                
                 // only if admin is asking:
                 "email_verified": true,
-                "keybase_username": "",
+                "verified_at": "2016-10-17T12:05:58.737691",
                 "active": true,
                 "superuser": true,
                 "staff": true,
                 "risk_assessor": true,
-                "date_joined": "",
-                "last_login": ""
+                "date_joined": "2016-10-17T12:05:58.737691",
+                "last_login": "2016-10-17T12:05:58.737691"
             }
-            
+
 ### Update Settings [PUT /api/v1/accounts/{accountid}/settings]
 
 The settings is some params that user has set. For example: view color or list sort type. 
@@ -446,10 +478,16 @@ Create empty policy for **userid**.
 + Request
     + Body
     
-            {
-            }
-            
+          {
+          }
+
 + Response 200
+          {
+            "id": 2,
+            "state": 4,
+            "is_signed": true,
+            "data": {"some": "data"}
+          }
 
 ### Get all Policies list [GET /api/v1/policies]
 
@@ -464,9 +502,18 @@ If **not admin** - get all policies for current user (me) only.
             {
                 "results": 
                 [
-                    "1",
-                    "3",
-                    "4"
+                  {
+                    "id": 1,
+                    "state": 3,
+                    "is_signed": true,
+                    "data": {"some": "data"}
+                  },
+                  {
+                    "id": 2,
+                    "state": 4,
+                    "is_signed": true,
+                    "data": {"some": "data"}
+                  },
                 ]
             }
 
@@ -485,8 +532,7 @@ Insurance contracts are designed to meet specific needs and thus have many featu
     
         {
             "id": 1,
-            
-            // TODO: field is still not implemented
+            "state": 3,
             "is_signed": true,
                 
             "data":
@@ -587,7 +633,9 @@ Update the policy.
     + Body
     
             {
-                "id": 1, 
+                "id": 1,
+                "state": 4,
+                "is_signed": true,
                 "data": {
                     "requestedPremiumAmount": 250,
                     "identity": {
@@ -643,6 +691,14 @@ Attach the file to the application. Will uplad it to IPFS.
         
 + Response 200
 
+            {
+                "ipfs_hash": "some_ipfs_hash",
+                "meta": {
+                    "name": "filename",
+                    "mimetype": "image/png",
+                },
+            }
+
 
 
 
@@ -662,7 +718,16 @@ Create new account by calling this method. As a side-effect will send user a ver
         {
             "email": "sample@email.com",
             "password1": "123456",
-            "password2": "123456"
+            "password2": "123456",
+
+            // optional
+            "keybase_username": "some_keybase_username",
+            "eth_address": "asdqweasdxzcasd",
+            "linkedin_account": "http://me.linkedin.com",
+
+            // only for debug mode!
+            "debug_no_verify": true,
+
         }
         
 + Response 200
@@ -704,6 +769,8 @@ Insurance contracts are designed to meet specific needs and thus have many featu
     
         {
             "id": 1,
+            "state": 3,
+            "is_signed": true,
             "data":
             {
                 "public_key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: KEY BLOCK-----",
@@ -802,7 +869,9 @@ Update the policy.
     + Body
     
             {
-                "id": 1, 
+                "id": 1,
+                "state": 3,
+                "is_signed": true,
                 "data": {
                     "requestedPremiumAmount": 250,
                     "identity": {
@@ -860,6 +929,14 @@ Attach the file to the application. Will uplad it to IPFS.
         
 + Response 200
 
+            {
+                "ipfs_hash": "some_ipfs_hash",
+                "meta": {
+                    "name": "filename",
+                    "mimetype": "image/png",
+                },
+            }
+
 ## DEPRECATED: Application Items [/api/v1/application/application-items]
 
 ### Get all Application Items [GET]
@@ -877,6 +954,7 @@ Get list of items that need to be reviewed (by you).
                     {
                         "id": 4,
                         "type": "employment-claim",
+                        "is_finished": true,
                         "data": {
                             "files": [],
                             "startYear": "2012",
@@ -892,6 +970,7 @@ Get list of items that need to be reviewed (by you).
                     {
                         "id": 5,
                         "type": "identity",
+                        "is_finished": false,
                         "data": {
                             "proof_id": "82a65cae07098baf1bbc3010",
                             "proof_url": "https://twitter.com/joshuad31/status/715338474593714176",
@@ -908,6 +987,7 @@ Get list of items that need to be reviewed (by you).
                     {
                         "id": 6,
                         "type": "identity",
+                        "is_finished": true,
                         "data": {
                             "proof_id": "89c8fe08f77974ea6c2a4b10",
                             "proof_url": "https://keybase.io/joshuad31/sigchain#4f1c7845f623eaeecc9c143525b2aead1fe099ded23a1d24d18f58761d61e5660f",
@@ -924,6 +1004,7 @@ Get list of items that need to be reviewed (by you).
                     {
                         "id": 7,
                         "type": "employment-claim",
+                        "is_finished": true,
                         "data": {
                             "files": [],
                             "startYear": "2012",
