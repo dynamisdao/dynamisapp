@@ -195,4 +195,4 @@ class RootView(LoginRequired, SingleTableMixin, ListView):
     table_class = RiskAssessmentTaskTable
 
     def get_queryset(self):
-        return self.request.user.risk_assessment_tasks.all()
+        return self.request.user.risk_assessment_tasks.filter(is_finished=False)
