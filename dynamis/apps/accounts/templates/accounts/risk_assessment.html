@@ -10,15 +10,13 @@
 
                 <h2>Information</h2>
                 <p>User ID: {{ user.id }}</p>
-                <p>User Name: {% if user.get_full_name %} {{ user.get_full_name }} {% endif %}</p>
-                <p>LinkedIn: {% if user.linkedin_account %} {{ user.linkedin_account }} {% endif %}</p>
-
-                <p>Social Media 1: twitter.com/some - TODO</p>
-                <p>Social Media 2: facebook.com/some - TODO</p>
-                <p>Social Media 3: github.com/some - TODO</p>
+                <p>User Name: {% if assessment_task.policy.user.get_full_name %}
+                    {{ assessment_task.policy.user.get_full_name }} {% endif %}</p>
+                <p>LinkedIn: {% if assessment_task.policy.user.linkedin_account %}
+                    {{ assessment_task.policy.user.linkedin_account }} {% endif %}</p>
             </li>
             <h2>Jobs</h2>
-            {% for job in user.employment_history_jobs.all %}
+            {% for job in assessment_task.policy.user.employment_history_jobs.all %}
                 <li class="collection-item">
                     <hr>
                     <p><strong>Position: </strong>{{ job.job_titile }}</p>
@@ -36,19 +34,19 @@
             <li class="collection-item">
                 <div>
                     <p><strong>“How long do you see yourself staying with your present employer?”</strong></p>
-                    <p>“{{ user.policies.last.get_how_long_stay_answer_display }}”</p>
+                    <p>“{{ assessment_task.policy.get_how_long_stay_answer_display }}”</p>
                 </div>
                 <hr>
                 <div>
                     <p><strong>“How long do you expect you will need coverage?”</strong></p>
-                    <p>“{{ user.policies.last.get_unemployment_period_answer_display }}”</p>
+                    <p>“{{ assessment_task.policy.get_unemployment_period_answer_display }}”</p>
                 </div>
             </li>
             <li class="collection-item">
                 <h2>Smart Deposit</h2>
                 <div>
-                    {% if user.policies.last.smart_deposit.amount %}
-                        <p><strong>Paid smart deposit of {{ user.policies.last.smart_deposit.amount }} Eth</strong></p>
+                    {% if assessment_task.policy.smart_deposit.amount %}
+                        <p><strong>Paid smart deposit of {{ assessment_task.policy.smart_deposit.amount }} Eth</strong></p>
                     {% else %}
                         <p><strong>Not paid smart deposit</strong></p>
                     {% endif %}
@@ -103,9 +101,9 @@
                             <div class="col s12" type="hidden">
                                 <label for="id_policy"></label>
                                 <select class=" validate" id="id_policy" name="policy">
-                                    <option value="{{ user.policies.last.pk }}" selected="selected">---------
+                                    <option value="{{ assessment_task.policy.pk }}" selected="selected">---------
                                     </option>
-                                    <option value="{{ user.policies.last.pk }}"></option>
+                                    <option value="{{ assessment_task.policy.pk }}"></option>
                                 </select>
                             </div>
                         </div>

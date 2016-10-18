@@ -61,6 +61,7 @@ class RiskAssessmentView(LoginRequired, FormView, TemplateView):
 
     def get(self, request, *args, **kwargs):
         get_object_or_404(RiskAssessmentTask, pk=int(kwargs['assessment_pk']))
+        kwargs['assessment_task'] = self.get_object()
         return super(RiskAssessmentView, self).get(request, *args, **kwargs)
 
     @atomic
@@ -103,7 +104,7 @@ class RiskAssessmentView(LoginRequired, FormView, TemplateView):
         return HttpResponseRedirect('/')
 
     def get_object(self):
-        return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['pk'])
+        return self.request.user.risk_assessment_tasks.get(pk=self.kwargs['assessment_pk'])
 
 
 class MyPolicyView(LoginRequired, TemplateView):
