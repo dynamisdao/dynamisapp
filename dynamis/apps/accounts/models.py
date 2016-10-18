@@ -18,11 +18,18 @@ class User(AbstractEmailUser):
     is_keybase_verified = models.BooleanField(default=False)
     linkedin_account = models.CharField(max_length=255, blank=True, null=True)
     internal_contractor = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
 
     is_risk_assessor = models.BooleanField(
         default=False,
         help_text="Determines whether this user can participate as a risk assessor",
     )
+
+    def get_full_name(self):
+        if not self.first_name and not self.last_name:
+            return None
+        return '{} {}'.format((self.first_name or ''), (self.last_name or ''))
 
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)

@@ -9,39 +9,47 @@
             <li class="collection-item">
 
                 <h2>Information</h2>
-                <p>User ID: TODO</p>
-                <p>User Name: TODO</p>
-                <p>LinkedIn: TODO
-                <p>
-
-                <p>Social Media 1: twitter.com/some</p>
-                <p>Social Media 2: facebook.com/some</p>
-                <p>Social Media 3: github.com/some</p>
+                <p>User ID: {{ user.id }}</p>
+                <p>User Name: {% if assessment_task.policy.user.get_full_name %}
+                    {{ assessment_task.policy.user.get_full_name }} {% endif %}</p>
+                <p>LinkedIn: {% if assessment_task.policy.user.linkedin_account %}
+                    {{ assessment_task.policy.user.linkedin_account }} {% endif %}</p>
             </li>
-            <li class="collection-item">
-                <hr>
-                <p><strong>Job 1</strong></p>
-                <p>Programmer - 1 year 3 months - Verified</p>
-                <p>Full info about Job1 here...</p>
-
-                <hr>
-                <p><strong>Job 2</strong></p>
-                <p>Software Architect - 2 years 3 months - <strong>Unverified</strong></p>
-                <p>Full info about Job2</p>
-                <hr>
-            </li>
+            <h2>Jobs</h2>
+            {% for job in assessment_task.policy.user.employment_history_jobs.all %}
+                <li class="collection-item">
+                    <hr>
+                    <p><strong>Position: </strong>{{ job.job_titile }}</p>
+                    <p><strong>Company: </strong>{{ job.company }}</p>
+                    <p><strong>City: </strong>{{ job.city }}</p>
+                    <p><strong>State: </strong>{{ job.state }}</p>
+                    <p><strong>Duration: </strong>{{ job.duration }}</p>
+                    <p><strong>Is Current Job: </strong>{{ job.is_current_job }}</p>
+                    <p><strong>Confirmer Email: </strong>{{ job.confirmer_email }}</p>
+                    <p><strong>Confirmer Name: </strong>{{ job.confirmer_name }}</p>
+                    <p><strong>Notes: </strong>{{ job.notes }}</p>
+                </li>
+            {% endfor %}
+            <h2>Questions</h2>
             <li class="collection-item">
                 <div>
                     <p><strong>“How long do you see yourself staying with your present employer?”</strong></p>
-                    <p>“Before the end of next year (18 months)”</p>
-                    <p>Paid smart deposit of 1.8 Eth</p>
+                    <p>“{{ assessment_task.policy.get_how_long_stay_answer_display }}”</p>
                 </div>
                 <hr>
-
                 <div>
                     <p><strong>“How long do you expect you will need coverage?”</strong></p>
-                    <p>“Perhaps 1 to 2 months”</p>
-                    <p>Paid smart deposit of 2.6 Eth</p>
+                    <p>“{{ assessment_task.policy.get_unemployment_period_answer_display }}”</p>
+                </div>
+            </li>
+            <li class="collection-item">
+                <h2>Smart Deposit</h2>
+                <div>
+                    {% if assessment_task.policy.smart_deposit.amount %}
+                        <p><strong>Paid smart deposit of {{ assessment_task.policy.smart_deposit.amount }} Eth</strong></p>
+                    {% else %}
+                        <p><strong>Not paid smart deposit</strong></p>
+                    {% endif %}
                 </div>
             </li>
         </section>
@@ -93,9 +101,9 @@
                             <div class="col s12" type="hidden">
                                 <label for="id_policy"></label>
                                 <select class=" validate" id="id_policy" name="policy">
-                                    <option value="{{ user.policies.last.pk }}" selected="selected">---------
+                                    <option value="{{ assessment_task.policy.pk }}" selected="selected">---------
                                     </option>
-                                    <option value="{{ user.policies.last.pk }}"></option>
+                                    <option value="{{ assessment_task.policy.pk }}"></option>
                                 </select>
                             </div>
                         </div>
