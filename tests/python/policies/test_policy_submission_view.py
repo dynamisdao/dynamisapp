@@ -11,7 +11,7 @@ from dynamis.utils import testing
 
 
 def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_client,
-                                                user, policy_data, monkeypatch, job_data):
+                                                user, policy_data, monkeypatch, job_data, mock_request_exchange_rate):
     policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
     policy_data['employmentHistory']['jobs'].append(job_data)
 
@@ -46,7 +46,7 @@ def test_policy_submission_with_valid_data_DEPR(gpg_key, gpg, factories, api_cli
 
 
 def test_policy_submission_with_valid_data(gpg_key, gpg, factories, api_client,
-                                           user, policy_data, monkeypatch, job_data):
+                                           user, policy_data, monkeypatch, job_data, mock_request_exchange_rate):
     policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
     policy_data['employmentHistory']['jobs'].append(job_data)
 

@@ -1,3 +1,5 @@
+import json
+
 import gnupg
 
 import pytest
@@ -243,3 +245,36 @@ def internal_contractor(factories):
             password='password',
             internal_contractor=True
         )
+
+
+@pytest.fixture(autouse=True)
+def mock_request_exchange_rate(monkeypatch):
+    NEW_ETH_USD_RATE = 12.686
+
+    class ResponseMockOk:
+        def __init__(self):
+            self.status_code = 200
+            content_json = [
+                {
+                    "id": "ethereum",
+                    "name": "Ethereum",
+                    "symbol": "ETH",
+                    "rank": "1",
+                    "price_usd": str(NEW_ETH_USD_RATE),
+                    "price_btc": "0.0196547",
+                    "24h_volume_usd": "11956600.0",
+                    "market_cap_usd": "1070934605.0",
+                    "available_supply": "85090706.0",
+                    "total_supply": "85090706.0",
+                    "percent_change_1h": "0.26",
+                    "percent_change_24h": "5.89",
+                    "percent_change_7d": "4.83",
+                    "last_updated": "1476794361"
+                }
+            ]
+            self.content = json.dumps(content_json)
+
+        def __call__(self, *args, **kwargs):
+            return self
+
+    monkeypatch.setattr("requests.get", ResponseMockOk())
