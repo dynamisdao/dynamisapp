@@ -6,6 +6,7 @@ from django.db import models
 from django_fsm import FSMIntegerField, transition
 
 from dynamis import settings
+from dynamis.apps.payments.business_logic import refresh_usd_eth_exchange_rate
 from dynamis.core.models import TimestampModel
 
 SMART_DEPOSIT_STATUS_INIT = 0
@@ -62,6 +63,7 @@ class SmartDeposit(TimestampModel):
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_INIT, target=SMART_DEPOSIT_STATUS_WAITING)
     def init_to_wait(self):
+        refresh_usd_eth_exchange_rate()
         self.wait_for = datetime.datetime.now() + datetime.timedelta(
             minutes=config.WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES)
         self.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
@@ -69,7 +71,7 @@ class SmartDeposit(TimestampModel):
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_INIT)
     def wait_to_init(self):
-        pass
+        refresh_usd_eth_exchange_rate()
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_RECEIVED,
                 conditions=[check_smart_deposit_amount])
