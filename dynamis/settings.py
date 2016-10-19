@@ -312,3 +312,4 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+LOGIN_REDIRECT_URL = '/'
