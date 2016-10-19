@@ -14,7 +14,7 @@ from rest_framework.decorators import detail_route
 from dynamis.apps.accounts.models import User
 from dynamis.apps.payments.models import TokenAccount, MakeBetOperation
 from dynamis.apps.policy.business_logic import generate_employment_history_job_records, \
-    set_answers_on_questions, calculate_and_set_smart_deposit_coast
+    set_answers_on_questions, calculate_and_set_smart_deposit_cost
 from dynamis.apps.policy.models import (
     PolicyApplication,
     ReviewTask,
@@ -54,7 +54,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         policy = serializer.save(user=self.request.user)
         self.generate_employment_history_jobs(policy)
         self.set_answers_on_questions(policy)
-        calculate_and_set_smart_deposit_coast(policy)
+        calculate_and_set_smart_deposit_cost(policy)
         return policy
 
     @atomic
@@ -65,7 +65,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
             policy.save()
         self.generate_employment_history_jobs(policy)
         self.set_answers_on_questions(policy)
-        calculate_and_set_smart_deposit_coast(policy)
+        calculate_and_set_smart_deposit_cost(policy)
 
     @staticmethod
     def set_answers_on_questions(policy):
@@ -90,7 +90,7 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
         submitted_policy = serializer.save()
 
         # TODO remove when old frontend will disabled
-        calculate_and_set_smart_deposit_coast(policy)
+        calculate_and_set_smart_deposit_cost(policy)
 
         self.request.user.keybase_username = self.request.data["keybase_username"]
         self.request.user.save()
@@ -102,8 +102,8 @@ class PolicyApplicationViewSet(DynamisCreateModelMixin,
 
         policy.submit()
         policy.save()
-        policy.smart_deposit.init_to_wait()
-        policy.smart_deposit.save()
+        # policy.smart_deposit.init_to_wait()
+        # policy.smart_deposit.save()
 
         return Response(status=status.HTTP_200_OK)
 

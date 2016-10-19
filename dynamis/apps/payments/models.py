@@ -24,7 +24,10 @@ class EthAccount(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='eth_accounts')
     is_active = models.BooleanField(default=True)
     eth_balance = models.FloatField(default=0.0)
+
+    # TODO maybe not used (user provide his eth_address at every payment), store in SmartDeposit model - 'from_address'
     eth_address = models.CharField(null=True, max_length=1023)
+
     eth_node_host = models.URLField(null=True)
 
 
@@ -42,19 +45,20 @@ class SmartDeposit(TimestampModel):
     # is_confirmed = models.BooleanField(default=False)
     amount = models.FloatField()
     amount_dollar = models.FloatField(null=True)
-    coast = models.FloatField(null=True)
-    coast_dollar = models.FloatField(null=True)
+    cost = models.FloatField(null=True)
+    cost_dollar = models.FloatField(null=True)
     exchange_rate_at_invoice_time = models.FloatField(null=True)
     state = FSMIntegerField(default=SMART_DEPOSIT_STATUS_INIT, protected=True, choices=SMART_DEPOSIT_STATUS)
     wait_for = models.DateTimeField(null=True)
+    from_address = models.CharField(max_length=1023, null=True)
 
     def save(self, *args, **kwargs):
-        raw_coast = self.coast_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
-        self.coast = round(raw_coast, 3)
+        raw_cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
+        self.cost = round(raw_cost, 3)
         super(SmartDeposit, self).save(*args, **kwargs)
 
     def check_smart_deposit_amount(self):
-        if self.amount >= self.coast:
+        if self.amount >= self.cost:
             return True
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_INIT, target=SMART_DEPOSIT_STATUS_WAITING)

@@ -2,13 +2,11 @@ from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 
 from dynamis.apps.accounts.api.v1.views import AccountViewSet
-from dynamis.apps.payments.api.v1.views import SmartDepositViewSet
+from dynamis.apps.payments.api.v1.views import SmartDepositViewSet, SmartDepositSendView
 from dynamis.apps.policy.api.v1.views import PolicyApplicationViewSet, ReviewTasksViewSet
 from dynamis.core.api.v1.views import LoginView, LogoutView
 
-
 action_get_put = {'get': 'retrieve', 'put': 'update'}
-
 
 urlpatterns = [
     url(r'^accounts/', include('dynamis.apps.accounts.api.v1.urls')),
@@ -26,12 +24,12 @@ urlpatterns = [
         name="policy-signature-new",
     ),
     url(
-        r'^policies/(?P<pk>\d+)/file',
+        r'^policies/(?P<pk>\d+)/file$',
         PolicyApplicationViewSet.as_view({'post': 'upload_file'}),
         name="policy-file-new",
     ),
     url(
-        r'^policies/(?P<pk>\d+)/smart_deposit',
+        r'^policies/(?P<pk>\d+)/smart_deposit$',
         SmartDepositViewSet.as_view({'get': 'retrieve'}),
         name="smart_deposit-detail",
     ),
@@ -44,6 +42,11 @@ urlpatterns = [
         r'admin/policies/$',
         PolicyApplicationViewSet.as_view({'get': 'list'}),
         name="policy-admin-list-new",
+    ),
+    url(
+        r'^policies/(?P<pk>\d+)/smart_deposit/send$',
+        SmartDepositSendView.as_view({'post': 'send'}),
+        name="send-smart-deposit",
     ),
 ]
 

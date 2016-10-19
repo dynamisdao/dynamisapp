@@ -95,7 +95,7 @@ def set_answers_on_questions(policy_application):
     policy_application.save()
 
 
-how_long_stay_answer_coasts = {
+how_long_stay_answer_costs = {
     LESS_THAN_YEAR: 0,
     IN_ABOUT_YEAR: 10,
     BEFORE_THE_END_OF_NEXT_YEAR: 20,
@@ -104,7 +104,7 @@ how_long_stay_answer_coasts = {
     I_LOVE_MY_JOB: 50
 }
 
-unemployment_period_answer_coasts = {
+unemployment_period_answer_costs = {
     ONE_TO_TWO_WEEKS: 50,
     THREE_WEEKS_TO_MONTH: 40,
     ONE_TO_TWO_MONTHS: 30,
@@ -114,10 +114,10 @@ unemployment_period_answer_coasts = {
 }
 
 
-def calculate_and_set_smart_deposit_coast(policy):
-    smart_deposit_coast_dollar = how_long_stay_answer_coasts[
-        policy.how_long_stay_answer or 0] + unemployment_period_answer_coasts[policy.unemployment_period_answer or 0]
+def calculate_and_set_smart_deposit_cost(policy):
+    smart_deposit_cost_dollar = how_long_stay_answer_costs[
+        policy.how_long_stay_answer or 0] + unemployment_period_answer_costs[policy.unemployment_period_answer or 0]
     if not SmartDeposit.objects.filter(policy=policy).exists():
-        SmartDeposit.objects.create(policy=policy, coast_dollar=smart_deposit_coast_dollar, amount=0)
+        SmartDeposit.objects.create(policy=policy, cost_dollar=smart_deposit_cost_dollar, amount=0)
     else:
-        SmartDeposit.objects.filter(policy=policy).update(coast_dollar=smart_deposit_coast_dollar)
+        SmartDeposit.objects.filter(policy=policy).update(cost_dollar=smart_deposit_cost_dollar)
