@@ -76,7 +76,8 @@ class SmartDeposit(TimestampModel):
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_RECEIVED,
                 conditions=[check_smart_deposit_amount])
     def wait_to_received(self):
-        pass
+        self.policy.submit_to_p2p_review()
+        self.policy.save()
 
 
 class SmartDepositRefund(TimestampModel):
