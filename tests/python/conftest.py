@@ -278,3 +278,21 @@ def mock_request_exchange_rate(monkeypatch):
             return self
 
     monkeypatch.setattr("requests.get", ResponseMockOk())
+
+
+@pytest.fixture
+def policy_data():
+    policy_data = {
+        'identity': {
+            "verification_method": "keybase",
+            "verification_data": {
+                "username": "test",
+                "proofs": [],
+            },
+        },
+        'employmentHistory': {
+            'jobs': [],
+        },
+        'questions': {}
+    }
+    return policy_data

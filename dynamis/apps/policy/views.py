@@ -11,7 +11,7 @@ from rest_framework.generics import get_object_or_404
 
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
-from dynamis.apps.payments.models import SmartDeposit
+from dynamis.apps.payments.models import SmartDeposit, SMART_DEPOSIT_STATUS_INIT
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, PolicyApplication
 
 from dynamis.utils.mixins import LoginRequired
@@ -61,6 +61,9 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
         else:
             to_return = self.form_invalid(form)
         if instance.amount and instance.amount >= instance.cost:
+            if instance.state == SMART_DEPOSIT_STATUS_INIT:
+                instance.init_to_wait()
+                instance.save()
             instance.wait_to_received()
             instance.save()
         return to_return

@@ -1,7 +1,10 @@
+import json
+
 from constance import config
 from django.utils import timezone
 
 from dynamis.apps.payments.models import SmartDeposit, SMART_DEPOSIT_STATUS_WAITING
+from dynamis.apps.policy.models import PolicyApplication, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_SUBMITTED
 
 
 def test_check_wait_for_deposit_time(factories, mock_request_exchange_rate):
@@ -24,3 +27,13 @@ def test_check_wait_to_init(factories, mock_request_exchange_rate):
     deposit.wait_to_init()
 
     assert config.DOLLAR_ETH_EXCHANGE_RATE == 12.686
+
+
+def test_wait_to_received(factories, policy_data):
+    user = factories.UserFactory()
+    policy = factories.PolicyApplicationFactory(user=user, state=POLICY_STATUS_SUBMITTED,
+                                                data=json.dumps({'policy_data': policy_data}))
+    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_WAITING)
+    deposit.wait_to_received()
+    policy = PolicyApplication.objects.get()
+    assert policy.state == POLICY_STATUS_ON_P2P_REVIEW

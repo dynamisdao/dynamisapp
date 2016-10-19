@@ -1,11 +1,17 @@
+import json
+
 import pytest
 from django_fsm import TransitionNotAllowed
 
 from dynamis.apps.payments.models import SMART_DEPOSIT_STATUS_WAITING, SMART_DEPOSIT_STATUS_RECEIVED
+from dynamis.apps.policy.models import POLICY_STATUS_SUBMITTED
 
 
-def test_change_state_to_received(factories):
-    smart_deposit = factories.SmartDepositFactory(state=SMART_DEPOSIT_STATUS_WAITING, cost_dollar=50, amount=50)
+def test_change_state_to_received(factories, policy_data):
+    policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
+                                                data=json.dumps({'policy_data': policy_data}))
+    smart_deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_WAITING,
+                                                  cost_dollar=50, amount=50)
 
     assert smart_deposit.state == SMART_DEPOSIT_STATUS_WAITING
     smart_deposit.wait_to_received()
