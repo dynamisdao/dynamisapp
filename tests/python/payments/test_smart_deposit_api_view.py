@@ -36,7 +36,7 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
     assert response.status_code == status.HTTP_200_OK
     deposit = SmartDeposit.objects.get()
     assert deposit.state == 0
-    assert deposit.cost == round(deposit.coast_dollar / 12.686, 3)
+    assert deposit.cost == round(deposit.cost_dollar / 12.686, 3)
 
 
 def test_send_smart_deposit_ok(user_webtest_client, api_client, factories):
