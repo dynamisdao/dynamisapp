@@ -101,7 +101,7 @@ class PolicyApplication(TimestampModel):
         smart_deposits = SmartDeposit.objects.filter(policy=self)
         if smart_deposits.exists() and \
                 not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists() and \
-                        smart_deposits[0].amount >= smart_deposits[0].coast:
+                        smart_deposits[0].amount >= smart_deposits[0].cost:
             return True
         return False
 

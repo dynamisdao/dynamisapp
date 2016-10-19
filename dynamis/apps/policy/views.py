@@ -48,7 +48,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
         instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
         if instance.wait_for and instance.wait_for < timezone.now():
             instance.wait_to_init()
-            instance.coast_dollar = instance.coast * config.DOLLAR_ETH_EXCHANGE_RATE
+            instance.cost_dollar = instance.cost * config.DOLLAR_ETH_EXCHANGE_RATE
             instance.save()
         return super(SmartDepositStubView, self).get(request, args, kwargs)
 
@@ -60,7 +60,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
             to_return = self.form_valid(form)
         else:
             to_return = self.form_invalid(form)
-        if instance.amount and instance.amount >= instance.coast:
+        if instance.amount and instance.amount >= instance.cost:
             instance.wait_to_received()
             instance.save()
         return to_return
@@ -74,7 +74,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
     def form_valid(self, form):
         form.save()
         policy = self.get_policy()
-        if policy.state == POLICY_STATUS_SUBMITTED and policy.smart_deposit.amount >= policy.smart_deposit.coast:
+        if policy.state == POLICY_STATUS_SUBMITTED and policy.smart_deposit.amount >= policy.smart_deposit.cost:
             policy.submit_to_p2p_review()
             policy.save()
         return HttpResponseRedirect('/policies/{}/smart-deposit/'.format(policy.pk))

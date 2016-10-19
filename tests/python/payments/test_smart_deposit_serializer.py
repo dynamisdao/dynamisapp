@@ -8,8 +8,8 @@ def test_deposit_short_serializer(factories):
 
     data = {
         'status': deposit.state,
-        'coast_in_eth': deposit.coast,
-        'coast_in_dollars': deposit.coast_dollar,
+        'cost_in_eth': deposit.cost,
+        'cost_in_dollars': deposit.cost_dollar,
         'address_to_send': config.ADDRESS_TO_SEND_ETH
     }
 
