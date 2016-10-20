@@ -89,7 +89,7 @@ class PolicyApplication(TimestampModel):
     unemployment_period_answer = models.PositiveSmallIntegerField(choices=UNEMPLOYMENT_PERIOD_ANSWER_CHOICES, null=True)
 
     def __unicode__(self):
-        return "%s's %s" % (self.user.get_full_name(), 'policy')
+        return "%s's %s" % ((self.user.get_full_name() or self.user.email), 'policy')
 
     def check_smart_deposit_refunded(self):
         smart_deposits = SmartDeposit.objects.filter(policy=self)
