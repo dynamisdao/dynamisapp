@@ -12,6 +12,9 @@ SECRET_KEY = env.get('DJANGO_SECRET_KEY', required=True)
 DEBUG = env.get('DJANGO_DEBUG', type=bool, default=False)
 DEBUG_ETH_USER_INIT_BALANCE = env.get('DEBUG_ETH_USER_INIT_BALANCE', type=float, default=10.0)
 
+RPC_PROVIDER_HOST = env.get('RPC_PROVIDER_HOST', type=str, default='localhost')
+RPC_PROVIDER_PORT = env.get('RPC_PROVIDER_PORT', type=str, default='8545')
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
