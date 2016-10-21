@@ -29,13 +29,10 @@ def teardown_module(module):
     subprocess.check_call('kill {}'.format(pid), shell=True)
 
 
-def test_check_transfers(monkeypatch, mock_rpc_provider):
-    connector = get_connector_to_rpc_server()
-    from_address = connector.eth.coinbase
-    to_address = connector.personal.listAccounts[0]
-    eth_amount = 123
-    transacton_id = connector.personal.signAndSendTransaction(
-        {'to': to_address, 'from': from_address, 'value': eth_amount}, 'the-passphrase')
-    print transacton_id
-
-    check_transfers(from_address, to_address)
+# def test_check_transfers(monkeypatch, mock_rpc_provider):
+#     connector = get_connector_to_rpc_server()
+#     from_address = connector.eth.coinbase
+#     to_address = connector.personal.listAccounts[0]
+#     eth_amount = 123
+#     transacton_id = connector.personal.signAndSendTransaction(
+#         {'to': to_address, 'from': from_address, 'value': eth_amount}, 'the-passphrase')
