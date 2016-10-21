@@ -12,6 +12,12 @@ SECRET_KEY = env.get('DJANGO_SECRET_KEY', required=True)
 DEBUG = env.get('DJANGO_DEBUG', type=bool, default=False)
 DEBUG_ETH_USER_INIT_BALANCE = env.get('DEBUG_ETH_USER_INIT_BALANCE', type=float, default=10.0)
 
+RPC_PROVIDER_HOST = env.get('RPC_PROVIDER_HOST', type=str, default='localhost')
+RPC_PROVIDER_PORT = env.get('RPC_PROVIDER_PORT', type=str, default='8545')
+ETHERSCAN_API_KEY = env.get('ETHERSCAN_API_KEY', type=str, default='NMQQ93WP264HJXS3GRYR1YY5PD6JE1TKEV')
+ETHERSCAN_MAX_RECORDS_TO_RETURN = env.get('ETHERSCAN_MAX_RECORDS_TO_RETURN', type=int, default=100)
+ETHERSCAN_MAX_PAGES = env.get('ETHERSCAN_MAX_PAGES', type=int, default=1000)
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [

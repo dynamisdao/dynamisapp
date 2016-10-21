@@ -3,6 +3,7 @@ import json
 import gnupg
 
 import pytest
+import web3
 
 from django_webtest import (
     WebTest as BaseWebTest,
@@ -247,7 +248,7 @@ def internal_contractor(factories):
         )
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def mock_request_exchange_rate(monkeypatch):
     NEW_ETH_USD_RATE = 12.686
 
@@ -296,3 +297,105 @@ def policy_data():
         'questions': {}
     }
     return policy_data
+
+
+@pytest.fixture()
+def mock_rpc_provider(monkeypatch):
+    monkeypatch.setattr('dynamis.core.servers_interactions.RPCProvider', web3.TestRPCProvider)
+
+
+@pytest.fixture()
+def mock_call_etherscan_count(monkeypatch):
+    monkeypatch.setattr("dynamis.core.servers_interactions.ETHERSCAN_MAX_RECORDS_TO_RETURN", 2)
+    monkeypatch.setattr("dynamis.core.servers_interactions.ETHERSCAN_MAX_PAGES", 2)
+
+
+@pytest.fixture()
+def mock_request_get_single_transaction_by_addresses_empty_result(monkeypatch):
+    class ResponseMockOk:
+        def __init__(self):
+            self.status_code = 200
+            content_json = {"status": "0", "message": "No transactions found", "result": []}
+            self.content = json.dumps(content_json)
+
+        def __call__(self, *args, **kwargs):
+            return self
+
+    monkeypatch.setattr("requests.get", ResponseMockOk())
+
+
+@pytest.fixture()
+def mock_request_get_single_transaction_by_addresses(monkeypatch):
+    class ResponseMockOk:
+        def __init__(self):
+            self.status_code = 200
+            content_json = {"status": "1", "message": "OK", "result":
+                [{"blockNumber": "2202431", "timeStamp": "1473064775",
+                  "hash": "0xd24d6c937cca54ffde69f059b58cc422c5729dc0d307b6ab892133cc05464e78",
+                  "nonce": "286",
+                  "blockHash": "0x7f94fed143721aa05448765e72c87ea0df18ef7d2921341f5fb9bf33cbb51ae6",
+                  "transactionIndex": "0",
+                  "from": "0x5ed8cee6b63b1c6afce3ad7c92f4fd7e1b8fad9f",
+                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "value": "0",
+                  "gas": "500000", "gasPrice": "100000000000", "isError": "0",
+                  "input": "0xb61d27f60000000000000000000000001e549606b695423368e851ff13edef7ea4790fe900000000000000000"
+                           "000000000000000000000000000174b1ca8ab05a8c0000000000000000000000000000000000000000000000000"
+                           "000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+                  "contractAddress": "", "cumulativeGasUsed": "180885",
+                  "gasUsed": "180885",
+                  "confirmations": "279470"},
+                 {"blockNumber": "2171747", "timeStamp": "1472625374",
+                  "hash": "0xdb584b30ab28ecfcdf585c9cf753dbc84a2d4bfa1004fec22cff30559e690a31",
+                  "nonce": "5",
+                  "blockHash": "0xa6c787d42aabc843caf28cc61fb70dbc9a6cbe1efa9eac3ef4d9b7cb54ab4877",
+                  "transactionIndex": "6",
+                  "from": "0x00a19cf74a34a349a7a4727cf6435f3daf704de2",
+                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "value": "31393856240000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "260749", "gasUsed": "22444",
+                  "confirmations": "310154"},
+                 {"blockNumber": "2108601", "timeStamp": "1471722162",
+                  "hash": "0x92a88ea2deec2f1b6bc7f678972ffdb2c827a67a29ca8f07a074cf126acbeef1",
+                  "nonce": "4",
+                  "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
+                  "transactionIndex": "25",
+                  "from": "0x009a8529fb66b3d434f239a8801492891b48eceb",
+                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "value": "34353476240000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "949445", "gasUsed": "22444",
+                  "confirmations": "373300"},
+                 {"blockNumber": "2108601", "timeStamp": "1471722162",
+                  "hash": "0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904",
+                  "nonce": "4",
+                  "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
+                  "transactionIndex": "24",
+                  "from": "0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
+                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "value": "33868806240000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "927001", "gasUsed": "22444",
+                  "confirmations": "373300"},
+                 {"blockNumber": "2108601", "timeStamp": "1471722162",
+                  "hash": "0x20f326be6caca6df1073f97595d8aef9826cd41e06a597341dec31d1aa3cb366",
+                  "nonce": "4",
+                  "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
+                  "transactionIndex": "23",
+                  "from": "0x0048f63c40c39776d0a79457618e5504a45cb812",
+                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "value": "31447186240000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "904557", "gasUsed": "22444",
+                  "confirmations": "373300"}]}
+            self.content = json.dumps(content_json)
+
+        def __call__(self, *args, **kwargs):
+            return self
+
+    monkeypatch.setattr("requests.get", ResponseMockOk())
