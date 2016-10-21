@@ -3,6 +3,7 @@ import json
 import gnupg
 
 import pytest
+import web3
 
 from django_webtest import (
     WebTest as BaseWebTest,
@@ -296,3 +297,8 @@ def policy_data():
         'questions': {}
     }
     return policy_data
+
+
+@pytest.fixture()
+def mock_rpc_provider(monkeypatch):
+    monkeypatch.setattr('dynamis.core.servers_interactions.RPCProvider', web3.TestRPCProvider)

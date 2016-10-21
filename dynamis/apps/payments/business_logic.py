@@ -6,6 +6,8 @@ from constance import config
 from requests import ConnectionError
 from rest_framework import status
 
+from dynamis.core.servers_interactions import get_connector_to_rpc_server
+
 EXCHANGE_RATE_URL = 'http://api.coinmarketcap.com/v1/ticker/ethereum/'
 
 
@@ -25,3 +27,7 @@ def refresh_usd_eth_exchange_rate():
     response_json = json.loads(response.content)
     assert response_json[0]['id'] == "ethereum"
     config.DOLLAR_ETH_EXCHANGE_RATE = round(float(response_json[0]['price_usd']), 3)
+
+
+def check_transfers(address_from, address_to):
+    connector = get_connector_to_rpc_server()
