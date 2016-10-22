@@ -399,3 +399,10 @@ def mock_request_get_single_transaction_by_addresses(monkeypatch):
             return self
 
     monkeypatch.setattr("requests.get", ResponseMockOk())
+
+
+@pytest.fixture()
+def mock_refresh_usd_eth_exchange_rate(monkeypatch):
+    def pass_func():
+        pass
+    monkeypatch.setattr('dynamis.apps.payments.models.refresh_usd_eth_exchange_rate', pass_func)

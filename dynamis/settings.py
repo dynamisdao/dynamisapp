@@ -301,7 +301,6 @@ CONSTANCE_CONFIG = {
     'DOLLAR_ETH_EXCHANGE_RATE': (12.57, 'How many dollars we have to spend to by 1 Ethereum'),
     'DOLLAR_ETH_EXCHANGE_RATE_VALID_FOR_MINUTES': (60, 'How many minutes dollar/eth rate will valid'),
     'WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES': (60, 'How many minutes we can wait for smart deposit'),
-    'ADDRESS_TO_SEND_ETH': ('0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8_test', 'address to send eth'),
     'BET_MIN_AMOUNT_USER': (1, 'RiskAssessor allowed to use minimum 1 token on ClaimStart and 1 token on ClaimLength.'),
     'BET_MAX_AMOUNT_USER': (2, 'RiskAssessor allowed to use maximum 2 tokens on ClaimStart and 2 tokens on '
                                'ClaimLength.'),
@@ -315,6 +314,9 @@ CONSTANCE_CONFIG = {
                                           ' policyholder for their first claim?'),
     'WEEKS_PAID_FOR_FIRST_CLAIM_MAX': (88, 'How many weeks will be paid out to this'
                                            ' policyholder for their first claim?'),
+    'SYSTEM_ETH_ADDRESS': ('0xEA675fdDe714fd078de3EeF0F56AA9716B898ec8',
+                           'System Eth address used for send Eth from user to application'),
+    'SYSTEM_KEYSTORE_JSON': ('', 'System keystore json used for access to system Eth wallet')
 }
 
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

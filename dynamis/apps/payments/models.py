@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import datetime
 from constance import config
 from django.db import models
+from django.utils import timezone
 from django_fsm import FSMIntegerField, transition
 
 from dynamis import settings
@@ -20,6 +21,7 @@ SMART_DEPOSIT_STATUS = (
 )
 
 
+# TODO maybe not used and need to refactoring
 class EthAccount(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='eth_accounts')
     is_active = models.BooleanField(default=True)
@@ -51,6 +53,7 @@ class SmartDeposit(TimestampModel):
     state = FSMIntegerField(default=SMART_DEPOSIT_STATUS_INIT, protected=True, choices=SMART_DEPOSIT_STATUS)
     wait_for = models.DateTimeField(null=True)
     from_address = models.CharField(max_length=1023, null=True)
+    tx_hash = models.CharField(max_length=127, null=True)
 
     def save(self, *args, **kwargs):
         raw_cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
@@ -64,7 +67,7 @@ class SmartDeposit(TimestampModel):
     @transition(field=state, source=SMART_DEPOSIT_STATUS_INIT, target=SMART_DEPOSIT_STATUS_WAITING)
     def init_to_wait(self):
         refresh_usd_eth_exchange_rate()
-        self.wait_for = datetime.datetime.now() + datetime.timedelta(
+        self.wait_for = timezone.now() + datetime.timedelta(
             minutes=config.WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES)
         self.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
         self.save()
