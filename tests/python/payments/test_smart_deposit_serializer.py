@@ -10,7 +10,7 @@ def test_deposit_short_serializer(factories):
         'status': deposit.state,
         'cost_in_eth': deposit.cost,
         'cost_in_dollars': deposit.cost_dollar,
-        'address_to_send': config.ADDRESS_TO_SEND_ETH
+        'address_to_send': config.SYSTEM_ETH_ADDRESS
     }
 
     serializer = SmartDepositShortSerializer(instance=deposit)

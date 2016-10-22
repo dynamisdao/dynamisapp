@@ -13,7 +13,7 @@ class SmartDepositShortSerializer(serializers.ModelSerializer):
     address_to_send = SerializerMethodField()
 
     def get_address_to_send(self, *args, **kwargs):
-        return config.ADDRESS_TO_SEND_ETH
+        return config.SYSTEM_ETH_ADDRESS
 
     class Meta:
         model = SmartDeposit
