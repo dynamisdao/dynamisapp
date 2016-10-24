@@ -116,7 +116,7 @@ class VerifyKeybaseSerializer(serializers.Serializer):
 class EthAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = EthAccount
-        fields = ('eth_node_host',)
+        fields = ('rpc_node_host',)
 
 
 class AccountShortSerializer(serializers.ModelSerializer):
