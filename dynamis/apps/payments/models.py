@@ -76,6 +76,7 @@ class SmartDeposit(TimestampModel):
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_INIT)
     def wait_to_init(self):
         refresh_usd_eth_exchange_rate()
+        self.save()
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_WAITING, target=SMART_DEPOSIT_STATUS_RECEIVED,
                 conditions=[check_smart_deposit_amount])

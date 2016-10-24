@@ -18,6 +18,10 @@
             <input type="text" id="eth_password">
         </li>
         <li class="collection-item">
+            <label>Address</label>
+            <input readonly type="text" value="{{ config.SYSTEM_ETH_ADDRESS }}" id="eth_password">
+        </li>
+        <li class="collection-item">
             <div className="card-action">
                 <form action="." method="post">
                     {#                        <span class="card-title">Create Smart Deposit</span>#}
@@ -35,9 +39,9 @@
                     {#                </div>#}
                     <div class="input-field " type="hidden">
                         <div class="input-field col s12" type="hidden">
-                            <input class=" validate" id="id_amount" name="amount"
+                            <input readonly class=" validate" id="id_amount_dollar" name="amount_dollar"
                                    value="{{ user.policies.last.smart_deposit.cost_dollar }}" step="any" type="number"/>
-                            <label class="s12 " for="id_amount">Amount to send, USD</label>
+                            <label class="s12 " for="id_amount_dollar">Amount to send, USD</label>
                         </div>
                     </div>
                     <div class="input-field " type="hidden">

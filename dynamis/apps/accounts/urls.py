@@ -17,7 +17,6 @@ from .views import (
     VerifyEmailView,
     NotifyingPasswordChangeView,
     WalletView)
-from dynamis.apps.policy.views import SmartDepositStubView
 
 urlpatterns = [
     url(r'^login/$', LoginView.as_view(), name='login'),
