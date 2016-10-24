@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
 from dynamis.apps.payments.models import SmartDeposit
+from dynamis.utils.math import approximately_equal
 
 
 class SmartDepositShortSerializer(serializers.ModelSerializer):
@@ -26,7 +27,7 @@ class SmartDepositSendSerializer(serializers.Serializer):
     from_address = serializers.CharField(max_length=1023)
 
     def validate_amount_in_eth(self, value):
-        if self.instance.cost and self.instance.cost == value:
+        if self.instance.cost and approximately_equal(self.instance.cost, value, config.TX_VALUE_DISPERSION):
             return value
         else:
             raise ValidationError('smart deposit cost is not equal with received amount')
