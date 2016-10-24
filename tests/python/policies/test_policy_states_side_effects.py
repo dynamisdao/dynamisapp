@@ -148,7 +148,8 @@ def test_submit_to_p2p_review(factories, policy_data, job_data):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED, cost_dollar=200, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED,
+                                            cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE), amount=20)
 
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW

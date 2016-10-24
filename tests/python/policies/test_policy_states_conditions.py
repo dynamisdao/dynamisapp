@@ -2,6 +2,7 @@ import datetime
 import json
 
 import pytest
+from constance import config
 from django_fsm import TransitionNotAllowed
 
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
@@ -78,7 +79,8 @@ def test_submit_to_p2p_review_ok(factories, policy_data, job_data):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, cost_dollar=200, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2,
+                                            cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE), amount=20)
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
@@ -210,7 +212,8 @@ def test_activate_policy(factories):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=2, cost_dollar=200, amount=20)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2, cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE),
+                                            amount=20)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')

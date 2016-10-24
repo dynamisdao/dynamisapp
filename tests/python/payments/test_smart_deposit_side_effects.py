@@ -33,7 +33,8 @@ def test_wait_to_received(factories, policy_data):
     user = factories.UserFactory()
     policy = factories.PolicyApplicationFactory(user=user, state=POLICY_STATUS_SUBMITTED,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_WAITING)
+    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_WAITING,
+                                            cost_dollar=(50 * config.DOLLAR_ETH_EXCHANGE_RATE), amount=50)
     deposit.wait_to_received()
     policy = PolicyApplication.objects.get()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW

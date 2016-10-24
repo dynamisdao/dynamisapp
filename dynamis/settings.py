@@ -316,8 +316,11 @@ CONSTANCE_CONFIG = {
                                            ' policyholder for their first claim?'),
     'SYSTEM_ETH_ADDRESS': ('0xEA675fdDe714fd078de3EeF0F56AA9716B898ec8',
                            'System Eth address used for send Eth from user to application'),
-    'SYSTEM_KEYSTORE_JSON': ('', 'System keystore json used for access to system Eth wallet')
+    'SYSTEM_KEYSTORE_JSON': ('', 'System keystore json used for access to system Eth wallet'),
+    'TX_CONFIRMATIONS_COUNT': (20, 'how many confirms for transaction we need'),
+    'TX_VALUE_DISPERSION': (0.01, 'difference between estimated amount and received amount')
 }
 
+TEST_SYSTEM_ETH_ADDRESS = '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 LOGIN_REDIRECT_URL = '/'

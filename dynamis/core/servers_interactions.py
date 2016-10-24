@@ -24,7 +24,7 @@ def get_connector_to_rpc_server(rpc_provider_host=None, rpc_provider_port=None):
 class EtherscanAPIConnector(object):
     def __init__(self):
         self.api_key = ETHERSCAN_API_KEY
-        self.url_prefix = 'http://api.etherscan.io/api'
+        self.url = 'http://api.etherscan.io/api'
         self.max_records_to_return = ETHERSCAN_MAX_RECORDS_TO_RETURN
 
     def make_get_request(self, *args, **kwargs):
@@ -40,7 +40,7 @@ class EtherscanAPIConnector(object):
             params_to_request.update({'offset': self.max_records_to_return,
                                       'page': 1})
         params_to_request.update(kwargs)
-        return requests.get(self.url_prefix, params_to_request)
+        return requests.get(self.url, params_to_request)
 
     def _search_value_in_api_response_result(self, key, value, **request_kwargs):
         request_kwargs.update({'page': 1})
