@@ -10,7 +10,8 @@ from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import GenericViewSet
 
-from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer
+from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, AccountListSerializer, \
+    EthAccountGetSerializer, EthAccountUpdateSerializer
 from dynamis.apps.accounts.permissions import AccountPermission, IsAdminOrAccountOwnerPermission
 from dynamis.apps.payments.models import EthAccount
 from dynamis.core.api.v1.filters import IsOwnerOrAdminFilterBackend
@@ -18,7 +19,7 @@ from dynamis.core.view_mixins import DynamisCreateModelMixin
 from .serializers import (
     AccountCreationSerializer,
     VerifyKeybaseSerializer,
-    EthAccountSerializer, AccountDetailSerializer)
+    AccountDetailSerializer)
 
 
 User = get_user_model()
@@ -62,7 +63,11 @@ class EthAccountViewSet(mixins.RetrieveModelMixin,
     queryset = EthAccount.objects.all()
     filter_backends = (IsOwnerOrAdminFilterBackend,)
     permission_classes = [IsAuthenticated]
-    serializer_class = EthAccountSerializer
+    serializer_class = EthAccountGetSerializer
+
+    def update(self, request, *args, **kwargs):
+        self.serializer_class = EthAccountUpdateSerializer
+        return super(EthAccountViewSet, self).update(request, *args, **kwargs)
 
     class Meta:
         model = EthAccount

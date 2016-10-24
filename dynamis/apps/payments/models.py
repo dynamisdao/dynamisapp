@@ -30,7 +30,7 @@ class EthAccount(TimestampModel):
     # TODO maybe not used (user provide his eth_address at every payment), store in SmartDeposit model - 'from_address'
     eth_address = models.CharField(null=True, max_length=1023)
 
-    rpc_node_host = models.URLField(default='http://dynamisapp-develop.herokuapp.com:8545')
+    rpc_node_host = models.URLField(null=True)
 
 
 class TokenAccount(TimestampModel):

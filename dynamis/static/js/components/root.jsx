@@ -7,6 +7,7 @@ import {getQueryParams} from '../utils';
 import actions from '../actions/actions';
 import App from './app';
 import Wallet from './wallet';
+import SendSmartDeosit from './send-smart-deposit';
 import PolicyForm from './policy-form';
 import PolicyFormAdmin from './policy-form-admin';
 import PeerReview from './peer-review';
@@ -69,6 +70,18 @@ export var WalletRoot = React.createClass({
     return (
       <Provider store={store}>
         <Wallet />
+      </Provider>
+    );
+  },
+});
+
+export var SendSmartDepositRoot = React.createClass({
+  render() {
+    var store = createReduxStore();
+    store.dispatch(actions.initializeWallet());
+    return (
+      <Provider store={store}>
+        <SendSmartDeosit />
       </Provider>
     );
   },
