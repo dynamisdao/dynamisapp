@@ -16,6 +16,7 @@ from dynamis.core.models import TimestampModel
 from constance import config
 
 from dynamis.settings import DEBUG
+from dynamis.utils.math import approximately_equal
 from dynamis.utils.strftimedelta import timedelta_to_str_years_days
 from .querysets import ApplicationItemQueryset
 
@@ -98,10 +99,12 @@ class PolicyApplication(TimestampModel):
         return False
 
     def check_smart_deposit(self):
-        smart_deposits = SmartDeposit.objects.filter(policy=self)
-        if smart_deposits.exists() and \
-                not SmartDepositRefund.objects.filter(smart_deposit=smart_deposits[0]).exists() and \
-                        smart_deposits[0].amount >= smart_deposits[0].cost:
+        try:
+            smart_deposit = SmartDeposit.objects.get(policy=self)
+        except SmartDeposit.DoesNotExist:
+            return False
+        if not SmartDepositRefund.objects.filter(smart_deposit=smart_deposit).exists() and \
+                        approximately_equal(smart_deposit.amount, smart_deposit.cost, config.TX_VALUE_DISPERSION):
             return True
         return False
 

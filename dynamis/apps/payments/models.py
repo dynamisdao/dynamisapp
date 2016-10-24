@@ -9,6 +9,7 @@ from django_fsm import FSMIntegerField, transition
 from dynamis import settings
 from dynamis.apps.payments.business_logic import refresh_usd_eth_exchange_rate
 from dynamis.core.models import TimestampModel
+from dynamis.utils.math import approximately_equal
 
 SMART_DEPOSIT_STATUS_INIT = 0
 SMART_DEPOSIT_STATUS_WAITING = 1
@@ -45,7 +46,7 @@ class SmartDeposit(TimestampModel):
     eth_account = models.ForeignKey(EthAccount, related_name='smart_deposits', null=True)
     policy = models.OneToOneField('policy.PolicyApplication', related_name='smart_deposit', primary_key=True)
     # is_confirmed = models.BooleanField(default=False)
-    amount = models.FloatField()
+    amount = models.FloatField(default=0)
     amount_dollar = models.FloatField(null=True)
     cost = models.FloatField(null=True)
     cost_dollar = models.FloatField(null=True)
@@ -61,7 +62,7 @@ class SmartDeposit(TimestampModel):
         super(SmartDeposit, self).save(*args, **kwargs)
 
     def check_smart_deposit_amount(self):
-        if self.amount >= self.cost:
+        if approximately_equal(self.amount, self.cost, config.TX_VALUE_DISPERSION):
             return True
 
     @transition(field=state, source=SMART_DEPOSIT_STATUS_INIT, target=SMART_DEPOSIT_STATUS_WAITING)

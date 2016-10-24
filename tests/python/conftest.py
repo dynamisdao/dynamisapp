@@ -1,6 +1,7 @@
 import json
 
 import gnupg
+import httpretty
 
 import pytest
 import web3
@@ -9,6 +10,8 @@ from django_webtest import (
     WebTest as BaseWebTest,
     DjangoTestApp as BaseDjangoTestApp,
 )
+
+from dynamis.settings import TEST_SYSTEM_ETH_ADDRESS
 
 
 @pytest.fixture()  # NOQA
@@ -248,39 +251,6 @@ def internal_contractor(factories):
         )
 
 
-@pytest.fixture()
-def mock_request_exchange_rate(monkeypatch):
-    NEW_ETH_USD_RATE = 12.686
-
-    class ResponseMockOk:
-        def __init__(self):
-            self.status_code = 200
-            content_json = [
-                {
-                    "id": "ethereum",
-                    "name": "Ethereum",
-                    "symbol": "ETH",
-                    "rank": "1",
-                    "price_usd": str(NEW_ETH_USD_RATE),
-                    "price_btc": "0.0196547",
-                    "24h_volume_usd": "11956600.0",
-                    "market_cap_usd": "1070934605.0",
-                    "available_supply": "85090706.0",
-                    "total_supply": "85090706.0",
-                    "percent_change_1h": "0.26",
-                    "percent_change_24h": "5.89",
-                    "percent_change_7d": "4.83",
-                    "last_updated": "1476794361"
-                }
-            ]
-            self.content = json.dumps(content_json)
-
-        def __call__(self, *args, **kwargs):
-            return self
-
-    monkeypatch.setattr("requests.get", ResponseMockOk())
-
-
 @pytest.fixture
 def policy_data():
     policy_data = {
@@ -325,11 +295,41 @@ def mock_request_get_single_transaction_by_addresses_empty_result(monkeypatch):
 
 
 @pytest.fixture()
-def mock_request_get_single_transaction_by_addresses(monkeypatch):
-    class ResponseMockOk:
-        def __init__(self):
-            self.status_code = 200
-            content_json = {"status": "1", "message": "OK", "result":
+def mock_refresh_usd_eth_exchange_rate(monkeypatch):
+    def pass_func():
+        pass
+
+    monkeypatch.setattr('dynamis.apps.payments.models.refresh_usd_eth_exchange_rate', pass_func)
+
+
+@pytest.fixture()
+def mock_request_exchange_rate():
+    NEW_ETH_USD_RATE = 12.686
+    response = [{
+        "id": "ethereum",
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "rank": "1",
+        "price_usd": str(NEW_ETH_USD_RATE),
+        "price_btc": "0.0196547",
+        "24h_volume_usd": "11956600.0",
+        "market_cap_usd": "1070934605.0",
+        "available_supply": "85090706.0",
+        "total_supply": "85090706.0",
+        "percent_change_1h": "0.26",
+        "percent_change_24h": "5.89",
+        "percent_change_7d": "4.83",
+        "last_updated": "1476794361"
+    }]
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, "http://api.coinmarketcap.com/v1/ticker/ethereum/",
+                           body=json.dumps(response),
+                           content_type="application/json")
+
+
+@pytest.fixture()
+def mock_request_get_single_transaction_by_addresses():
+    response = {"status": "1", "message": "OK", "result":
                 [{"blockNumber": "2202431", "timeStamp": "1473064775",
                   "hash": "0xd24d6c937cca54ffde69f059b58cc422c5729dc0d307b6ab892133cc05464e78",
                   "nonce": "286",
@@ -375,7 +375,7 @@ def mock_request_get_single_transaction_by_addresses(monkeypatch):
                   "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
                   "transactionIndex": "24",
                   "from": "0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
-                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
+                  "to": TEST_SYSTEM_ETH_ADDRESS,
                   "value": "33868806240000000000", "gas": "22444",
                   "gasPrice": "20000000000",
                   "isError": "0", "input": "0x", "contractAddress": "",
@@ -393,16 +393,16 @@ def mock_request_get_single_transaction_by_addresses(monkeypatch):
                   "isError": "0", "input": "0x", "contractAddress": "",
                   "cumulativeGasUsed": "904557", "gasUsed": "22444",
                   "confirmations": "373300"}]}
-            self.content = json.dumps(content_json)
-
-        def __call__(self, *args, **kwargs):
-            return self
-
-    monkeypatch.setattr("requests.get", ResponseMockOk())
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, 'http://api.etherscan.io/api',
+                           body=json.dumps(response),
+                           content_type="application/json")
 
 
 @pytest.fixture()
-def mock_refresh_usd_eth_exchange_rate(monkeypatch):
-    def pass_func():
-        pass
-    monkeypatch.setattr('dynamis.apps.payments.models.refresh_usd_eth_exchange_rate', pass_func)
+def mock_call_system_eth_address(monkeypatch):
+    monkeypatch.setattr("dynamis.apps.payments.api.v1.views", TEST_SYSTEM_ETH_ADDRESS)
+
+# @pytest.fixture(autouse=True)
+# def no_requests(monkeypatch):
+#     monkeypatch.delattr("requests.sessions.Session.request")
