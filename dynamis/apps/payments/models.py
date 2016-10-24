@@ -22,7 +22,6 @@ SMART_DEPOSIT_STATUS = (
 )
 
 
-# TODO maybe not used and need to refactoring
 class EthAccount(TimestampModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='eth_accounts')
     is_active = models.BooleanField(default=True)
@@ -31,7 +30,7 @@ class EthAccount(TimestampModel):
     # TODO maybe not used (user provide his eth_address at every payment), store in SmartDeposit model - 'from_address'
     eth_address = models.CharField(null=True, max_length=1023)
 
-    eth_node_host = models.URLField(null=True)
+    rpc_node_host = models.URLField(default='http://dynamisapp-develop.herokuapp.com:8545')
 
 
 class TokenAccount(TimestampModel):
