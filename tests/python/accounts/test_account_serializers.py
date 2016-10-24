@@ -1,8 +1,9 @@
 import datetime
 
-from dynamis.apps.accounts.api.v1.serializers import EthAccountSerializer, AccountShortSerializer, \
-    AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer
+from dynamis.apps.accounts.api.v1.serializers import AccountShortSerializer, \
+    AccountDetailSerializer, AccountListSerializer, AccountLoginResponseSerializer, EthAccountGetSerializer
 from dynamis.apps.policy.api.v1.serializers import PolicyListSerializer
+from dynamis.settings import SYSTEM_RPC_NODE_HOST
 
 
 def test_account_settings_serializer(factories):
@@ -12,7 +13,18 @@ def test_account_settings_serializer(factories):
         'rpc_node_host': account_settings.rpc_node_host,
     }
 
-    serializer = EthAccountSerializer(account_settings)
+    serializer = EthAccountGetSerializer(account_settings)
+    assert serializer.data == data
+
+
+def test_account_settings_serializer_default(factories):
+    account_settings = factories.EthAccountFactory(rpc_node_host=None)
+
+    data = {
+        'rpc_node_host': SYSTEM_RPC_NODE_HOST,
+    }
+
+    serializer = EthAccountGetSerializer(account_settings)
     assert serializer.data == data
 
 

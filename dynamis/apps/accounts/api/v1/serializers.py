@@ -6,11 +6,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 from dynamis.apps.identity import get_provider
 from dynamis.apps.payments.models import EthAccount
 from dynamis.apps.policy.api.v1.serializers import PolicyListSerializer
-from dynamis.settings import DEBUG
+from dynamis.settings import DEBUG, SYSTEM_RPC_NODE_HOST
 from dynamis.utils.gpg import gpg_keyring
 from dynamis.utils.validation import validate_signature
 
@@ -113,10 +114,25 @@ class VerifyKeybaseSerializer(serializers.Serializer):
         return instance
 
 
-class EthAccountSerializer(serializers.ModelSerializer):
+class EthAccountUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EthAccount
         fields = ('rpc_node_host',)
+
+
+class EthAccountGetSerializer(serializers.ModelSerializer):
+    rpc_node_host = SerializerMethodField()
+
+    class Meta:
+        model = EthAccount
+        fields = ('rpc_node_host',)
+
+    def get_rpc_node_host(self, instance):
+        if instance.rpc_node_host:
+            return instance.rpc_node_host
+        else:
+            return SYSTEM_RPC_NODE_HOST
+
 
 
 class AccountShortSerializer(serializers.ModelSerializer):

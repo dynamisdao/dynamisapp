@@ -2,7 +2,7 @@ import types from '../actions/types';
 import Reducer from './reducer';
 
 var reducer = new Reducer('wallet', {
-  web3url: localStorage.web3url || 'http://dynamisapp-develop.herokuapp.com:8545',
+  web3url: localStorage.web3url || 'http://52.16.72.86:8545',
   network: '',
   connected: true,
 });

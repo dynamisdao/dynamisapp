@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 
-from dynamis.apps.accounts.api.v1.serializers import EthAccountSerializer
+from dynamis.apps.accounts.api.v1.serializers import EthAccountGetSerializer
 from dynamis.apps.payments.models import EthAccount
 
 
@@ -12,7 +12,7 @@ def test_get_account_config(user_webtest_client, api_client, factories):
     page = api_client.get(url)
 
     assert page.status_code == 200
-    assert page.data == EthAccountSerializer(account_config).data
+    assert page.data == EthAccountGetSerializer(account_config).data
 
 
 def test_deny_get_other_user_account_config(api_client, factories):
@@ -30,12 +30,12 @@ def test_change_account_config(user_webtest_client, api_client, factories):
     account_config = factories.EthAccountFactory(user=user_webtest_client.user)
     url = reverse('v1:account-settings-detail', args=[account_config.pk])
 
-    assert EthAccount.objects.get().rpc_node_host == 'http://dynamisapp-develop.herokuapp.com:8545'
+    assert EthAccount.objects.get(user=user_webtest_client.user).rpc_node_host is None
 
     page = api_client.put(url, data={'rpc_node_host': new_eth_address})
 
     assert page.status_code == 200
-    assert EthAccount.objects.get().rpc_node_host == new_eth_address
+    assert EthAccount.objects.get(user=user_webtest_client.user).rpc_node_host == new_eth_address
 
 
 def test_deny_change_other_user_account_config(api_client, factories):
