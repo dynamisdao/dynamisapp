@@ -8,7 +8,7 @@ class SmartDepositStubForm(forms.ModelForm):
     class Meta:
         model = SmartDeposit
         fields = (
-            'amount',
+            'amount_dollar',
             'policy'
         )
 
