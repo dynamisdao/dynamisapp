@@ -24,7 +24,7 @@
                             <li class="collection-header"><h4>Risk Assessment Tasks</h4></li>
                             {% for task in user.risk_assessment_tasks.all %}
                                 <div class="col s6">
-                                    <a href="{% url 'risk-assessment' assessment_pk=task.pk %}">Task-{{ task.id }} {{ task.user }}</a>
+                                    <a href="{% url 'risk-assessment' assessment_pk=task.pk %}">Task-{{ task.id }} {{ task.policy.user }}</a>
                                 </div>
                             {% endfor %}
                         </ul>
