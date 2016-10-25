@@ -111,7 +111,7 @@ def test_p2p_review_to_completeness_check_int_result(factories):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
     deposit = factories.SmartDepositFactory(policy=policy, state=2)
-    app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
+    app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=True)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
 
     policy.p2p_review_to_completeness_check()
@@ -123,11 +123,25 @@ def test_p2p_review_to_completeness_check_str_result(factories):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
                                                 user=user)
     deposit = factories.SmartDepositFactory(policy=policy, state=2)
-    app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
+    app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=True)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='verified')
 
     policy.p2p_review_to_completeness_check()
     assert policy.state == POLICY_STATUS_ON_COMPLETENESS_CHECK
+
+
+def test_p2p_review_to_completeness_check_not_all_finished(factories):
+    user = factories.UserFactory()
+    policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_P2P_REVIEW,
+                                                user=user)
+    deposit = factories.SmartDepositFactory(policy=policy, state=2)
+    app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=True)
+    app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=False)
+    factories.IdentityPeerReviewFactory(application_item=app_item, result='verified')
+
+    with pytest.raises(TransitionNotAllowed):
+        policy.p2p_review_to_completeness_check()
+    assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
 
 def test_p2p_review_to_completeness_check_falsified_result(factories):
@@ -215,7 +229,7 @@ def test_activate_policy(factories):
     deposit = factories.SmartDepositFactory(policy=policy, state=2, cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE),
                                             amount=20)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
-    app_item = factories.IdentityApplicationItemFactory(policy_application=policy)
+    app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=True)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')
     eth_account = factories.EthAccountFactory(user=user)
     factories.PremiumPaymentFactory(eth_account=eth_account, is_confirmed=True)

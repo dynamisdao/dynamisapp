@@ -104,7 +104,7 @@ class PolicyApplication(TimestampModel):
         except SmartDeposit.DoesNotExist:
             return False
         if not SmartDepositRefund.objects.filter(smart_deposit=smart_deposit).exists() and \
-                        approximately_equal(smart_deposit.amount, smart_deposit.cost, config.TX_VALUE_DISPERSION):
+                approximately_equal(smart_deposit.amount, smart_deposit.cost, config.TX_VALUE_DISPERSION):
             return True
         return False
 
@@ -117,11 +117,14 @@ class PolicyApplication(TimestampModel):
 
     def check_p2p_review(self):
         peer_reviews = PeerReview.objects.filter(application_item__policy_application__user=self.user)
+        review_tasks = ReviewTask.objects.filter(policy_application=self)
 
         # TODO FIXME REFACTORING - separate different kinds of rates !!!!
         not_success_status_list = [str(i) for i in xrange(1, config.IDENTITY_RECORDS_RATIO)]
         not_success_status_list += ['falsified']
-        if peer_reviews.exists() and not peer_reviews.filter(result__in=not_success_status_list):
+        if peer_reviews.exists() and not peer_reviews.filter(
+                result__in=not_success_status_list) and review_tasks.exists() and not review_tasks.filter(
+            is_finished=False).exists():
             return True
         return False
 
