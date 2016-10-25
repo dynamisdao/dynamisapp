@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% load render_table from django_tables2 %}
+{% load react_renderer %}
+
+{% block content %}
+    <ul class="collection">
+        <li class="collection-item">
+            <h2>My Smart Deposit</h2>
+            <section>
+                <ul class="collection">
+                    <li class="collection-item">
+                        Current exchange rate: {{ config.DOLLAR_ETH_EXCHANGE_RATE }}<br><br>
+                        Address to send deposit: <div id="address_to_send_eth">{{ config.SYSTEM_ETH_ADDRESS }}</div>
+                        {% render_table table %}
+                    </li>
+                </ul>
+            </section>
+        </li>
+        <li>
+            {% react_component "Dynamis.SendSmartDepositRoot" %}
+        </li>
+    </ul>
+
+{% endblock content %}

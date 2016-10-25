@@ -36,8 +36,12 @@
 
                 {% if user.policies.last.state == 2 %}
                     <li class="collection-item">
-                        <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.last.id %}">Pay Smart
+                        <a class="btn" href="{% url 'smart-deposit-real' pk=user.policies.last.id %}">Pay Smart
                             Deposit</a>
+                    </li>
+                    <li class="collection-item">
+                        <a class="btn" href="{% url 'smart-deposit-stub' pk=user.policies.last.id %}">DEBUG - Fake Pay
+                            Smart Deposit</a>
                     </li>
                 {% endif %}
 
