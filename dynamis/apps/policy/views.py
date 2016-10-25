@@ -1,6 +1,5 @@
 import json
 
-import httpretty
 import requests
 from django.db.transaction import atomic
 from django.http import HttpResponseRedirect
@@ -92,28 +91,6 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
 
     @atomic
     def post(self, request, *args, **kwargs):
-        NEW_ETH_USD_RATE = config.DOLLAR_ETH_EXCHANGE_RATE
-        response = [{
-            "id": "ethereum",
-            "name": "Ethereum",
-            "symbol": "ETH",
-            "rank": "1",
-            "price_usd": str(NEW_ETH_USD_RATE),
-            "price_btc": "0.0196547",
-            "24h_volume_usd": "11956600.0",
-            "market_cap_usd": "1070934605.0",
-            "available_supply": "85090706.0",
-            "total_supply": "85090706.0",
-            "percent_change_1h": "0.26",
-            "percent_change_24h": "5.89",
-            "percent_change_7d": "4.83",
-            "last_updated": "1476794361"
-        }]
-        httpretty.enable()
-        httpretty.register_uri(httpretty.GET, "http://api.coinmarketcap.com/v1/ticker/ethereum/",
-                               body=json.dumps(response),
-                               content_type="application/json")
-
         instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
         form = SmartDepositStubForm(request.POST or None, instance=instance)
         if form.is_valid():
