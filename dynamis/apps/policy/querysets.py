@@ -9,4 +9,4 @@ class ApplicationItemQueryset(models.QuerySet):
         ).exclude(
             # no items that you have already reviewed
             peer_reviews__user=user,
-        )
+        ).exclude(is_finished=True)
