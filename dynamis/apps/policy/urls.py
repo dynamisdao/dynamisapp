@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from dynamis.apps.policy.views import SmartDepositStubView
+from dynamis.apps.policy.views import SmartDepositView, SmartDepositStubView
 from .views import (
     PolicyCreateView,
     PolicyEditView,
@@ -20,5 +20,6 @@ urlpatterns = [
         r'^peer-review-items/$', PeerReviewItemsView.as_view(),  # todo
         name="peer-review-items",
     ),
-    url(r'^(?P<pk>[0-9]+)/smart-deposit/$', SmartDepositStubView.as_view(), name='smart-deposit-stub'),
+    url(r'^(?P<pk>[0-9]+)/smart-deposit/$', SmartDepositView.as_view(), name='smart-deposit-real'),
+    url(r'^(?P<pk>[0-9]+)/smart-deposit-fake/$', SmartDepositStubView.as_view(), name='smart-deposit-stub'),
 ]

@@ -10,14 +10,45 @@
                 <ul class="collection">
                     <li class="collection-item">
                         Current exchange rate: {{ config.DOLLAR_ETH_EXCHANGE_RATE }}<br><br>
-                        Address to send deposit: <div id="address_to_send_eth">{{ config.SYSTEM_ETH_ADDRESS }}</div>
+                        Address to send deposit:
+                        <div id="address_to_send_eth">{{ config.SYSTEM_ETH_ADDRESS }}</div>
                         {% render_table table %}
                     </li>
                 </ul>
             </section>
         </li>
         <li>
-            {% react_component "Dynamis.SendSmartDepositRoot" %}
+        <li class="collection-item">
+            <label htmlFor="eth_password">Password</label>
+            <input type="text" id="eth_password">
+        </li>
+        <li class="collection-item">
+            <label>Address</label>
+            <input readonly type="text" value="{{ config.SYSTEM_ETH_ADDRESS }}" id="eth_password">
+        </li>
+        <li class="collection-item">
+            <div className="card-action">
+                <form action="." method="post">
+                    <div class="input-field " type="hidden">
+                        <div class="input-field col s12" type="hidden">
+                            <input readonly class=" validate" id="id_amount_dollar" name="amount_dollar"
+                                   value="{{ user.policies.last.smart_deposit.cost_dollar }}" step="any" type="number"/>
+                            <label class="s12 " for="id_amount_dollar">Amount to send, USD</label>
+                        </div>
+                    </div>
+                    <div class="input-field " type="hidden">
+                        <div class="col s12" type="hidden">
+                            <label for="id_policy"></label>
+                            <select class=" validate" id="id_policy" name="policy">
+                                <option value="{{ user.policies.last.pk }}" selected="selected">---------</option>
+                                <option value="{{ user.policies.last.pk }}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit">DEBUG only: Fake Pay Smart Deposit</button>
+                </form>
+            </div>
+            <br>
         </li>
     </ul>
 
