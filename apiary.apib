@@ -245,8 +245,11 @@ Please see this [Wiki for more information on tokens](https://github.com/dynamis
     + Body
 
             {
-                // where SmartDeposit should be sent to
+                // where to send ETH in order to buy immature tokens
                 "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                
+                // 0.5 ETH per 1 immature token
+                "immature_token_cost": 0.5,
                 
                 // 0 - initial
                 // 1 - waiting
@@ -263,7 +266,9 @@ Please see this [Wiki for more information on tokens](https://github.com/dynamis
     + Body
     
             {
-                "amount_in_eth": 1.2,
+                // immature tokens
+                "count": 5,
+                
                 "from_address": "0x123"
             }
 
