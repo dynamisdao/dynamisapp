@@ -34,12 +34,6 @@
     {% endif %}
   </li>
   <li class="collection-item">
-        ETH Balance:
-    {% if user.eth_accounts %}
-      {{ user.eth_accounts.first.eth_balance }}
-    {% endif %}
-  </li>
-  <li class="collection-item">
     Immature tokens balance:
         {% if user.token_account %}
       {{ user.token_account.immature_tokens_balance }}

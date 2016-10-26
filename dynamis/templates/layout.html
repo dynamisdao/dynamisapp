@@ -13,8 +13,6 @@
                         {% endif %}
 
                         <li><a href="{% url 'my-policy' %}">My policy</a></li>
-                        <li><a href="">Make a Payment</a></li>
-                        <li><a href="">Open a Claim</a></li>
 
                         {% if user.is_risk_assessor %}
                             <li><a href="{% url 'assessor-dashboard' %}">Assessor Dashboard</a></li>
