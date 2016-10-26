@@ -228,12 +228,41 @@ If signature is bad - return 404.
     + Body
     
             {
-                // address to send ETH in order to buy immature tokens
-                "immature_tokens_exchange_address": "0x123",
-                
                 "immature_tokens_balance": 0,
                 "mature_tokens_balance: 0,
             }
+            
+### Get ImmatureTokens info [GET /api/v1/accounts/{accountid}/immature_tokens/info]
+
+If user has **Risk Assessor** role set - he can buy some immature tokens.
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                // where SmartDeposit should be sent to
+                "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                
+                // 0 - initial
+                // 1 - waiting
+                // 2 - received
+                "status": 0
+            }
+            
+### Send ETH to buy Immature Tokens [POST /api/v1/accounts/{accountid}/immature_tokens/buy]
+
+When user clicks on 'Send transaction' or 'Buy' button.
+
++ Request 
+    + Body
+    
+            {
+                "amount_in_eth": 1.2,
+                "from_address": "0x123"
+            }
+
++ Response 200
+
 
 ## Peer Review Tasks [/api/v1/review-tasks]
 
