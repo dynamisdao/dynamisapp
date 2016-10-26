@@ -28,7 +28,7 @@
     "sass-brunch": "^2.6.2",
     "uuid": "^2.0.1",
     "web3": "^0.15.3",
-    "secp256k1": "git+https://github.com/AnthonyAkentiev/secp256k1-node.git#a85e11cf4fb2cd2342b7a26a6ded58639b996593"
+    "secp256k1": "git+https://github.com/AnthonyAkentiev/secp256k1-node.git#6a5a789ea12785dbb0843ea0a2de0e4a658f3d44"
   },
   "scripts": {
     "lint": "eslint 'dynamis/static/**/*.js*' && npm run lint-success -s",
