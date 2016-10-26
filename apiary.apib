@@ -163,11 +163,12 @@ If **not admin** - can get only my account info.
                 "email": "xxx@mail.com",
                 "keybase_username": "something",
                 "linkedin_account": "http://me.linkedin.com",
+
                 "id": 1,
-                "keybase_verified": true,
-                "eth_balance": 2.0,
-                "immature_tokens_balance": 2.5,
-                "mature_tokens_balance": 3.0,
+
+                "is_keybase_verified": true,
+                "eth_balance": 10,
+                
                 "policies": [
                   {
                   "id": 1,
@@ -244,6 +245,61 @@ If signature is bad - return 404.
 + Response 200
 
 + Response 400
+
+
+### Get wallet info [GET /api/v1/accounts/{accountid}/wallet]
+
+Each user has his own wallet. We don't have control of the ETH wallet/account, because it is on the frontend side (ETH-Lightwallet).
+
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
+
++ Response 200
+
+    + Body
+    
+            {
+                "immature_tokens_balance": 0,
+                "mature_tokens_balance: 0,
+            }
+            
+### Get ImmatureTokens info [GET /api/v1/accounts/{accountid}/immature_tokens/info]
+
+If user has **Risk Assessor** role set - he can buy some immature tokens.
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                // where to send ETH in order to buy immature tokens
+                "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
+                
+                // 0.5 ETH per 1 immature token
+                "immature_token_cost": 0.5,
+                
+                // 0 - initial
+                // 1 - waiting
+                // 2 - received
+                "status": 0
+            }
+            
+### Send ETH to buy Immature Tokens [POST /api/v1/accounts/{accountid}/immature_tokens/buy]
+
+When user clicks on 'Send transaction' or 'Buy' button.
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
+
++ Request 
+    + Body
+    
+            {
+                // immature tokens
+                "count": 5,
+                
+                "from_address": "0x123"
+            }
+
++ Response 200
+
 
 ## Peer Review Tasks [/api/v1/review-tasks]
 
