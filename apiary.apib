@@ -223,6 +223,10 @@ If signature is bad - return 404.
 
 ### Get wallet info [GET /api/v1/accounts/{accountid}/wallet]
 
+Each user has his own wallet. We don't have control of the ETH wallet/account, because it is on the frontend side (ETH-Lightwallet).
+
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
+
 + Response 200
 
     + Body
@@ -235,6 +239,7 @@ If signature is bad - return 404.
 ### Get ImmatureTokens info [GET /api/v1/accounts/{accountid}/immature_tokens/info]
 
 If user has **Risk Assessor** role set - he can buy some immature tokens.
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
 
 + Response 200 (application/json)
     + Body
@@ -252,6 +257,7 @@ If user has **Risk Assessor** role set - he can buy some immature tokens.
 ### Send ETH to buy Immature Tokens [POST /api/v1/accounts/{accountid}/immature_tokens/buy]
 
 When user clicks on 'Send transaction' or 'Buy' button.
+Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
 
 + Request 
     + Body
