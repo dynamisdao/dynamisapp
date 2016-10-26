@@ -144,8 +144,6 @@ If **not admin** - can get only my account info.
                 "is_keybase_verified": true,
                 
                 "eth_balance": 10,
-                "immature_tokens_balance": 0,
-                "mature_tokens_balance: 0,
                 
                 "policies": [
                     1,
@@ -221,6 +219,21 @@ If signature is bad - return 404.
 + Response 200
 
 + Response 400
+
+
+### Get wallet info [GET /api/v1/accounts/{accountid}/wallet]
+
++ Response 200
+
+    + Body
+    
+            {
+                // address to send ETH in order to buy immature tokens
+                "immature_tokens_exchange_address": "0x123",
+                
+                "immature_tokens_balance": 0,
+                "mature_tokens_balance: 0,
+            }
 
 ## Peer Review Tasks [/api/v1/review-tasks]
 
