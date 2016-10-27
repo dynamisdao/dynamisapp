@@ -1,6 +1,10 @@
+import datetime as datetime
 import factory
 
-from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, EthAccount, SmartDepositRefund, TokenAccount
+from dynamis.apps.payments.models import SmartDeposit, PremiumPayment, EthAccount, SmartDepositRefund, TokenAccount, \
+    BuyTokenOperation
+from dynamis.core.models import EthTransaction
+from dynamis.settings import TEST_SYSTEM_ETH_ADDRESS
 
 
 class SmartDepositFactory(factory.DjangoModelFactory):
@@ -42,3 +46,23 @@ class TokenAccountFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = TokenAccount
+
+
+class EthTxFactory(factory.DjangoModelFactory):
+    from_address = "0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86"
+    to_address = TEST_SYSTEM_ETH_ADDRESS
+    hash = "0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904"
+    value = 33868806240000000000
+    datetime = datetime.datetime.utcnow() + datetime.timedelta(minutes=1)
+    confirmations = 373300
+
+    class Meta:
+        model = EthTransaction
+
+
+class BuyTokenOperationFactory(factory.DjangoModelFactory):
+    token_account = factory.SubFactory('factories.accounts.TokenAccountFactory')
+    count = 1
+
+    class Meta:
+        model = BuyTokenOperation

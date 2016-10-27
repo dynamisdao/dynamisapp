@@ -302,6 +302,7 @@ CONSTANCE_CONFIG = {
     'DOLLAR_ETH_EXCHANGE_RATE': (12.57, 'How many dollars we have to spend to by 1 Ethereum'),
     'DOLLAR_ETH_EXCHANGE_RATE_VALID_FOR_MINUTES': (60, 'How many minutes dollar/eth rate will valid'),
     'WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES': (60, 'How many minutes we can wait for smart deposit'),
+    'WAIT_FOR_BUY_TOKEN_TX_MINUTES': (120, 'How many minutes we can wait for buy token tx'),
     'BET_MIN_AMOUNT_USER': (1, 'RiskAssessor allowed to use minimum 1 token on ClaimStart and 1 token on ClaimLength.'),
     'BET_MAX_AMOUNT_USER': (2, 'RiskAssessor allowed to use maximum 2 tokens on ClaimStart and 2 tokens on '
                                'ClaimLength.'),

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import SerializerMethodField
 
-from dynamis.apps.payments.models import SmartDeposit
+from dynamis.apps.payments.models import SmartDeposit, TokenAccount, BuyTokenOperation
 from dynamis.utils.math import approximately_equal
 
 
@@ -31,3 +31,33 @@ class SmartDepositSendSerializer(serializers.Serializer):
             return value
         else:
             raise ValidationError('smart deposit cost is not equal with received amount')
+
+
+class TokenAccountShortSerializer(serializers.ModelSerializer):
+    address_to_send = SerializerMethodField()
+    immature_token_cost = SerializerMethodField()
+    status = SerializerMethodField()
+
+    def get_address_to_send(self, instance):
+        return config.SYSTEM_ETH_ADDRESS
+
+    def get_immature_token_cost(self, instance):
+        return config.EHT_TOKEN_EXCHANGE_RATE
+
+    def get_status(self, instance):
+        if instance.buy_token_operations.exists():
+            return instance.buy_token_operations.last().state
+        else:
+            return None
+
+    class Meta:
+        model = TokenAccount
+        fields = ('address_to_send', 'immature_token_cost', 'status')
+
+
+class BuyTokenInSerializer(serializers.ModelSerializer):
+    count = serializers.IntegerField()
+    from_address = serializers.CharField(max_length=1023)
+
+    class Meta:
+        model = BuyTokenOperation

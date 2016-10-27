@@ -1,10 +1,13 @@
 import json
 
+import time
+import datetime
 import gnupg
 import httpretty
 
 import pytest
 import web3
+from constance import config
 
 from django_webtest import (
     WebTest as BaseWebTest,
@@ -34,7 +37,9 @@ def factories(transactional_db):
         SmartDepositRefundFactory,
         PremiumPaymentFactory,
         EthAccountFactory,
-        TokenAccountFactory
+        TokenAccountFactory,
+        EthTxFactory,
+        BuyTokenOperationFactory
     )
 
     def is_factory(obj):
@@ -329,6 +334,7 @@ def mock_request_exchange_rate():
 
 @pytest.fixture()
 def mock_request_get_single_transaction_by_addresses():
+    tx_time = int(time.mktime((datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timetuple()))
     response = {"status": "1", "message": "OK", "result":
                 [{"blockNumber": "2202431", "timeStamp": "1473064775",
                   "hash": "0xd24d6c937cca54ffde69f059b58cc422c5729dc0d307b6ab892133cc05464e78",
@@ -369,30 +375,65 @@ def mock_request_get_single_transaction_by_addresses():
                   "isError": "0", "input": "0x", "contractAddress": "",
                   "cumulativeGasUsed": "949445", "gasUsed": "22444",
                   "confirmations": "373300"},
-                 {"blockNumber": "2108601", "timeStamp": "1471722162",
+                 {"blockNumber": "2108601", "timeStamp": str(tx_time),
                   "hash": "0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904",
                   "nonce": "4",
                   "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
                   "transactionIndex": "24",
                   "from": "0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                   "to": TEST_SYSTEM_ETH_ADDRESS,
-                  "value": "33868806240000000000", "gas": "22444",
+                  "value": "1591000000000000000", "gas": "22444",
                   "gasPrice": "20000000000",
                   "isError": "0", "input": "0x", "contractAddress": "",
                   "cumulativeGasUsed": "927001", "gasUsed": "22444",
                   "confirmations": "373300"},
-                 {"blockNumber": "2108601", "timeStamp": "1471722162",
+                 {"blockNumber": "2108601", "timeStamp": str(tx_time),
                   "hash": "0x20f326be6caca6df1073f97595d8aef9826cd41e06a597341dec31d1aa3cb366",
                   "nonce": "4",
                   "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
                   "transactionIndex": "23",
                   "from": "0x0048f63c40c39776d0a79457618e5504a45cb812",
-                  "to": "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae",
-                  "value": "31447186240000000000", "gas": "22444",
+                  "to": TEST_SYSTEM_ETH_ADDRESS,
+                  "value": "1600001000000000000", "gas": "22444",
                   "gasPrice": "20000000000",
                   "isError": "0", "input": "0x", "contractAddress": "",
                   "cumulativeGasUsed": "904557", "gasUsed": "22444",
                   "confirmations": "373300"}]}
+    httpretty.enable()
+    httpretty.register_uri(httpretty.GET, 'http://api.etherscan.io/api',
+                           body=json.dumps(response),
+                           content_type="application/json")
+
+
+@pytest.fixture()
+def mock_request_get_single_transaction_by_addresses_less_confirms():
+    tx_time = int(time.mktime((datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timetuple()))
+    response = {"status": "1", "message": "OK", "result":
+                [
+                 {"blockNumber": "2108601", "timeStamp": str(tx_time),
+                  "hash": "0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904",
+                  "nonce": "4",
+                  "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
+                  "transactionIndex": "24",
+                  "from": "0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
+                  "to": TEST_SYSTEM_ETH_ADDRESS,
+                  "value": "1591000000000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "927001", "gasUsed": "22444",
+                  "confirmations": str(config.TX_CONFIRMATIONS_COUNT - 1)},
+                 {"blockNumber": "2108601",  "timeStamp": str(tx_time),
+                  "hash": "0x20f326be6caca6df1073f97595d8aef9826cd41e06a597341dec31d1aa3cb366",
+                  "nonce": "4",
+                  "blockHash": "0x5be5b75b131e1440594c0279e105ad0031376f63c2c8f988ec288b8a29a5b971",
+                  "transactionIndex": "23",
+                  "from": "0x0048f63c40c39776d0a79457618e5504a45cb812",
+                  "to": TEST_SYSTEM_ETH_ADDRESS,
+                  "value": "31447186240000000000", "gas": "22444",
+                  "gasPrice": "20000000000",
+                  "isError": "0", "input": "0x", "contractAddress": "",
+                  "cumulativeGasUsed": "904557", "gasUsed": "22444",
+                  "confirmations": str(config.TX_CONFIRMATIONS_COUNT - 1)}]}
     httpretty.enable()
     httpretty.register_uri(httpretty.GET, 'http://api.etherscan.io/api',
                            body=json.dumps(response),
