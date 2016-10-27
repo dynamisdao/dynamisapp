@@ -13,6 +13,7 @@ from dynamis.apps.payments.models import SmartDeposit, WAIT_FOR_TX_STATUS_WAITIN
     WAIT_FOR_TX_STATUS_RECEIVED
 from dynamis.apps.policy.models import POLICY_STATUS_SUBMITTED
 from dynamis.core.models import EthTransaction
+from dynamis.utils.math import approximately_equal
 
 
 def test_get_smart_deposit_ok_status_received(user_webtest_client, api_client, factories, mock_request_exchange_rate,
@@ -64,7 +65,7 @@ def test_get_smart_deposit_ok_status_wait(user_webtest_client, api_client, facto
     assert response.status_code == status.HTTP_200_OK
     eth_tx = EthTransaction.objects.get()
     deposit = SmartDeposit.objects.get(eth_tx=eth_tx)
-    assert deposit.amount == 1.591
+    assert approximately_equal(deposit.amount, 1.591, config.TX_VALUE_DISPERSION)
     assert deposit.state == WAIT_FOR_TX_STATUS_RECEIVED
     assert deposit.eth_tx.hash == '0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904'
     assert response.data == SmartDepositShortSerializer(deposit).data
@@ -87,7 +88,7 @@ def test_get_smart_deposit_ok_status_wait_almost_equal_minus(user_webtest_client
     eth_tx = EthTransaction.objects.get()
     deposit = SmartDeposit.objects.get(eth_tx=eth_tx)
     assert deposit.state == WAIT_FOR_TX_STATUS_RECEIVED
-    assert deposit.amount == 1.591
+    assert approximately_equal(deposit.amount, 1.591, config.TX_VALUE_DISPERSION)
     assert deposit.eth_tx.hash == '0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904'
     assert response.data == SmartDepositShortSerializer(deposit).data
 
@@ -109,7 +110,7 @@ def test_get_smart_deposit_ok_status_wait_almost_equal_plus(user_webtest_client,
     eth_tx = EthTransaction.objects.get()
     deposit = SmartDeposit.objects.get(eth_tx=eth_tx)
     assert deposit.state == WAIT_FOR_TX_STATUS_RECEIVED
-    assert deposit.amount == 1.591
+    assert approximately_equal(deposit.amount, 1.591, config.TX_VALUE_DISPERSION)
     assert deposit.eth_tx.hash == '0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904'
     assert response.data == SmartDepositShortSerializer(deposit).data
 
