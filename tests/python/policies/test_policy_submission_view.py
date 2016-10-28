@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse
 
 from rest_framework import status
 
-from dynamis.apps.payments.models import SmartDeposit, SMART_DEPOSIT_STATUS_WAITING, SMART_DEPOSIT_STATUS_INIT
 from dynamis.apps.policy.models import PolicyApplication, POLICY_STATUS_SUBMITTED, EmploymentHistoryJob
 from dynamis.apps.policy.validation import validate_policy_application
 from dynamis.utils import testing

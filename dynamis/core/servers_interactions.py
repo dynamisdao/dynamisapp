@@ -1,10 +1,17 @@
 import json
 
+import datetime
+
+import pytz
 import requests
+from constance import config
 from web3 import Web3, RPCProvider
 
+from dynamis.core.models import EthTransaction
+from dynamis.core.utils import datetime_to_timestamp
 from dynamis.settings import RPC_PROVIDER_HOST, RPC_PROVIDER_PORT, ETHERSCAN_API_KEY, ETHERSCAN_MAX_RECORDS_TO_RETURN, \
     ETHERSCAN_MAX_PAGES
+from dynamis.utils.math import approximately_equal
 
 
 def get_connector_to_rpc_server(rpc_provider_host=None, rpc_provider_port=None):
@@ -42,7 +49,7 @@ class EtherscanAPIConnector(object):
         params_to_request.update(kwargs)
         return requests.get(self.url, params_to_request)
 
-    def _search_value_in_api_response_result(self, key, value, **request_kwargs):
+    def _search_value_in_api_response_result(self, wait_tx_model, key, value, **request_kwargs):
         request_kwargs.update({'page': 1})
         attempts = 0
         while attempts <= ETHERSCAN_MAX_PAGES:
@@ -58,17 +65,42 @@ class EtherscanAPIConnector(object):
             else:
                 for record in content['result']:
                     if record[key] == value:
-                        return record
+                        if self.check_eth_tx_record(record, wait_tx_model):
+                            eth_tx = EthTransaction.objects.create(hash=record['hash'],
+                                                                   confirmations=int(record['confirmations']),
+                                                                   from_address=wait_tx_model.from_address,
+                                                                   to_address=config.SYSTEM_ETH_ADDRESS,
+                                                                   value=record['value'],
+                                                                   datetime=datetime.datetime.utcfromtimestamp(
+                                                                       int(record['timeStamp'])).replace(
+                                                                       tzinfo=pytz.utc))
+                            return eth_tx
+                        else:
+                            return
 
-    def get_single_transaction_by_addresses(self, address_from, address_to):
+    def check_eth_tx_record(self, record, wait_tx_model):
+        wait_from = datetime_to_timestamp(wait_tx_model.created_at)
+        wait_to = datetime_to_timestamp(wait_tx_model.wait_for)
+
+        if not wait_from < int(record['timeStamp']) < wait_to:
+            return False
+        elif EthTransaction.objects.filter(hash=record['hash']).exists():
+            return False
+        elif not int(record['confirmations']) >= config.TX_CONFIRMATIONS_COUNT:
+            return False
+        elif not approximately_equal(int(record['value']) * 0.000000000000000001, wait_tx_model.cost,
+                                     config.TX_VALUE_DISPERSION):
+            return False
+
+        return True
+
+    def get_single_transaction_by_addresses(self, wait_tx_model):
         request_kwargs = {
             'module': 'account',
             'action': 'txlist',
-            'address': address_to,
+            'address': config.SYSTEM_ETH_ADDRESS,
         }
 
-        result = self._search_value_in_api_response_result('from', address_from, **request_kwargs)
-        if result:
-            return result['hash'], result['value'], result['timeStamp'], result['confirmations']
-        else:
-            return None, None, None, None
+        eth_tx = self._search_value_in_api_response_result(wait_tx_model, 'from', wait_tx_model.from_address,
+                                                           **request_kwargs)
+        return eth_tx

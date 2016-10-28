@@ -15,8 +15,8 @@ from rest_framework.reverse import reverse
 
 from dynamis.apps.accounts.forms import SmartDepositStubForm
 from dynamis.apps.accounts.tables import SmartDepositTable
-from dynamis.apps.payments.business_logic import check_transfers_change_smart_deposit_states
-from dynamis.apps.payments.models import SmartDeposit, SMART_DEPOSIT_STATUS_INIT, SMART_DEPOSIT_STATUS_WAITING
+from dynamis.apps.payments.business_logic import check_transfers_change_model_states
+from dynamis.apps.payments.models import SmartDeposit, WAIT_FOR_TX_STATUS_INIT, WAIT_FOR_TX_STATUS_WAITING
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, PolicyApplication
 from dynamis.utils.math import approximately_equal
 
@@ -53,7 +53,7 @@ class SmartDepositView(LoginRequired, SingleTableMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
-        check_transfers_change_smart_deposit_states(instance)
+        check_transfers_change_model_states(instance)
         return super(SmartDepositView, self).get(request, args, kwargs)
 
     def get_queryset(self):
@@ -70,13 +70,13 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         instance = get_object_or_404(SmartDeposit, pk=int(kwargs['pk']))
-        if instance.state == SMART_DEPOSIT_STATUS_INIT:
+        if instance.state == WAIT_FOR_TX_STATUS_INIT:
             instance.init_to_wait()
             instance.save()
         if not instance.exchange_rate_at_invoice_time:
             instance.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
             instance.save()
-        if instance.state == SMART_DEPOSIT_STATUS_WAITING and instance.wait_for and instance.wait_for < timezone.now():
+        if instance.state == WAIT_FOR_TX_STATUS_WAITING and instance.wait_for and instance.wait_for < timezone.now():
             instance.wait_to_init()
             instance.init_to_wait()
             instance.cost = instance.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
@@ -98,7 +98,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
         else:
             to_return = self.form_invalid(form)
         if instance.amount and approximately_equal(instance.amount, instance.cost, config.TX_VALUE_DISPERSION):
-            if instance.state == SMART_DEPOSIT_STATUS_INIT:
+            if instance.state == WAIT_FOR_TX_STATUS_INIT:
                 instance.init_to_wait()
                 instance.save()
             instance.wait_to_received()

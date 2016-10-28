@@ -2,7 +2,7 @@ import json
 
 from constance import config
 
-from dynamis.apps.payments.models import SMART_DEPOSIT_STATUS_RECEIVED
+from dynamis.apps.payments.models import WAIT_FOR_TX_STATUS_RECEIVED
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
     POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
     POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, RiskAssessmentTask, \
@@ -148,7 +148,7 @@ def test_submit_to_p2p_review(factories, policy_data, job_data):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=SMART_DEPOSIT_STATUS_RECEIVED,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_RECEIVED,
                                             cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE), amount=20)
 
     policy.submit_to_p2p_review()
