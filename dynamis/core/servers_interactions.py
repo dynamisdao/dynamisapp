@@ -10,7 +10,7 @@ from web3 import Web3, RPCProvider
 from dynamis.core.models import EthTransaction
 from dynamis.core.utils import datetime_to_timestamp
 from dynamis.settings import RPC_PROVIDER_HOST, RPC_PROVIDER_PORT, ETHERSCAN_API_KEY, ETHERSCAN_MAX_RECORDS_TO_RETURN, \
-    ETHERSCAN_MAX_PAGES
+    ETHERSCAN_MAX_PAGES, DEBUG
 from dynamis.utils.math import approximately_equal
 
 
@@ -31,7 +31,10 @@ def get_connector_to_rpc_server(rpc_provider_host=None, rpc_provider_port=None):
 class EtherscanAPIConnector(object):
     def __init__(self):
         self.api_key = ETHERSCAN_API_KEY
-        self.url = 'http://api.etherscan.io/api'
+        if DEBUG:
+            self.url = 'http://testnet.etherscan.io/api'
+        else:
+            self.url = 'http://api.etherscan.io/api'
         self.max_records_to_return = ETHERSCAN_MAX_RECORDS_TO_RETURN
 
     def make_get_request(self, *args, **kwargs):
