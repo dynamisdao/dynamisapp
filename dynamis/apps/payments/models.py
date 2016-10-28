@@ -61,6 +61,11 @@ class SmartDeposit(TimestampModel):
     state = FSMIntegerField(default=WAIT_FOR_TX_STATUS_INIT, protected=True, choices=WAIT_FOR_TX_STATUS)
     eth_tx = models.OneToOneField(EthTransaction, related_name='smart_deposit', null=True)
 
+    @property
+    def cost_wei(self):
+        if self.cost:
+            return int(self.cost * 1000000000000000000)
+
     def save(self, *args, **kwargs):
         raw_cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
         self.cost = round(raw_cost, 3)

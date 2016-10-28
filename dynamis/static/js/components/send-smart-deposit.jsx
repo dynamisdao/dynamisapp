@@ -26,7 +26,7 @@ export default connectRedux(React.createClass({
             <label htmlFor="eth_to_address">To Address</label>
             <input readOnly="True" type="text" id="eth_to_address" value={document.getElementById('address_to_send_eth').textContent} />
             <label htmlFor="eth_to_address">Amount</label>
-            <input readOnly="True" type="text" id="amount" value={parseFloat(document.getElementsByClassName('cost')[1].textContent)} />
+            <input readOnly="True" type="text" id="amount" value={parseFloat(document.getElementsByClassName('cost_wei')[1].textContent)} />
             <button className="btn" onClick={this.makeTransaction}>Pay Smart deposit</button>
           </div>
         </div>
