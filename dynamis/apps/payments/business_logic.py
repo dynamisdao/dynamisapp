@@ -2,6 +2,8 @@ import json
 
 import requests
 import time
+
+from django.db.transaction import atomic
 from django.utils import timezone
 from constance import config
 from requests import ConnectionError
@@ -30,6 +32,7 @@ def refresh_usd_eth_exchange_rate():
     config.DOLLAR_ETH_EXCHANGE_RATE = round(float(response_json[0]['price_usd']), 3)
 
 
+@atomic
 def check_transfers_change_model_states(wait_tx_model):
     if wait_tx_model.state == wait_tx_model.WAIT_FOR_TX_STATUS_WAITING:
         eth_tx = None

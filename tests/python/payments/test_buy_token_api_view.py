@@ -11,10 +11,10 @@ from dynamis.core.models import EthTransaction
 from dynamis.utils.math import approximately_equal
 
 
-def test_get_immature_tokens_info_ok_status_received(user_webtest_client, api_client, factories,
-                                                     mock_request_exchange_rate,
-                                                     mock_request_get_single_transaction_by_addresses,
-                                                     mock_call_system_eth_address):
+def test_get_immature_tokens_info_not_assessor(user_webtest_client, api_client, factories,
+                                               mock_request_exchange_rate,
+                                               mock_request_get_single_transaction_by_addresses,
+                                               mock_call_system_eth_address):
     eth_tx = factories.EthTxFactory()
     token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account, eth_tx=eth_tx,
@@ -22,6 +22,24 @@ def test_get_immature_tokens_info_ok_status_received(user_webtest_client, api_cl
                                                              wait_for=timezone.now() - timezone.timedelta(days=15),
                                                              from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86")
     url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    response = api_client.get(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.data == {'detail': 'Access not allowed.'}
+
+
+def test_get_immature_tokens_info_ok_status_received(user_webtest_client, api_client, factories,
+                                                     mock_request_exchange_rate,
+                                                     mock_request_get_single_transaction_by_addresses,
+                                                     mock_call_system_eth_address):
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    eth_tx = factories.EthTxFactory()
+    token_account = factories.TokenAccountFactory(user=user_assessor)
+    buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account, eth_tx=eth_tx,
+                                                             state=WAIT_FOR_TX_STATUS_RECEIVED,
+                                                             wait_for=timezone.now() - timezone.timedelta(days=15),
+                                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86")
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     eth_tx = EthTransaction.objects.get()
@@ -35,12 +53,14 @@ def test_get_immature_tokens_ok_status_init(user_webtest_client, api_client, fac
                                             mock_request_exchange_rate,
                                             mock_request_get_single_transaction_by_addresses,
                                             mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_INIT,
                                                              wait_for=timezone.now() - timezone.timedelta(days=15),
                                                              from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     buy_token_operation = BuyTokenOperation.objects.get()
@@ -53,13 +73,15 @@ def test_get_immature_tokens_ok_status_wait_almost_equal_plus(user_webtest_clien
                                                               mock_request_exchange_rate,
                                                               mock_request_get_single_transaction_by_addresses,
                                                               mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
                                                              wait_for=timezone.now() + timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39776d0a79457618e5504a45cb812")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     eth_tx = EthTransaction.objects.get()
@@ -74,13 +96,15 @@ def test_get_immature_tokens_ok_status_wait_almost_equal_plus(user_webtest_clien
 def test_get_immature_tokens_wait_expired(user_webtest_client, api_client, factories, mock_request_exchange_rate,
                                           mock_request_get_single_transaction_by_addresses,
                                           mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
                                                              wait_for=timezone.now() - timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39776d0a79457618e5504a45cb812")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
@@ -93,14 +117,16 @@ def test_get_immature_tokens_wait_expired(user_webtest_client, api_client, facto
 def test_get_immature_tokens_tx_exists(user_webtest_client, api_client, factories, mock_request_exchange_rate,
                                        mock_request_get_single_transaction_by_addresses,
                                        mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     eth_tx = factories.EthTxFactory(hash='0x20f326be6caca6df1073f97595d8aef9826cd41e06a597341dec31d1aa3cb366')
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
                                                              wait_for=timezone.now() + timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39776d0a79457618e5504a45cb812")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
@@ -113,13 +139,15 @@ def test_get_immature_tokens_tx_exists(user_webtest_client, api_client, factorie
 def test_get_immature_tokens_less_amount(user_webtest_client, api_client, factories, mock_request_exchange_rate,
                                          mock_request_get_single_transaction_by_addresses,
                                          mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=20,
                                                              wait_for=timezone.now() + timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39776d0a79457618e5504a45cb812")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
@@ -132,13 +160,15 @@ def test_get_immature_tokens_less_amount(user_webtest_client, api_client, factor
 def test_get_immature_tokens_less_confirms(user_webtest_client, api_client, factories, mock_request_exchange_rate,
                                            mock_request_get_single_transaction_by_addresses_less_confirms,
                                            mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
                                                              wait_for=timezone.now() + timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39776d0a79457618e5504a45cb812")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
@@ -151,13 +181,15 @@ def test_get_immature_tokens_less_confirms(user_webtest_client, api_client, fact
 def test_get_immature_tokens_fake_from_address(user_webtest_client, api_client, factories, mock_request_exchange_rate,
                                                mock_request_get_single_transaction_by_addresses,
                                                mock_call_system_eth_address):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
                                                              wait_for=timezone.now() + timezone.timedelta(minutes=5),
                                                              from_address="0x0048f63c40c39777d0a79457618e5504a45cb813")
-    url = reverse('v1:immature-tokens-info', args=[user_webtest_client.user.pk])
+    url = reverse('v1:immature-tokens-info', args=[user_assessor.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
@@ -168,13 +200,14 @@ def test_get_immature_tokens_fake_from_address(user_webtest_client, api_client, 
 
 
 def test_buy_immature_tokens_ok(user_webtest_client, api_client, factories):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     data_to_send = {
         'count': 22,
         'from_address': 'some_address'
     }
-
-    url = reverse('v1:buy-immature-tokens', args=[user_webtest_client.user.pk])
+    url = reverse('v1:buy-immature-tokens', args=[user_assessor.pk])
     response = api_client.post(url, data_to_send)
     assert response.status_code == status.HTTP_200_OK
     buy_token_operation = BuyTokenOperation.objects.get()
@@ -185,7 +218,9 @@ def test_buy_immature_tokens_ok(user_webtest_client, api_client, factories):
 
 
 def test_buy_immature_tokens_already_wait(user_webtest_client, api_client, factories):
-    token_account = factories.TokenAccountFactory(user=user_webtest_client.user)
+    user_assessor = factories.UserFactory(is_risk_assessor=True)
+    api_client.force_authenticate(user_assessor)
+    token_account = factories.TokenAccountFactory(user=user_assessor)
     buy_token_operation = factories.BuyTokenOperationFactory(token_account=token_account,
                                                              state=WAIT_FOR_TX_STATUS_WAITING,
                                                              count=16,
@@ -196,7 +231,7 @@ def test_buy_immature_tokens_already_wait(user_webtest_client, api_client, facto
         'from_address': 'some_address'
     }
 
-    url = reverse('v1:buy-immature-tokens', args=[user_webtest_client.user.pk])
+    url = reverse('v1:buy-immature-tokens', args=[user_assessor.pk])
     response = api_client.post(url, data_to_send)
     assert response.data == {'non_field_errors': 'you try to buy token second time, we still wait for previous payment'}
     assert response.status_code == status.HTTP_400_BAD_REQUEST

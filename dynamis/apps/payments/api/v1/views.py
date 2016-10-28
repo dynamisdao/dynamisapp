@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import status
@@ -9,7 +10,8 @@ from dynamis.apps.payments.api.v1.serializers import SmartDepositShortSerializer
 from dynamis.apps.payments.business_logic import check_transfers_change_model_states
 from dynamis.apps.payments.models import SmartDeposit, WAIT_FOR_TX_STATUS_RECEIVED, \
     WAIT_FOR_TX_STATUS_WAITING, TokenAccount, BuyTokenOperation
-from dynamis.core.permissions import IsAdminOrPolicyOwnerPermission, IsAdminOrObjectOwnerPermission
+from dynamis.core.permissions import IsAdminOrPolicyOwnerPermission, IsAdminOrObjectOwnerPermission, \
+    IsRiskAssessorPermission
 
 
 class SmartDepositViewSet(mixins.RetrieveModelMixin,
@@ -54,7 +56,7 @@ class SmartDepositSendView(viewsets.GenericViewSet):
 class TokenAccountViewSet(mixins.RetrieveModelMixin,
                           viewsets.GenericViewSet):
     serializer_class = TokenAccountShortSerializer
-    permission_classes = (permissions.IsAuthenticated, IsAdminOrObjectOwnerPermission)
+    permission_classes = (permissions.IsAuthenticated, IsRiskAssessorPermission, IsAdminOrObjectOwnerPermission)
     queryset = TokenAccount.objects.filter(disabled=False)
     lookup_field = 'user'
 
@@ -71,9 +73,10 @@ class TokenAccountViewSet(mixins.RetrieveModelMixin,
 class BuyTokenView(viewsets.GenericViewSet,
                    mixins.CreateModelMixin):
     serializer_class = BuyTokenInSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsRiskAssessorPermission)
     queryset = BuyTokenOperation.objects.all()
 
+    @atomic
     def perform_create(self, serializer):
         buy_operation = serializer.save()
         buy_operation.init_to_wait()

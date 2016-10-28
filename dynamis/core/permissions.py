@@ -17,3 +17,11 @@ class IsAdminOrPolicyOwnerPermission(permissions.BasePermission):
             return False
         if request.user.is_admin or obj.policy.user == request.user:
             return True
+
+
+class IsRiskAssessorPermission(permissions.BasePermission):
+    message = 'Access not allowed.'
+
+    def has_object_permission(self, request, view, obj):
+        if request.user.is_authenticated() and request.user.is_risk_assessor:
+            return True
