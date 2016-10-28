@@ -137,6 +137,11 @@ class BuyTokenOperation(TimestampModel):
     wait_for = models.DateTimeField(null=True)
     state = FSMIntegerField(default=WAIT_FOR_TX_STATUS_INIT, protected=True, choices=WAIT_FOR_TX_STATUS)
 
+    @property
+    def cost_wei(self):
+        if self.cost:
+            return int(self.cost * 1000000000000000000)
+
     def save(self, *args, **kwargs):
         if self.state != WAIT_FOR_TX_STATUS_RECEIVED:
             self.cost = config.EHT_TOKEN_EXCHANGE_RATE * self.count
