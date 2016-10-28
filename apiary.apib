@@ -285,6 +285,7 @@ Please see this [Wiki for more information on tokens](https://github.com/dynamis
             
 ### Send ETH to buy Immature Tokens [POST /api/v1/accounts/{accountid}/immature_tokens/buy]
 
+**IMPORTANT** - you have to call this request before send real transaction
 When user clicks on 'Send transaction' or 'Buy' button.
 Please see this [Wiki for more information on tokens](https://github.com/dynamisdao/dynamisapp/wiki/RiskAssessment-tokens-(DYNA))
 
@@ -752,6 +753,7 @@ When policy is at least in **POLICY_STATUS_SUBMITTED**, this method will return 
 
 ### Send SmartDeposit [POST /api/v1/policies/{policyid}/smart_deposit/send]
 
+**IMPORTANT** - you have to call this request before send real transaction
 When user clicks on 'Send transaction' button -> we need to move smart deposit into 'waiting' state and wait for transaction confirmation.
 
 + Request 
@@ -1096,7 +1098,7 @@ Get list of items that need to be reviewed (by you).
                         }
                     }
                 ]
-            }
+f            }
 
 ## DEPRECATED: Peer Review History [/api/v1/application/peer-review-history]
 
