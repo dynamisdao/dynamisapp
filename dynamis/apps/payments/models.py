@@ -81,7 +81,7 @@ class SmartDeposit(TimestampModel):
     @transition(field=state, source=WAIT_FOR_TX_STATUS_WAITING, target=WAIT_FOR_TX_STATUS_INIT)
     def wait_to_init(self):
         refresh_usd_eth_exchange_rate()
-        self.cost_dollar = self.cost * config.DOLLAR_ETH_EXCHANGE_RATE
+        self.cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
         self.save()
 
     @transition(field=state, source=WAIT_FOR_TX_STATUS_WAITING, target=WAIT_FOR_TX_STATUS_RECEIVED,
