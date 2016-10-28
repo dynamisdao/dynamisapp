@@ -23,10 +23,10 @@ class SmartDepositShortSerializer(serializers.ModelSerializer):
 
 
 class SmartDepositSendSerializer(serializers.Serializer):
-    amount_in_eth = serializers.FloatField()
+    amount_in_wei = serializers.FloatField()
     from_address = serializers.CharField(max_length=1023)
 
-    def validate_amount_in_eth(self, value):
+    def validate_amount_in_wei(self, value):
         if self.instance.cost and approximately_equal(self.instance.cost_wei, value, config.TX_VALUE_DISPERSION):
             return value
         else:
