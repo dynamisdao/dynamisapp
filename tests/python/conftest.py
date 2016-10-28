@@ -403,6 +403,9 @@ def mock_request_get_single_transaction_by_addresses():
     httpretty.register_uri(httpretty.GET, 'http://api.etherscan.io/api',
                            body=json.dumps(response),
                            content_type="application/json")
+    httpretty.register_uri(httpretty.GET, 'http://testnet.etherscan.io/api',
+                           body=json.dumps(response),
+                           content_type="application/json")
 
 
 @pytest.fixture()
@@ -436,6 +439,9 @@ def mock_request_get_single_transaction_by_addresses_less_confirms():
                   "confirmations": str(config.TX_CONFIRMATIONS_COUNT - 1)}]}
     httpretty.enable()
     httpretty.register_uri(httpretty.GET, 'http://api.etherscan.io/api',
+                           body=json.dumps(response),
+                           content_type="application/json")
+    httpretty.register_uri(httpretty.GET, 'http://testnet.etherscan.io/api',
                            body=json.dumps(response),
                            content_type="application/json")
 
