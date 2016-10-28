@@ -60,7 +60,7 @@ export default connectRedux(React.createClass({
 
     this.setState({ toAddress: '', amount: '' });
     this.props.dispatch(actions.makeTransaction(document.getElementById('address_to_send_eth').textContent,
-        document.getElementsByClassName('cost_wei')[1].textContent, this.state.password));
+        parseInt(document.getElementsByClassName('cost_wei')[1].textContent), this.state.password));
   },
   renderAddress(wallet) {
     if(wallet.address) {

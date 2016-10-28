@@ -86,13 +86,18 @@ class EtherscanAPIConnector(object):
         wait_to = datetime_to_timestamp(wait_tx_model.wait_for)
 
         if not wait_from < int(record['timeStamp']) < wait_to:
+            print '1'
             return False
         elif EthTransaction.objects.filter(hash=record['hash']).exists():
+            print '2-'
             return False
         elif not int(record['confirmations']) >= config.TX_CONFIRMATIONS_COUNT:
+            print record['confirmations']
             return False
-        elif not approximately_equal(int(record['value']) * 0.000000000000000001, wait_tx_model.cost,
+        elif not approximately_equal(int(record['value']), wait_tx_model.cost_wei,
                                      config.TX_VALUE_DISPERSION):
+            print int(record['value']),   wait_tx_model.cost_wei
+            print '4'
             return False
 
         return True
