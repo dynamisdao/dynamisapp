@@ -81,6 +81,7 @@ class SmartDepositStubView(LoginRequired, SingleTableMixin, ListView):
             instance.init_to_wait()
             instance.cost = instance.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
             instance.save()
+        check_transfers_change_model_states(instance)
         return super(SmartDepositStubView, self).get(request, args, kwargs)
 
     def get_queryset(self):
