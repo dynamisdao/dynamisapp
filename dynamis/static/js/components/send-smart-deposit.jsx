@@ -48,7 +48,7 @@ export default connectRedux(React.createClass({
   makeTransaction() {
       var xhr = new XMLHttpRequest();
       var json = JSON.stringify({
-          amount_in_eth: parseFloat(document.getElementsByClassName('cost')[1].textContent),
+          amount_in_eth: parseFloat(document.getElementsByClassName('cost_wei')[1].textContent),
           from_address: document.getElementsByClassName('eth-address-hex')[0].textContent,
       });
       var policy_id = parseInt(document.URL.split('/')[4]);
