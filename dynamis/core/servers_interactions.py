@@ -93,7 +93,6 @@ class EtherscanAPIConnector(object):
             return False
         elif not approximately_equal(int(record['value']), wait_tx_model.cost_wei,
                                      config.TX_VALUE_DISPERSION):
-            print int(record['value']),   wait_tx_model.cost_wei
             return False
 
         return True
