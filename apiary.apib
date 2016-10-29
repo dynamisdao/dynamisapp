@@ -698,8 +698,11 @@ When policy is at least in **POLICY_STATUS_SUBMITTED**, this method will return 
             {
                 "amount_in_dollars": 50,
                 
-                // in ETH (converted on the flight)
-                "amount_in_eth": 1.2,
+                // converted on the fly
+                "cost_in_eth": 1.2
+                "cost_in_dollars": 50,
+                // see this - http://ether.fund/tool/converter
+                "cost_in_wei": 1200000000000000000,
                 
                 // where SmartDeposit should be sent to
                 "address_to_send": "0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8",
@@ -718,7 +721,8 @@ When user clicks on 'Send transaction' button -> we need to move smart deposit i
     + Body
     
             {
-                "amount_in_eth": 1.2,
+                // 1.2 ETH 
+                "amount_in_wei": 1200000000000000000,
                 
                 "from_address": "0x123"
             }
