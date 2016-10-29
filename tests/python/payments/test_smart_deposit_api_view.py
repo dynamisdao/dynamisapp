@@ -233,7 +233,7 @@ def test_send_smart_deposit_ok(user_webtest_client, api_client, factories):
     deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             cost_dollar=(2 * config.DOLLAR_ETH_EXCHANGE_RATE))
     data_to_send = {
-        'amount_in_eth': 2,
+        'amount_in_wei': 2000000000000000000,
         'from_address': 'some_address'
     }
 
@@ -251,7 +251,7 @@ def test_send_smart_deposit_status_wait(user_webtest_client, api_client, factori
     deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             cost_dollar=(2 * config.DOLLAR_ETH_EXCHANGE_RATE))
     data_to_send = {
-        'amount_in_eth': 2,
+        'amount_in_wei': 2000000000000000000,
         'from_address': 'some_address'
     }
 
@@ -274,7 +274,7 @@ def test_send_smart_deposit_status_received(user_webtest_client, api_client, fac
     deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_RECEIVED,
                                             cost_dollar=(2 * config.DOLLAR_ETH_EXCHANGE_RATE))
     data_to_send = {
-        'amount_in_eth': 2,
+        'amount_in_wei': 2000000000000000000,
         'from_address': 'some_address'
     }
 
@@ -292,14 +292,14 @@ def test_send_smart_deposit_less_amount(user_webtest_client, api_client, factori
     deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             cost_dollar=(2 * config.DOLLAR_ETH_EXCHANGE_RATE))
     data_to_send = {
-        'amount_in_eth': 1.5,
+        'amount_in_wei': 1500000000000000000,
         'from_address': 'some_address'
     }
 
     url = reverse('v1:send-smart-deposit', args=[policy.pk])
     response = api_client.post(url, data_to_send)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data['amount_in_eth'] == ['smart deposit cost is not equal with received amount']
+    assert response.data['amount_in_wei'] == ['smart deposit cost is not equal with received amount']
     deposit = SmartDeposit.objects.get()
     assert deposit.eth_tx is None
     assert deposit.from_address is None

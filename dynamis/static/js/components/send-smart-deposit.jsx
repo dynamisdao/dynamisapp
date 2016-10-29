@@ -26,7 +26,7 @@ export default connectRedux(React.createClass({
             <label htmlFor="eth_to_address">To Address</label>
             <input readOnly="True" type="text" id="eth_to_address" value={document.getElementById('address_to_send_eth').textContent} />
             <label htmlFor="eth_to_address">Amount</label>
-            <input readOnly="True" type="text" id="amount" value={parseFloat(document.getElementsByClassName('cost')[1].textContent)} />
+            <input readOnly="True" type="text" id="amount" value={parseInt(document.getElementsByClassName('cost_wei')[1].textContent)} />
             <button className="btn" onClick={this.makeTransaction}>Pay Smart deposit</button>
           </div>
         </div>
@@ -48,7 +48,7 @@ export default connectRedux(React.createClass({
   makeTransaction() {
       var xhr = new XMLHttpRequest();
       var json = JSON.stringify({
-          amount_in_eth: parseFloat(document.getElementsByClassName('cost')[1].textContent),
+          amount_in_wei: parseInt(document.getElementsByClassName('cost_wei')[1].textContent),
           from_address: document.getElementsByClassName('eth-address-hex')[0].textContent,
       });
       var policy_id = parseInt(document.URL.split('/')[4]);
@@ -59,7 +59,8 @@ export default connectRedux(React.createClass({
       xhr.send(json);
 
     this.setState({ toAddress: '', amount: '' });
-    this.props.dispatch(actions.makeTransaction(this.state.toAddress, parseInt(this.state.amount), this.state.password));
+    this.props.dispatch(actions.makeTransaction(document.getElementById('address_to_send_eth').textContent,
+        parseInt(document.getElementsByClassName('cost_wei')[1].textContent), this.state.password));
   },
   renderAddress(wallet) {
     if(wallet.address) {

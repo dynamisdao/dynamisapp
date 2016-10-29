@@ -91,7 +91,7 @@ class EtherscanAPIConnector(object):
             return False
         elif not int(record['confirmations']) >= config.TX_CONFIRMATIONS_COUNT:
             return False
-        elif not approximately_equal(int(record['value']) * 0.000000000000000001, wait_tx_model.cost,
+        elif not approximately_equal(int(record['value']), wait_tx_model.cost_wei,
                                      config.TX_VALUE_DISPERSION):
             return False
 

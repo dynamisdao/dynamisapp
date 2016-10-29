@@ -7,6 +7,7 @@ from dynamis.utils.tables import MaterializedTable
 
 
 class SmartDepositTable(MaterializedTable):
+    cost_wei = tables.Column('cost_wei')
     cost = tables.Column(verbose_name='amount, ETH')
     cost_dollar = tables.Column(verbose_name='amount, USD')
     amount = tables.Column(verbose_name='amount received')
@@ -19,6 +20,7 @@ class SmartDepositTable(MaterializedTable):
             'policy_id',
             'amount',
             'cost',
+            'cost_wei',
             'cost_dollar',
             'state',
             'policy_state',
