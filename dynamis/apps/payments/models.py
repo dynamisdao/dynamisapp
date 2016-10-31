@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from __future__ import division
 
 import datetime
 from constance import config
@@ -66,9 +67,14 @@ class SmartDeposit(TimestampModel):
         if self.cost:
             return int(self.cost * 1000000000000000000)
 
+    def set_cost(self):
+        refresh_usd_eth_exchange_rate()
+        self.cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
+        self.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
+
     def save(self, *args, **kwargs):
-        raw_cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
-        self.cost = round(raw_cost, 3)
+        if self.state == WAIT_FOR_TX_STATUS_INIT:
+            self.set_cost()
         super(SmartDeposit, self).save(*args, **kwargs)
 
     def check_smart_deposit_amount(self):
@@ -77,16 +83,13 @@ class SmartDeposit(TimestampModel):
 
     @transition(field=state, source=WAIT_FOR_TX_STATUS_INIT, target=WAIT_FOR_TX_STATUS_WAITING)
     def init_to_wait(self):
-        refresh_usd_eth_exchange_rate()
         self.wait_for = timezone.now() + datetime.timedelta(
             minutes=config.WAIT_FOR_RECEIVE_SMART_DEPOSIT_MINUTES)
-        self.exchange_rate_at_invoice_time = config.DOLLAR_ETH_EXCHANGE_RATE
         self.save()
 
     @transition(field=state, source=WAIT_FOR_TX_STATUS_WAITING, target=WAIT_FOR_TX_STATUS_INIT)
     def wait_to_init(self):
-        refresh_usd_eth_exchange_rate()
-        self.cost = self.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE
+        self.set_cost()
         self.save()
 
     @transition(field=state, source=WAIT_FOR_TX_STATUS_WAITING, target=WAIT_FOR_TX_STATUS_RECEIVED,

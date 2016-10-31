@@ -45,6 +45,8 @@ def test_get_smart_deposit_ok_status_init(user_webtest_client, api_client, facto
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
     deposit = SmartDeposit.objects.get()
+    deposit.set_cost()
+    deposit.save()
     assert deposit.amount == 0
     assert deposit.eth_tx is None
     assert response.data == SmartDepositShortSerializer(deposit).data
@@ -56,10 +58,12 @@ def test_get_smart_deposit_ok_status_wait(user_webtest_client, api_client, facto
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user, state=POLICY_STATUS_SUBMITTED,
                                                 data=json.dumps({'policy_data': policy_data}))
     wait_for = datetime.datetime.now() + datetime.timedelta(minutes=5)
-    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             wait_for=wait_for,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             cost_dollar=(1.591 * config.DOLLAR_ETH_EXCHANGE_RATE))
+    deposit.init_to_wait()
+    deposit.save()
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -78,10 +82,12 @@ def test_get_smart_deposit_ok_status_wait_almost_equal_minus(user_webtest_client
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user, state=POLICY_STATUS_SUBMITTED,
                                                 data=json.dumps({'policy_data': policy_data}))
     wait_for = datetime.datetime.now() + datetime.timedelta(minutes=5)
-    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             wait_for=wait_for,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             cost_dollar=(1.591 * config.DOLLAR_ETH_EXCHANGE_RATE - 0.0001))
+    deposit.init_to_wait()
+    deposit.save()
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -100,10 +106,13 @@ def test_get_smart_deposit_ok_status_wait_almost_equal_plus(user_webtest_client,
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user, state=POLICY_STATUS_SUBMITTED,
                                                 data=json.dumps({'policy_data': policy_data}))
     wait_for = datetime.datetime.now() + datetime.timedelta(minutes=5)
-    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             wait_for=wait_for,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             cost_dollar=(1.591 * config.DOLLAR_ETH_EXCHANGE_RATE + 0.0001))
+    deposit.init_to_wait()
+    deposit.cost_dollar = (1.591 * config.DOLLAR_ETH_EXCHANGE_RATE + 0.0001)
+    deposit.save()
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -123,11 +132,6 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             wait_for=timezone.datetime.now() - timezone.timedelta(minutes=5),
                                             cost_dollar=(1.591 * config.DOLLAR_ETH_EXCHANGE_RATE))
-    deposit = SmartDeposit.objects.get()
-    assert deposit.state == 1
-    assert deposit.cost == round(deposit.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE, 3)
-
-    config.DOLLAR_ETH_EXCHANGE_RATE = 12.686
 
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
@@ -137,7 +141,7 @@ def test_get_smart_deposit_wait_expired(user_webtest_client, api_client, factori
     assert deposit.amount == 0
     assert deposit.eth_tx is None
     assert deposit.state == WAIT_FOR_TX_STATUS_INIT
-    assert deposit.cost == round(deposit.cost_dollar / 12.686, 3)
+    assert approximately_equal(deposit.cost, deposit.cost_dollar / 12.686, config.TX_VALUE_DISPERSION)
 
 
 def test_get_smart_deposit_wait_expired_from_address(user_webtest_client, api_client, factories,
@@ -167,10 +171,12 @@ def test_get_smart_deposit_less_amount(user_webtest_client, api_client, factorie
                                         mock_request_get_single_transaction_by_addresses,
                                         mock_call_system_eth_address):
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             wait_for=timezone.datetime.now() + timezone.timedelta(minutes=5),
                                             cost_dollar=(2.591 * config.DOLLAR_ETH_EXCHANGE_RATE))
+    deposit.init_to_wait()
+    deposit.save()
     deposit = SmartDeposit.objects.get()
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)
@@ -186,15 +192,14 @@ def test_get_smart_deposit_less_confirms(user_webtest_client, api_client, factor
                                          mock_request_get_single_transaction_by_addresses_less_confirms,
                                         mock_call_system_eth_address):
     policy = factories.PolicyApplicationFactory(user=user_webtest_client.user)
-    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             wait_for=timezone.datetime.now() + timezone.timedelta(minutes=5),
                                             cost_dollar=(1.591 * config.DOLLAR_ETH_EXCHANGE_RATE))
+    deposit.init_to_wait()
+    deposit.save()
     deposit = SmartDeposit.objects.get()
     assert deposit.state == 1
-    assert deposit.cost == round(deposit.cost_dollar / config.DOLLAR_ETH_EXCHANGE_RATE, 3)
-
-    config.DOLLAR_ETH_EXCHANGE_RATE = 12.686
 
     url = reverse('v1:smart_deposit-detail', args=[policy.pk])
     response = api_client.get(url)

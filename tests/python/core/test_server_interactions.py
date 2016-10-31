@@ -5,7 +5,7 @@ from web3 import Web3
 
 from django.utils import timezone
 
-from dynamis.apps.payments.models import WAIT_FOR_TX_STATUS_WAITING
+from dynamis.apps.payments.models import WAIT_FOR_TX_STATUS_WAITING, WAIT_FOR_TX_STATUS_INIT
 from dynamis.core.servers_interactions import get_connector_to_rpc_server, EtherscanAPIConnector
 from dynamis.settings import RPC_PROVIDER_HOST, TEST_SYSTEM_ETH_ADDRESS
 from dynamis.settings import RPC_PROVIDER_PORT
@@ -33,9 +33,10 @@ def test_get_single_transaction_by_addresses(mock_request_get_single_transaction
     address_to = TEST_SYSTEM_ETH_ADDRESS
     etherscan = EtherscanAPIConnector()
     wait_for = timezone.now() + datetime.timedelta(minutes=5)
-    deposit = factories.SmartDepositFactory(state=WAIT_FOR_TX_STATUS_WAITING,
+    deposit = factories.SmartDepositFactory(state=WAIT_FOR_TX_STATUS_INIT,
                                             from_address="0x00a6e578bb89ed5aeb9afc699f5ac109681f8c86",
                                             wait_for=wait_for)
+    deposit.init_to_wait()
     eth_tx = etherscan.get_single_transaction_by_addresses(deposit)
     assert eth_tx.hash == '0x4881e4cd603725595998500085683c0bec29a333c537f96d73fed52967777904'
     assert eth_tx.value == '1591000000000000000'
