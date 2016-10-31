@@ -5,6 +5,7 @@ import pytest
 from constance import config
 from django_fsm import TransitionNotAllowed
 
+from dynamis.apps.payments.models import WAIT_FOR_TX_STATUS_INIT
 from dynamis.apps.policy.models import POLICY_STATUS_INIT, POLICY_STATUS_SUBMITTED, \
     POLICY_STATUS_ON_SMART_DEPOSIT_REFUND, POLICY_STATUS_ON_P2P_REVIEW, POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW, \
     POLICY_STATUS_APPROVED, POLICY_STATUS_ACTIVE, POLICY_STATUS_WAIT_FOR_PREMIUM, POLICY_STATUS_ON_COMPLETENESS_CHECK
@@ -72,15 +73,18 @@ def test_deposit_refund_to_init_not_refunded(factories):
     assert policy.state == POLICY_STATUS_ON_SMART_DEPOSIT_REFUND
 
 
-def test_submit_to_p2p_review_ok(factories, policy_data, job_data):
+def test_submit_to_p2p_review_ok(factories, policy_data, job_data, mock_request_exchange_rate):
     user = factories.UserFactory()
     policy_data['identity']['verification_data']['proofs'].append({'dummy': 'data'})
     policy_data['employmentHistory']['jobs'].append(job_data)
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_SUBMITTED,
                                                 user=user,
                                                 data=json.dumps({'policy_data': policy_data}))
-    deposit = factories.SmartDepositFactory(policy=policy, state=2,
+    deposit = factories.SmartDepositFactory(policy=policy, state=WAIT_FOR_TX_STATUS_INIT,
                                             cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE), amount=20)
+    deposit.init_to_wait()
+    deposit.save()
+
     policy.submit_to_p2p_review()
     assert policy.state == POLICY_STATUS_ON_P2P_REVIEW
 
@@ -227,7 +231,7 @@ def test_activate_policy(factories):
     policy = factories.PolicyApplicationFactory(state=POLICY_STATUS_ON_RISK_ASSESSMENT_REVIEW,
                                                 user=user)
     deposit = factories.SmartDepositFactory(policy=policy, state=2, cost_dollar=(20 * config.DOLLAR_ETH_EXCHANGE_RATE),
-                                            amount=20)
+                                            amount=20, cost=20)
     risk_assessment_task = factories.RiskAssessmentTaskFactory(user=user, policy=policy, is_finished=True)
     app_item = factories.IdentityApplicationItemFactory(policy_application=policy, is_finished=True)
     factories.IdentityPeerReviewFactory(application_item=app_item, result='3')

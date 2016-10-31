@@ -9,7 +9,7 @@ from dynamis.apps.payments.api.v1.serializers import SmartDepositShortSerializer
     TokenAccountShortSerializer, BuyTokenInSerializer
 from dynamis.apps.payments.business_logic import check_transfers_change_model_states
 from dynamis.apps.payments.models import SmartDeposit, WAIT_FOR_TX_STATUS_RECEIVED, \
-    WAIT_FOR_TX_STATUS_WAITING, TokenAccount, BuyTokenOperation
+    WAIT_FOR_TX_STATUS_WAITING, TokenAccount, BuyTokenOperation, WAIT_FOR_TX_STATUS_INIT
 from dynamis.core.permissions import IsAdminOrPolicyOwnerPermission, IsAdminOrObjectOwnerPermission, \
     IsRiskAssessorPermission
 
@@ -23,6 +23,9 @@ class SmartDepositViewSet(mixins.RetrieveModelMixin,
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         smart_deposit = check_transfers_change_model_states(instance)
+        if instance.state == WAIT_FOR_TX_STATUS_INIT:
+            instance.set_cost()
+            instance.save()
         serializer = self.get_serializer(smart_deposit)
         return Response(serializer.data)
 

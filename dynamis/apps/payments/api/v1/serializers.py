@@ -10,7 +10,7 @@ from dynamis.utils.math import approximately_equal
 class SmartDepositShortSerializer(serializers.ModelSerializer):
     status = serializers.IntegerField(source='state')
     cost_in_eth = serializers.FloatField(source='cost')
-    cost_in_wei = serializers.FloatField(source='cost_wei')
+    cost_in_wei = serializers.IntegerField(source='cost_wei')
     cost_in_dollars = serializers.FloatField(source='cost_dollar')
     address_to_send = SerializerMethodField()
 
